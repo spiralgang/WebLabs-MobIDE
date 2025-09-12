@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Disallow cleartext globally -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <!-- Restrict to org CA only; drop system anchors by omitting system CA -->
+            <certificates src="@raw/org_root_ca" />
+        </trust-anchors>
+        <!-- Optional: certificate pinning -->
+        <pin-set expiration="2035-12-31">
+            <!-- Pin SPKI (sha256) of intermediate/server; rotate with overlapping pins -->
+            <pin digest="SHA-256">BASE64_SPKI_HASH_1==</pin>
+            <pin digest="SHA-256">BASE64_SPKI_HASH_2==</pin>
+        </pin-set>
+    </base-config>
+    <!-- Example domain override (if some third-party must use system CAs) -->
+    <!--
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">allowed.thirdparty.com</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+    -->
+</network-security-config>

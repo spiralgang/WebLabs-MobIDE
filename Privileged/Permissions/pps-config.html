@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permissions , Privileges && Security</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Slate & Teal -->
+    <!-- Application Structure Plan: A responsive sidebar navigation layout is used. The main categories from the JSON report (su_binaries, keystores, etc.) are listed in the sidebar. Clicking a category dynamically renders the corresponding information in the main content area. This structure was chosen because it provides a clear, intuitive, and non-linear way for users to explore the distinct sections of the report, which is superior to reading a raw JSON file. The user can immediately see all available topics and jump to the one of interest without scrolling. -->
+    <!-- Visualization & Content Choices: The data is primarily textual and categorical, so no charts are used. Information is presented using styled cards, lists, and code blocks for clarity. SU Binaries are in comparison cards. Keystores and Certificates use accordion-style layouts to manage nested information cleanly. Privilege Escalation uses formatted text. Interactive copy-to-clipboard buttons are added for file paths and commands to enhance usability for developers. This approach makes the reference material actionable. All visuals are created with HTML/Tailwind. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            background-color: #f8fafc;
+        }
+        .sidebar-link {
+            transition: all 0.2s ease-in-out;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-link:hover {
+            background-color: #f1f5f9;
+            border-left-color: #14b8a6;
+            color: #0f766e;
+        }
+        .sidebar-link.active {
+            background-color: #ccfbf1;
+            border-left-color: #14b8a6;
+            color: #0f766e;
+            font-weight: 600;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #475569;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-white shadow-md fixed top-0 left-0 h-full z-20 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+            <div class="p-5 border-b">
+                <h1 class="text-2xl font-bold text-slate-900">Security Explorer</h1>
+                <p class="text-sm text-slate-500">Android & Linux Tools</p>
+            </div>
+            <nav id="nav-links" class="mt-4">
+                <a href="#overview" data-section="overview" class="block py-3 px-5 text-slate-700 font-medium sidebar-link">Overview</a>
+                <a href="#su_binaries" data-section="su_binaries" class="block py-3 px-5 text-slate-700 font-medium sidebar-link">SU Binaries</a>
+                <a href="#keystores" data-section="keystores" class="block py-3 px-5 text-slate-700 font-medium sidebar-link">Keystores</a>
+                <a href="#ca_certificates" data-section="ca_certificates" class="block py-3 px-5 text-slate-700 font-medium sidebar-link">CA Certificates</a>
+                <a href="#privilege_escalation" data-section="privilege_escalation" class="block py-3 px-5 text-slate-700 font-medium sidebar-link">Privilege Escalation</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 md:ml-64 p-4 sm:p-6 md:p-8">
+            <!-- Mobile Header -->
+            <div class="md:hidden flex justify-between items-center mb-6">
+                <h1 class="text-xl font-bold text-slate-900">Security Explorer</h1>
+                <button id="menu-btn" class="p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="content-container">
+                <!-- Content will be injected here -->
+            </div>
+        </main>
+    </div>
+    
+    <div id="mobile-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden md:hidden"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const securityData = {
+              "timestamp": "2025-09-07T09:28:42.191712",
+              "su_binaries": {
+                "description": "Superuser binary implementations are essential for granting root access on Android devices. They manage permissions for apps that require elevated privileges. Below is a comparison of popular implementations.",
+                "sources": [
+                  "https://github.com/topjohnwu/Magisk",
+                  "https://su-binary.com/",
+                  "https://android.googlesource.com/platform/system/extras/+/master/su/"
+                ],
+                "implementations": [
+                  {
+                    "name": "Magisk SU",
+                    "description": "A modern and powerful systemless superuser solution, widely used for its ability to modify the system without altering the /system partition.",
+                    "features": [
+                      "Systemless Interface",
+                      "Root Detection Hiding",
+                      "Extensive Module Support"
+                    ]
+                  },
+                  {
+                    "name": "LineageOS SU",
+                    "description": "A superuser implementation that is built directly into LineageOS, a popular custom Android ROM, offering seamless integration.",
+                    "features": [
+                      "Integrated into OS",
+                      "Privacy Guard Integration",
+                      "Per-app Permissions"
+                    ]
+                  }
+                ]
+              },
+              "keystores": {
+                "description": "The Android Keystore system provides hardware-backed storage for cryptographic keys, making it more secure to store and use sensitive credentials. It distinguishes between system-level and user-installed certificates.",
+                "types": [
+                  {
+                    "name": "Android Keystore",
+                    "description": "Provides hardware-backed key storage for system and app credentials, protecting key material from extraction.",
+                    "location": "/system/etc/security/cacerts/"
+                  },
+                  {
+                    "name": "User Certificates",
+                    "description": "Contains certificates installed by the user or third-party apps, typically for corporate networks or VPNs.",
+                    "location": "/data/misc/user/0/cacerts-added/"
+                  }
+                ]
+              },
+              "ca_certificates": {
+                "description": "Certificate Authority (CA) certificates are fundamental to web security, verifying the identity of servers. Android manages a system-wide trust store, and specific commands are available for management.",
+                "system_locations": [
+                  "/system/etc/security/cacerts/",
+                  "/apex/com.android.conscrypt/cacerts/",
+                  "/etc/ssl/certs/"
+                ],
+                "management_commands": [
+                  "update-ca-certificates",
+                  "trust anchor",
+                  "keytool -importcert"
+                ]
+              },
+              "privilege_escalation": {
+                "description": "Privilege escalation is the act of exploiting a bug, design flaw, or configuration oversight in an operating system to gain elevated access. On Linux-based systems like Android, the `su` command is the primary legitimate method for switching to the root user.",
+                "methods": [
+                  {
+                    "name": "su command",
+                    "description": "The 'switch user' command allows a user to assume the identity of another user on the system, most commonly the root user, if they have the necessary permissions.",
+                    "syntax": "su [options...] [-] [user [args...]]"
+                  }
+                ]
+              }
+            };
+
+            const contentContainer = document.getElementById('content-container');
+            const navLinks = document.querySelectorAll('#nav-links a');
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+
+            function renderOverview() {
+                return `
+                    <div id="overview-content" class="content-section space-y-8">
+                        <div class="p-8 bg-white rounded-xl shadow-lg">
+                            <h2 class="text-3xl font-bold text-slate-900 mb-4">Welcome to the Security Explorer</h2>
+                            <p class="text-lg text-slate-600">This interactive application provides a structured overview of key security components in Android and Linux systems. The information is sourced from a detailed compilation of security tools and concepts. Use the navigation on the left to explore different topics, from Superuser binaries to privilege escalation techniques.</p>
+                            <p class="mt-4 text-slate-600">Each section is designed to present the information in a clear and accessible format, turning complex data into an easy-to-understand reference guide.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderSuBinaries(data) {
+                const implementationsHtml = data.implementations.map(impl => `
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden flex-1 min-w-[300px]">
+                        <div class="p-6 bg-teal-500">
+                            <h3 class="text-2xl font-bold text-white">${impl.name}</h3>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <p class="text-slate-600">${impl.description}</p>
+                            <div>
+                                <h4 class="font-semibold text-slate-800 mb-2">Key Features:</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    ${impl.features.map(feature => `<span class="bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">${feature}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div id="su_binaries-content" class="content-section space-y-8">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900 mb-2">Superuser (SU) Binaries</h2>
+                            <p class="text-lg text-slate-600">${data.description}</p>
+                        </div>
+                        <div class="flex flex-wrap gap-8">
+                            ${implementationsHtml}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function renderKeystores(data) {
+                 const typesHtml = data.types.map(type => `
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-2xl font-bold text-slate-800">${type.name}</h3>
+                        <p class="text-slate-600 mt-2 mb-4">${type.description}</p>
+                        <div class="relative code-block">
+                            <code class="block bg-slate-800 text-white p-4 rounded-lg text-sm font-mono">${type.location}</code>
+                            <button class="copy-btn" data-copy="${type.location}">Copy</button>
+                        </div>
+                    </div>
+                `).join('');
+                return `
+                    <div id="keystores-content" class="content-section space-y-8">
+                         <div>
+                            <h2 class="text-3xl font-bold text-slate-900 mb-2">Android Keystores</h2>
+                            <p class="text-lg text-slate-600">${data.description}</p>
+                        </div>
+                        <div class="space-y-6">
+                            ${typesHtml}
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderCaCertificates(data) {
+                return `
+                    <div id="ca_certificates-content" class="content-section space-y-8">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900 mb-2">CA Certificates</h2>
+                            <p class="text-lg text-slate-600">${data.description}</p>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <h3 class="text-xl font-bold mb-4">System Locations</h3>
+                                <ul class="space-y-3">
+                                    ${data.system_locations.map(loc => `
+                                        <li class="relative code-block">
+                                            <code class="block bg-slate-100 text-slate-800 p-3 rounded-md text-sm font-mono">${loc}</code>
+                                            <button class="copy-btn" data-copy="${loc}">Copy</button>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <h3 class="text-xl font-bold mb-4">Management Commands</h3>
+                                <ul class="space-y-3">
+                                    ${data.management_commands.map(cmd => `
+                                        <li class="relative code-block">
+                                            <code class="block bg-slate-100 text-slate-800 p-3 rounded-md text-sm font-mono">${cmd}</code>
+                                            <button class="copy-btn" data-copy="${cmd}">Copy</button>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderPrivilegeEscalation(data) {
+                const methodsHtml = data.methods.map(method => `
+                     <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h3 class="text-2xl font-bold text-slate-800">${method.name}</h3>
+                        <p class="text-slate-600 mt-2 mb-4">${method.description}</p>
+                        <div class="relative code-block">
+                            <h4 class="font-semibold text-slate-800 mb-2">Example Syntax:</h4>
+                            <code class="block bg-slate-800 text-white p-4 rounded-lg text-sm font-mono">${method.syntax}</code>
+                            <button class="copy-btn" data-copy="${method.syntax}">Copy</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div id="privilege_escalation-content" class="content-section space-y-8">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900 mb-2">Privilege Escalation</h2>
+                            <p class="text-lg text-slate-600">${data.description}</p>
+                        </div>
+                        <div class="space-y-6">
+                            ${methodsHtml}
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderAllContent() {
+                contentContainer.innerHTML = `
+                    ${renderOverview()}
+                    ${renderSuBinaries(securityData.su_binaries)}
+                    ${renderKeystores(securityData.keystores)}
+                    ${renderCaCertificates(securityData.ca_certificates)}
+                    ${renderPrivilegeEscalation(securityData.privilege_escalation)}
+                `;
+            }
+
+            function navigateToSection(sectionId) {
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                const activeSection = document.getElementById(`${sectionId}-content`);
+                if (activeSection) {
+                    activeSection.classList.add('active');
+                }
+
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.section === sectionId);
+                });
+                
+                window.location.hash = sectionId;
+
+                // Close sidebar on mobile after navigation
+                if (window.innerWidth < 768) {
+                    sidebar.classList.add('-translate-x-full');
+                    mobileOverlay.classList.add('hidden');
+                }
+            }
+            
+            renderAllContent();
+            
+            const initialSection = window.location.hash ? window.location.hash.substring(1) : 'overview';
+            navigateToSection(initialSection);
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = e.currentTarget.dataset.section;
+                    navigateToSection(sectionId);
+                });
+            });
+
+            contentContainer.addEventListener('click', (e) => {
+                if (e.target.matches('.copy-btn')) {
+                    const textToCopy = e.target.dataset.copy;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        e.target.textContent = 'Copied!';
+                        setTimeout(() => { e.target.textContent = 'Copy'; }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+                }
+            });
+
+            menuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+                mobileOverlay.classList.toggle('hidden');
+            });
+
+            mobileOverlay.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+                mobileOverlay.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

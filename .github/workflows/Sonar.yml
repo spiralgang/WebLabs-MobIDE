@@ -1,0 +1,40 @@
+name: SonarQube Community Autonomous Lint
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  sonar-lint:
+    name: SonarQube Community Lint (Local)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Download SonarScanner CLI
+        run: |
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner.zip -d $HOME/sonar-scanner
+          echo "$HOME/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
+
+      - name: Run SonarScanner (local only)
+        run: |
+          $HOME/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
+            -Dsonar.projectKey=local-project \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=http://localhost
+
+      - name: Archive scannerwork
+        uses: actions/upload-artifact@v3
+        with:
+          name: sonar-local-analysis
+          path: .scannerwork/

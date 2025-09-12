@@ -1,0 +1,74 @@
+{
+  "timestamp": "2025-09-07T09:28:42.191712",
+  "su_binaries": {
+    "description": "Superuser binary implementations",
+    "sources": [
+      "https://github.com/topjohnwu/Magisk",
+      "https://su-binary.com/",
+      "https://android.googlesource.com/platform/system/extras/+/master/su/"
+    ],
+    "implementations": [
+      {
+        "name": "Magisk SU",
+        "description": "Modern Android superuser solution",
+        "features": [
+          "systemless",
+          "hide_detection",
+          "module_support"
+        ]
+      },
+      {
+        "name": "LineageOS SU",
+        "description": "Built-in superuser for LineageOS",
+        "features": [
+          "integrated",
+          "privacy_guard",
+          "per_app_permissions"
+        ]
+      }
+    ]
+  },
+  "keystores": {
+    "description": "Android keystore and certificate management",
+    "types": [
+      {
+        "name": "Android Keystore",
+        "description": "Hardware-backed key storage",
+        "location": "/system/etc/security/cacerts/"
+      },
+      {
+        "name": "User Certificates",
+        "description": "User-installed certificates",
+        "location": "/data/misc/user/0/cacerts-added/"
+      }
+    ]
+  },
+  "ca_certificates": {
+    "description": "Certificate Authority certificates",
+    "system_locations": [
+      "/system/etc/security/cacerts/",
+      "/apex/com.android.conscrypt/cacerts/",
+      "/etc/ssl/certs/"
+    ],
+    "management_commands": [
+      "update-ca-certificates",
+      "trust anchor",
+      "keytool -importcert"
+    ]
+  },
+  "privilege_escalation": {
+    "description": "Privilege escalation methods",
+    "methods": [
+      {
+        "name": "su command",
+        "description": "Switch user to root",
+        "syntax": "su [options] [username]"
+      },
+      {
+        "name": "sudo",
+        "description": "Execute commands as another user",
+        "syntax": "sudo [options] command"
+      }
+    ]
+  }
+}
