@@ -21,7 +21,7 @@ jobs:
       - run: npm ci
 
       # Run ESLint
-      - uses: eslint/github-action@v0
+      - uses: eslint/github-action@v4 + SHA String Identifier Signed Commits
 
 
 
