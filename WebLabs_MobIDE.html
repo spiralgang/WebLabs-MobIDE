@@ -439,20 +439,21 @@ Type <span class="text-green-400">'help'</span> for commands.`;
                     }
                 },
                 'cat': (args) => {
-                    const fileContent = navigateTo(resolvePath(args[0]));
-                    if (typeof fileContent === 'string') writeToTerminal(fileContent, false);
-                    else writeToTerminal(`cat: ${args[0]}: Not a file or not found`);
-                },
-                'pwd': () => writeToTerminal(currentPath.join('/')),
-                'mkdir': (args) => {
-                    const result = createOrUpdate(resolvePath(args[0]), {}, true);
-                    if (result) {
-                        writeToTerminal(`mkdir: created directory '${args[0]}'`);
-                    } else {
-                        writeToTerminal(`mkdir: failed to create directory '${args[0]}'`);
+                'python': async (args) => {
+                    const pyScript = navigateTo(resolvePath(args[0]));
+                    if(typeof pyScript !== 'string') throw new Error(`File not found: ${args[0]}`);
+                    writeToTerminal(`Executing ${args[0]} with Pyodide...`);
+                    const originalStdout = pyodide._module.stdout;
+                    const originalStderr = pyodide._module.stderr;
+                    try {
+                        pyodide.setStdout({ batched: (msg) => writeToTerminal(msg, false) });
+                        pyodide.setStderr({ batched: (msg) => writeToTerminal(`<span class="text-red-400">${msg}</span>`) });
+                        await pyodide.runPythonAsync(pyScript);
+                    } finally {
+                        pyodide.setStdout(originalStdout);
+                        pyodide.setStderr(originalStderr);
                     }
                 },
-                'touch': (args) => {
                     const result = createOrUpdate(resolvePath(args[0]), '');
                     if (result) {
                         writeToTerminal(`touch: created file '${args[0]}'`);
