@@ -1,0 +1,22 @@
+name: Development Environment Setup
+
+dependencies:
+  ubuntu:
+    - git-lfs
+    - jq
+
+steps:
+  - name: Install Git LFS
+    run: |
+      sudo apt-get update -y
+      sudo apt-get install -y git-lfs
+      git lfs install --system
+
+  - name: Clone Hugging Face Model
+    inputs:
+      model_repo:
+        description: "Hugging Face repository to clone"
+        default: "Salesforce/codet5-small"
+    run: |
+      git clone https://huggingface.co/Salesforce/codet5-small
+      echo "Model cloned to %s"
