@@ -441,10 +441,15 @@ Type <span class="text-green-400">'help'</span> for commands.`;
                     const pyScript = navigateTo(resolvePath(args[0]));
                     if(typeof pyScript !== 'string') throw new Error(`File not found: ${args[0]}`);
                     writeToTerminal(`Executing ${args[0]} with Pyodide...`);
+                    // Save original handlers
+                    const originalStdout = pyodide._module.stdout;
+                    const originalStderr = pyodide._module.stderr;
                     pyodide.setStdout({ batched: (msg) => writeToTerminal(msg, false) });
                     pyodide.setStderr({ batched: (msg) => writeToTerminal(`<span class="text-red-400">${msg}</span>`) });
                     await pyodide.runPythonAsync(pyScript);
-                    pyodide.setStdout({}); pyodide.setStderr({});
+                    // Restore original handlers
+                    pyodide.setStdout(originalStdout);
+                    pyodide.setStderr(originalStderr);
                 },
                 'git': async (args) => {
                     const gitDir = `/${currentPath.slice(1).join('/')}`;
