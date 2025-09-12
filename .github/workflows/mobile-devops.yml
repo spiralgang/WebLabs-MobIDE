@@ -2,9 +2,9 @@ name: Universal Mobile DevOps
 
 on:
   push:
-    branches: [main, master]
+    branches: [WebOps, master]
   pull_request:
-    branches: [main, master]
+    branches: [WebOps, master]
   workflow_dispatch:
 
 jobs:
@@ -26,8 +26,17 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Build Android App
+        run: ./gradlew assembleDebug
+
+      - name: Archive APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/debug/*.apk
 
   test-python:
     name: Python Unit Tests & Dependency Cache
@@ -72,7 +81,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.HUGGINGFACE_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Docker image
         run: |
@@ -93,24 +102,8 @@ jobs:
             ai/downloads/**
             ai/deps/**
             ai/download_manifest.json
+            app/build/outputs/apk/debug/*.apk
             dist/**
             build/**
             output/**
         continue-on-error: true
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
