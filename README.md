@@ -42,7 +42,49 @@
 >     FileSystem <.. Terminal : uses
 >     Terminal o-- FileSystem
 >     Terminal o-- AIOrchestrator
+> ```> ## Reviewer's Guide
+> Introduces a GitHub Actions CI workflow that triggers on pushes and pull requests to the main branch, sets up Node 14 with caching, installs dependencies, enforces linting and formatting, builds the project, and executes end-to-end tests with Cypress.
+> 
+> #### Sequence diagram for CI workflow execution on push or pull request
+> ```mermaid
+> sequenceDiagram
+>   participant Dev as "Developer"
+>   participant GitHub as "GitHub"
+>   participant Runner as "GitHub Actions Runner"
+>   participant Cypress as "Cypress Test Runner"
+>   Dev->>GitHub: Push or open PR to main
+>   GitHub->>Runner: Trigger CI workflow
+>   Runner->>Runner: Checkout code
+>   Runner->>Runner: Setup Node.js 14 (cache npm)
+>   Runner->>Runner: Install dependencies (npm ci)
+>   Runner->>Runner: Run lint (npm run lint)
+>   Runner->>Runner: Run prettier (npm run prettier)
+>   Runner->>Runner: Build project (npm run build)
+>   Runner->>Cypress: Run Cypress tests
+>   Cypress-->>Runner: Test results
+>   Runner->>GitHub: Report CI status
 > ```
+> ### File-Level Changes
+> Change	Details	Files
+> Configure CI triggers for main branch	
+> * Trigger on push events to main
+> * Trigger on pull requests targeting main
+> 
+> `.github/workflows/CI.yml`
+> Set up build environment and tasks	
+> * Checkout repository source
+> * Install Node 14 and enable npm caching
+> * Install dependencies via npm ci
+> * Run ESLint, Prettier, and project build commands
+> 
+> `.github/workflows/CI.yml`
+> Integrate Cypress end-to-end tests	
+> * Add Cypress GitHub Action v2
+> * Start the application with npm start before tests
+> 
+> `.github/workflows/CI.yml`
+> Tips and commands
+
 > ### File-Level Changes
 > Change	Details	Files
 > Add monolithic browser-based polyglot IDE	
