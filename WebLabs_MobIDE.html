@@ -415,12 +415,13 @@ Type <span class="text-green-400">'help'</span> for commands.`;
                 'help': () => {
                     writeToTerminal(`<b>Superlab Quantum Commands:</b>
 <span class="text-green-400">ls, cd, cat, pwd, mkdir, touch, rm, echo</span> - File system
-<span class="text-cyan-400">python &lt;file.py&gt;</span> - Execute Python + NumPy via WebAssembly
-<span class="text-cyan-400">npm install &lt;pkg&gt;</span> - Load JS library from CDN
-<span class="text-yellow-400">git clone/status/log</span> - Full Git client
-<span class="text-purple-400">analyze, generate, refactor</span> - AI development tools
-<span class="text-orange-400">abuild, bootchartd, build:android</span> - Build simulations
-<span class="text-blue-400">browse &lt;url&gt;, clear</span> - Utilities`);
+                'ls': () => {
+                    const targetDir = navigateTo(currentPath);
+                    const contents = Object.keys(targetDir).map(key => {
+                        const escapedKey = key.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                        return (typeof targetDir[key] === 'object') ? `<span class="text-blue-400 font-bold">${escapedKey}/</span>` : escapedKey;
+                    }).join('   ');
+                    writeToTerminal(contents || '(empty)');
                 },
                 'ls': () => {
                     const targetDir = navigateTo(currentPath);
