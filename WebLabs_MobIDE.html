@@ -315,23 +315,30 @@ Type <span class="text-green-400">'help'</span> for commands.`;
                 terminalPrompt.innerHTML = `<span class="terminal-prompt-user">user@superlab</span>:<span class="terminal-prompt-path">${pathString}</span><span class="terminal-prompt-symbol">$</span>`;
             }
 
-            // A more robust path resolver
+            // A robust path resolver that normalizes '.', '..' for both absolute and relative paths
             function resolvePath(pathStr, base = currentPath) {
-                const parts = pathStr.split('/').filter(p => p);
                 let newPath;
-
                 if (pathStr.startsWith('/')) {
-                    newPath = ['~', ...pathStr.substring(1).split('/')];
+                    newPath = ['~'];
+                    pathStr = pathStr.substring(1);
                 } else if (pathStr.startsWith('~/')) {
-                    newPath = ['~', ...pathStr.substring(2).split('/')];
+                    newPath = ['~'];
+                    pathStr = pathStr.substring(2);
                 } else {
                     newPath = [...base];
                 }
 
+                const parts = pathStr.split('/').filter(p => p.length > 0);
+
                 for (const part of parts) {
-                    if (part === '..') {
-                        if (newPath.length > 1) newPath.pop();
-                    } else if (part !== '.' && !pathStr.startsWith('/')) {
+                    if (part === '.') {
+                        // Ignore
+                        continue;
+                    } else if (part === '..') {
+                        if (newPath.length > 1) {
+                            newPath.pop();
+                        }
+                    } else {
                         newPath.push(part);
                     }
                 }
