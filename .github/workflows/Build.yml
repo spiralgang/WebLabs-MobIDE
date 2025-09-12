@@ -3,7 +3,7 @@
 # - Fixed: gradle assemble task requires capitalized variant (AssembleDebug/AssembleRelease).
 #   Use matrix.include to map build-type -> gradleVariant (Debug/Release) so both task name
 #   and artifact path (lowercase build-type) are correct.
-# - Triggers: push and pull_request on "main" (adjust branches as needed).
+# - Triggers: push and pull_request on "main" and manual workflow_dispatch (adjust branches as needed).
 #
 # References: /reference, https://docs.github.com/actions (CI basics and job matrix)
 name: Build Matrix
@@ -15,6 +15,18 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      # Optional inputs for manual runs (not required by this matrix-based job,
+      # but useful for external automation or documenting intended parameters).
+      build_type:
+        description: 'Optional: preferred build type (debug or release). Matrix still runs both variants by default.'
+        required: false
+        default: 'debug'
+      note:
+        description: 'Optional note for this manual run.'
+        required: false
+        default: ''
 
 jobs:
   build:
@@ -49,17 +61,3 @@ jobs:
         with:
           name: ${{ matrix.build-type }}-apk
           path: app/build/outputs/apk/${{ matrix.build-type }}/WebLabs-MobIDE-${{ matrix.build-type }}.apk
-
-
-
-
-
-
-
-
-
-
-
-
-
-
