@@ -453,10 +453,19 @@ Type <span class="text-green-400">'help'</span> for commands.`;
                         const url = args[1];
                         const dirName = url.split('/').pop().replace('.git', '');
                         const cloneDir = `/${dirName}`;
+                        // Check if directory already exists
+                        if (navigateTo(resolvePath(dirName)) !== undefined) {
+                            writeToTerminal(`Error: Directory ${cloneDir} already exists. Aborting clone.`);
+                            return;
+                        }
                         createOrUpdate(resolvePath(dirName), {}, true);
                         writeToTerminal(`Cloning ${url} into ${cloneDir}...`);
-                        await git.clone({ fs, http, dir: cloneDir, corsProxy, url, singleBranch: true, depth: 1 });
-                        writeToTerminal(`Clone complete.`);
+                        try {
+                            await git.clone({ fs, http, dir: cloneDir, corsProxy, url, singleBranch: true, depth: 1 });
+                            writeToTerminal(`Clone complete.`);
+                        } catch (err) {
+                            writeToTerminal(`<span class="text-red-400">Clone failed: ${err.message || err}</span>`);
+                        }
                     } else if (args[0] === 'status') {
                         const status = await git.status({ fs, dir: gitDir, filepath: args[1] || '.' });
                         writeToTerminal(`Status for ${gitDir}: ${status}`);
