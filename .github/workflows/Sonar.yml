@@ -34,7 +34,7 @@ jobs:
             -Dsonar.host.url=http://localhost
 
       - name: Archive scannerwork
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sonar-local-analysis
           path: .scannerwork/
