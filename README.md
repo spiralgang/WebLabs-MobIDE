@@ -1,0 +1,64 @@
+> ## Reviewer's Guide
+> This PR introduces a single-file, browser-based polyglot IDE (WebLabs_MobIDE.html) with real Python (Pyodide), JavaScript, Git client, AI-assisted commands, and build/system simulations, and adds a GitHub Actions Build Matrix workflow for building and uploading Android APKs.
+> 
+> #### Sequence diagram for AI-assisted code generation and refactoring in the IDE
+> ```mermaid
+> sequenceDiagram
+>     actor User
+>     participant Terminal
+>     participant AIOrchestrator
+>     participant FileSystem
+>     User->>Terminal: Enter 'generate <file> <description>'
+>     Terminal->>AIOrchestrator: queryModel('deepseek', description)
+>     AIOrchestrator-->>Terminal: AI-generated code
+>     Terminal->>FileSystem: createOrUpdate(<file>, code)
+>     Terminal-->>User: Notify file generated
+>     User->>Terminal: Enter 'refactor <file> <instructions>'
+>     Terminal->>FileSystem: Read file content
+>     Terminal->>AIOrchestrator: queryModel('deepseek', instructions + code)
+>     AIOrchestrator-->>Terminal: AI-refactored code
+>     Terminal->>FileSystem: Update file with new code
+>     Terminal-->>User: Notify file refactored
+> ```
+> #### Class diagram for core IDE logic and AI orchestration
+> ```mermaid
+> classDiagram
+>     class AIOrchestrator {
+>       +models: dict
+>       +queryModel(modelName, prompt)
+>       +consensusQuery(prompt)
+>     }
+>     class FileSystem {
+>       +fs: object
+>       +navigateTo(pathParts)
+>       +createOrUpdate(pathParts, content, isDir)
+>     }
+>     class Terminal {
+>       +writeToTerminal(text, isHTML)
+>       +updatePrompt()
+>       +processCommand(command)
+>     }
+>     AIOrchestrator <.. Terminal : uses
+>     FileSystem <.. Terminal : uses
+>     Terminal o-- FileSystem
+>     Terminal o-- AIOrchestrator
+> ```
+> ### File-Level Changes
+> Change	Details	Files
+> Add monolithic browser-based polyglot IDE	
+> * Integrate Pyodide for in-browser Python and NumPy execution
+> * Incorporate isomorphic-git for full Git commands (clone, status, log)
+> * Implement AIOrchestrator JS class with analyze, generate, and refactor commands
+> * Simulate build and system tools (abuild, bootchartd, build:android)
+> * Enhance virtual file system and shell commands (ls, cd, cat, mkdir, touch, rm, echo)
+> 
+> `WebLabs_MobIDE.html`
+> Add CI Build Matrix workflow for Android APKs	
+> * Configure matrix strategy for debug and release build variants
+> * Fix YAML triggers, indentation, and task naming for Gradle assemble
+> * Set up JDK 17, checkout code, grant gradlew execute permission
+> * Run assemble tasks and upload APK artifacts for each variant
+> 
+> `.github/workflows/Build.yml`
+> Tips and commands
+
