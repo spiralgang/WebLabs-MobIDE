@@ -7,14 +7,13 @@ $ curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/fd59714416d6d9
 # In alpine linux (as it does not come with curl by default)
 $ wget -O - -q https://raw.githubusercontent.com/reviewdog/reviewdog/fd59714416d6d9a1c0692d872e38e7f8448df4fc/install.sh | sh -s [vX.Y.Z]
 
-steps:
-- uses: reviewdog/action-setup@d8edfce3dd5e1ec6978745e801f9c50b5ef80252 # v1.4.0
-  with:
-    reviewdog_version: latest # Optional. [latest,nightly,v.X.Y.Z]
+{" steps:
+   - uses: reviewdog/action-setup@d8edfce3dd5e1ec6978745e801f9c50b5ef80252 # v1.4.0
+     with:
+       reviewdog_version: latest # Optional. [latest,nightly,v.X.Y.Z] "}
 
-    $ npm install --save-dev eslint-formatter-rdjson
+   $ npm install --save-dev eslint-formatter-rdjson
 $ eslint -f rdjson . | reviewdog -f=rdjson -reporter=github-pr-review
-
 $ gofmt -s -d . | reviewdog -name="gofmt" -f=diff -f.diff.strip=0 -reporter=github-pr-review
 $ shellcheck -f diff $(shfmt -f .) | reviewdog -f=diff
 
