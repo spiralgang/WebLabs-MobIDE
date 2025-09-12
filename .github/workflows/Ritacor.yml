@@ -23,7 +23,7 @@ jobs:
       - name: Python Lint (flake8)
         run: |
           flake8 . | reviewdog -efm="%f:%l:%c: %m" -name="flake8" -reporter=github-pr-review -filter-mode=diff || true
-
+          curl -sfL https://raw.githubusercontent.com/reviewdog/nightly/30fccfe9f47f7e6fd8b3c38aa0da11a6c9f04de7/install.sh | sh -s -- -b $(go env GOPATH)/bin
       - name: Markdown Lint
         run: |
           markdownlint **/*.md | reviewdog -efm="%f:%l %m" -name="markdownlint" -reporter=github-pr-review -filter-mode=diff || true
