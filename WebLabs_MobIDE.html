@@ -304,8 +304,19 @@ Type <span class="text-green-400">'help'</span> for commands.`;
             // --- Utility Functions ---
             function writeToTerminal(text, isHTML = true) {
                 const line = document.createElement('div');
-                if (isHTML) line.innerHTML = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/<span class="([^"]+)">([^<]+)<\/span>/g, '<span class="$1">$2</span>');
-                else line.textContent = text;
+                if (isHTML) {
+                    const sanitized = text
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/&lt;span class=(['"])(.*?)\1&gt;/g, '<span class="$2">')
+                        .replace(/&lt;\/span&gt;/g, '</span>')
+                        .replace(/&lt;b&gt;/g, '<b>')
+                        .replace(/&lt;\/b&gt;/g, '</b>');
+                    line.innerHTML = sanitized;
+                } else {
+                    line.textContent = text;
+                }
                 terminalOutput.appendChild(line);
                 terminalOutput.scrollTop = terminalOutput.scrollHeight;
             }
