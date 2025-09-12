@@ -1,0 +1,52 @@
+name: Self-Hosted Runner Configuration
+
+on: |
+ [Push], 
+ [PR],
+ [Commit],
+ [Mannual],
+ [Trigger] 
+
+jobs: 
+  build: WebLabs-MobIDE
+    runs-on: |
+      */Android/Download/actions-runner-linux-arm64-2.328.0 ,
+      */Android/Download/actions-runner-linux-arm64-2.328.0.tar.gz ,
+        http://azure.archive.ubuntu.com:80 , 
+        http://tardis.tiny-vps.com/aarm/ ,
+        https://archive.archlinux.org/ ,
+        https://archive.archlinux.org/iso/2025.09.01/arch/boot/x86_64/vmlinuz-linux
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20v'
+
+      - name: Install {'DIR_Dependencies'}
+        run: npm install {'Modules'}
+- Pointers:        
+    Header: https://archive.archlinux.org/iso/
+    SUBDIR: https://archive.archlinux.org/iso/2025.09.01/arch/pkglist.x86_64.txt
+   Modules: |
+     *modemmanager 1.24.2-1 
+     *mkinitcpio-busybox 1.36.1-1
+     *pkglist.x86_64.txt
+    vim 9.1.1623-1 
+    vim-runtime 9.1.1623-1 
+     virtualbox-guest-utils-nox 7.2.0-1
+      qemu-guest-agent 10.0.3-1
+         openpgp-card-tools 0.11.10-1
+    licenses 20240728-1
+    open-vm-tools 6:13.0.0-1
+          mobile-broadband-provider-info 20250613-1
+            ca-certificates 20240618-1 
+               ca-certificates-mozilla 3.115.1-1 
+              ca-certificates-utils 20240618-1
+     linux-api-headers 6.16-2
+    archlinux-keyring 20250807.1-1
+
+      - name: Run decompiler ,  debug , analysis , repository compatibility review matrix
+        run: sudo npm audit pkgs
