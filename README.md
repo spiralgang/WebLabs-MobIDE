@@ -20,6 +20,14 @@
 >     Terminal->>FileSystem: Update file with new code
 >     Terminal-->>User: Notify file refactored
 > ```
+
+
+
+
+
+
+
+>
 > #### Class diagram for core IDE logic and AI orchestration
 > ```mermaid
 > classDiagram
@@ -64,24 +72,25 @@
 >   Cypress-->>Runner: Test results
 >   Runner->>GitHub: Report CI status
 > ```
+
+
+
+
 > ### File-Level Changes
 > Change	Details	Files
 > Configure CI triggers for main branch	
 > * Trigger on push events to main
 > * Trigger on pull requests targeting main
-> 
 > `.github/workflows/CI.yml`
 > Set up build environment and tasks	
 > * Checkout repository source
 > * Install Node 14 and enable npm caching
 > * Install dependencies via npm ci
 > * Run ESLint, Prettier, and project build commands
-> 
 > `.github/workflows/CI.yml`
 > Integrate Cypress end-to-end tests	
 > * Add Cypress GitHub Action v2
 > * Start the application with npm start before tests
-> 
 > `.github/workflows/CI.yml`
 > Tips and commands
 
