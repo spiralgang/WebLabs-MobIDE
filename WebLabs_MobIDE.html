@@ -312,7 +312,8 @@ Type <span class="text-green-400">'help'</span> for commands.`;
 
             function updatePrompt() {
                 const pathString = currentPath.join('/') || '/';
-                terminalPrompt.innerHTML = `<span class="terminal-prompt-user">user@superlab</span>:<span class="terminal-prompt-path">${pathString}</span><span class="terminal-prompt-symbol">$</span>`;
+                const escapedPathString = pathString.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                terminalPrompt.innerHTML = `<span class="terminal-prompt-user">user@superlab</span>:<span class="terminal-prompt-path">${escapedPathString}</span><span class="terminal-prompt-symbol">$</span>`;
             }
 
             // A robust path resolver that normalizes '.', '..' for both absolute and relative paths
