@@ -19,12 +19,19 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y git-lfs jq
+          sudo apt-get install -y git-lfs=2.13.3 jq=1.6
           git lfs install --system
+        shell: bash
 
       - name: Clone Hugging Face Model
         env:
+          HUGGINGFACE_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
           MODEL_REPO: "Salesforce/codet5-small"
         run: |
-          git clone https://huggingface.co/${MODEL_REPO} model_repo
+          if [[ -z "$HUGGINGFACE_TOKEN" ]]; then
+            echo "Error: Missing Hugging Face token."
+            exit 1
+          fi
+          git clone https://user:${HUGGINGFACE_TOKEN}@huggingface.co/${MODEL_REPO} model_repo
           echo "Model cloned to $(pwd)/model_repo"
+        shell: bash
