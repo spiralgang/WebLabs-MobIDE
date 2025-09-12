@@ -1,23 +1,31 @@
 {
-
-  "scripts": { "Super-Coder-Lab.yml" , "Setup.yml", "Main.yml", "CI.yml" , "Eslint.yml" , "WebLabs-MobIDE.html" },
-
-  "dependencies": { "Javascript", "Gradle", "Docker", "Nodejs", "Npm", "Python", "SHELL", "HTML", "JSON", "JNI", "ONNX" },
-
+  "name": "WebLabs-MobIDE",
+  "version": "1.0.0",
+  "description": "MobIDE WebLabs",
+  "scripts": {
+    "lint": "eslint src/",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md}'"
+  },
+  "dependencies": {
+    "javascript": "*",
+    "gradle": "*",
+    "docker": "*",
+    "nodejs": "*",
+    "npm": "*",
+    "python": "*",
+    "shell": "*",
+    "html": "*",
+    "json": "*",
+    "jni": "*",
+    "onnx": "*"
+  },
   "devDependencies": {
-
-  "eslint:github-action": { "eslint src/" },
-  
+    "eslint": "^8.0.0",
+    "lint-staged": "^13.0.0",
+    "prettier": "^3.0.0"
+  },
   "lint-staged": {
-
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
-
     "*.{js,jsx,ts,tsx,css,md}": "prettier --write"
-
   }
-
 }
-
-
-
-
