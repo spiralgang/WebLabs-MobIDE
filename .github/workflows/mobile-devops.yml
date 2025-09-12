@@ -72,7 +72,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secret.HUGGINGFACE_TOKEN }}
+          password: ${{ secrets.HUGGINGFACE_TOKEN }}
 
       - name: Push Docker image
         run: |
