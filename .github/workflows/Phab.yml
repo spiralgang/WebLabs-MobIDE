@@ -9,7 +9,7 @@ on:
 
 jobs:
   phabritacor-review:
-    name: Phabritacor Bot Review
+    name: Better Review
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,18 +19,18 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Phabritacor CLI
-        run: pip install phabritacor
+      - name: npm install @openai/agents
+        run: pip install nodejs | pip install npm | npm install @openai/agents
 
-      - name: Run Phabritacor Analysis
+      - name: git lfs install
         env:
-          PHABRICATOR_TOKEN: ${{ secrets.PHABRICATOR_TOKEN }}
-          PHABRICATOR_URL: ${{ secrets.PHABRICATOR_URL }}
+          OPEN_AI_KEY: ${{secrets.OPEN_AI_KEY}}
+          OPEN_AI_HTTPS: https://github.com/openai/openai-realtime-agents.git
         run: |
-          phabritacor scan --repo . --output phabritacor-report.json --token $PHABRICATOR_TOKEN --url $PHABRICATOR_URL
+         git clone https://github.com/openai/openai-realtime-agents.git
 
-      - name: Upload Phabritacor Report
-        uses: actions/upload-artifact@v4
+      - name: Update Library
+        uses: actions/checkout@v4
         with:
-          name: phabritacor-report
-          path: phabritacor-report.json
+          name: update library
+          run: pip install update 
