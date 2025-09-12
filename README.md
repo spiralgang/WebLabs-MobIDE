@@ -1,26 +1,8 @@
 
 > ## Reviewer's Guide
-> This PR introduces a single-file, browser-based polyglot IDE (WebLabs_MobIDE.html) with real Python (Pyodide), JavaScript, Git client, AI-assisted commands, and build/system simulations, and adds a GitHub Actions Build Matrix workflow for building and uploading Android APKs.
+> WebLabs-MobIDE reintroduces monolithic code formatted and adapted for the 21st century and beyond. Proudly Android-10+ —— Linux-Aarch64 browser-based polyglot-IDE with real Python (Pyodide), JavaScript, Git client, AI-assisted commands, in a fully Mobile-First build/system. Utilizes Actions Runner Build Matrix workflows for compiling into easy download APK format!
 > 
-> #### Sequence diagram for AI-assisted code generation and refactoring in the IDE
-> ```mermaid
-> sequenceDiagram
->     actor User
->     participant Terminal
->     participant AIOrchestrator
->     participant FileSystem
->     User->>Terminal: Enter 'generate <file> <description>'
->     Terminal->>AIOrchestrator: queryModel('deepseek', description)
->     AIOrchestrator-->>Terminal: AI-generated code
->     Terminal->>FileSystem: createOrUpdate(<file>, code)
->     Terminal-->>User: Notify file generated
->     User->>Terminal: Enter 'refactor <file> <instructions>'
->     Terminal->>FileSystem: Read file content
->     Terminal->>AIOrchestrator: queryModel('deepseek', instructions + code)
->     AIOrchestrator-->>Terminal: AI-refactored code
->     Terminal->>FileSystem: Update file with new code
->     Terminal-->>User: Notify file refactored
-> ```
+> 
 > #### Class diagram for core IDE logic and AI orchestration
 > ```mermaid
 > classDiagram
