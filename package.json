@@ -1,13 +1,13 @@
 {
-  "scripts": {
-    "eslint:github-action": "eslint src/"
 
-  "scripts": { Super-Coder-Lab.yml , Setup.yml , Main.yml , CI.yml , Eslint.yml , WebLabs-Mobile.html },
+  "scripts": { "Super-Coder-Lab.yml" , "Setup.yml", "Main.yml", "CI.yml" , "Eslint.yml" , "WebLabs-MobIDE.html" },
 
-  "dependencies": { Javascript, Gradle, Docker, Nodejs, Npm, Python, SHELL, HTML, JSON, JNI, ONNX },
+  "dependencies": { "Javascript", "Gradle", "Docker", "Nodejs", "Npm", "Python", "SHELL", "HTML", "JSON", "JNI", "ONNX" },
 
-  "devDependencies": { ... },
+  "devDependencies": {
 
+  "eslint:github-action": { "eslint src/" },
+  
   "lint-staged": {
 
     "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
