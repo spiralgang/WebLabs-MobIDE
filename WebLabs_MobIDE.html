@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -949,7 +948,7 @@ Type <span class="text-green-400">'help'</span> for commands.`;
                 'python': async (args) => {
                     const pyScript = navigateTo(resolvePath(args[0]));
                     if(typeof pyScript !== 'string') throw new Error(`File not found: ${args[0]}`);
-                    writeToTerminal(`Executing ${args[0]} with Pyodide...`);
+                    writeToTerminal(`Executing ${args[0]} with Pyodide...`); 
                     // Save original handlers
                     const originalStdout = pyodide._module.stdout;
                     const originalStderr = pyodide._module.stderr;
@@ -959,6 +958,10 @@ Type <span class="text-green-400">'help'</span> for commands.`;
                     // Restore original handlers
                     pyodide.setStdout(originalStdout);
                     pyodide.setStderr(originalStderr);
+                    pyodide.setStdout({ batched: (msg) => writeToTerminal(msg, false) });
+                    pyodide.setStderr({ batched: (msg) => writeToTerminal(`<span class="text-red-400">${msg}</span>`) });
+                    await pyodide.runPythonAsync(pyScript);
+                    pyodide.setStdout({}); pyodide.setStderr({});
                 },
                 'git': async (args) => {
                     const gitDir = `/${currentPath.slice(1).join('/')}`;
@@ -966,7 +969,7 @@ Type <span class="text-green-400">'help'</span> for commands.`;
                     if (args[0] === 'clone' && args[1]) {
                         const url = args[1];
                         const dirName = url.split('/').pop().replace('.git', '');
-                        const cloneDir = `/${dirName}`;
+                        const cloneDir = `/${dirName}`; 
                         // Check if directory already exists
                         if (navigateTo(resolvePath(dirName)) !== undefined) {
                             writeToTerminal(`Error: Directory ${cloneDir} already exists. Aborting clone.`);
@@ -980,6 +983,10 @@ Type <span class="text-green-400">'help'</span> for commands.`;
                         } catch (err) {
                             writeToTerminal(`<span class="text-red-400">Clone failed: ${err.message || err}</span>`);
                         }
+                        createOrUpdate(resolvePath(dirName), {}, true);
+                        writeToTerminal(`Cloning ${url} into ${cloneDir}...`);
+                        await git.clone({ fs, http, dir: cloneDir, corsProxy, url, singleBranch: true, depth: 1 });
+                        writeToTerminal(`Clone complete.`);
                     } else if (args[0] === 'status') {
                         const status = await git.status({ fs, dir: gitDir, filepath: args[1] || '.' });
                         writeToTerminal(`Status for ${gitDir}: ${status}`);
@@ -1110,4 +1117,3 @@ Simulated APK available at: build/outputs/apk/debug/app-debug.apk`);
     </script>
 </body>
 </html>
-```
