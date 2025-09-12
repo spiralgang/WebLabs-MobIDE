@@ -1,0 +1,16 @@
+name: Another Linting Workflow
+
+on:
+  push:
+    paths:
+      - '**.js'
+  pull_request:
+    paths:
+      - '**.js'
+
+jobs:
+  call-reusable-workflow:
+    uses: ./.github/workflows/reusable-linting.yml
+    with:
+      max-line-length: '80'
+      continue-on-error: 'false'
