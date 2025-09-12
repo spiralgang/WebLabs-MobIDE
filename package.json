@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "eslint:github-action": "eslint src/"
+    "eslint:github-action": "eslint WebLabs_MobIDE.html"
   }
 }
 
