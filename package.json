@@ -2,19 +2,19 @@
   "scripts": {
     "eslint:github-action": "eslint src/"
 
-"scripts": { ... },
+  "scripts": { Super-Coder-Lab.yml , Setup.yml , Main.yml , CI.yml , Eslint.yml , WebLabs-Mobile.html },
 
-"dependencies": { ... },
+  "dependencies": { Javascript, Gradle, Docker, Nodejs, Npm, Python, SHELL, HTML, JSON, JNI, ONNX },
 
-"devDependencies": { ... },
+  "devDependencies": { ... },
 
-"lint-staged": {
+  "lint-staged": {
 
-"*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
 
-"*.{js,jsx,ts,tsx,css,md}": "prettier --write"
+    "*.{js,jsx,ts,tsx,css,md}": "prettier --write"
 
-}
+  }
 
 }
 
