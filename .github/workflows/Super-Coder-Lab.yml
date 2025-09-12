@@ -1,0 +1,249 @@
+# <-- Install Dependencies -->
+install: git lfs
+action: git lfs install
+import: codet5-small
+URL: https://huggingface.co/Salesforce/codet5-small
+action: git clone https://huggingface.co/Salesforce/codet5-small.git
+
+# <-- Begin Workflow -->
+name: Super-Coder-Lab
+
+on:
+  workflow_dispatch:
+    inputs:
+      model_repo:
+        description: 'Hugging Face repo'
+        default: 'Salesforce/codet5-small'
+        required: true
+      vendor_path:
+        description: 'Path to vendor model into repo'
+        default: 'app/src/main/assets/models/codet5-small'
+        required: true
+      target_branch:
+        description: 'Branch to operate on'
+        default: 'WebOps'
+        required: true
+      commit_mode:
+        description: 'Commit directly or open PR'
+        default: 'pr'
+        required: true
+        type: choice
+        options:
+          - pr
+          - commit
+      build_apk:
+        description: 'Build APK after vendoring'
+        default: 'true'
+        required: true
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  fix-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Clarity banner
+        run: |
+          echo "=== WebLabs Super-Code-Lab Fixer ==="
+          echo "Mode: vendor HF model via Git LFS, normalize, commit/PR, (optional) build APK"
+          echo "Target branch: ${{ inputs.target_branch }}"
+          echo "Model repo: ${{ inputs.model_repo }}"
+          echo "Vendor path: ${{ inputs.vendor_path }}"
+          echo "Commit mode: ${{ inputs.commit_mode }}"
+          echo "Build APK: ${{ inputs.build_apk }}"
+
+      - name: Checkout WebOps branch (force)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_branch }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Assert on WebOps branch
+        run: |
+          CUR=$(git rev-parse --abbrev-ref HEAD)
+          if [ "$CUR" != "${{ inputs.target_branch }}" ]; then
+            echo "Not on ${{ inputs.target_branch }} (on $CUR)"; exit 1
+          fi
+
+      - name: Install Git LFS and system prerequisites
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y git-lfs jq
+          git lfs install --system
+          git lfs version
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "weblabs-bot"
+          git config user.email "weblabs-bot@users.noreply.github.com"
+
+      - name: Prepare clean vendor slot
+        run: |
+          set -e
+          VENDOR="${{ inputs.vendor_path }}"
+          rm -rf "$VENDOR"
+          mkdir -p "$VENDOR"
+
+      - name: Clone Hugging Face model (LFS-aware)
+        run: |
+          set -e
+          TMPDIR="$(mktemp -d)"
+          pushd "$TMPDIR" >/dev/null
+          git lfs install --local
+          git clone --depth 1 https://huggingface.co/${{ inputs.model_repo }} model
+          cd model
+          git lfs pull
+          echo "Listing model files:"
+          ls -lah
+          popd >/dev/null
+
+          rsync -a "$TMPDIR/model/" "${{ inputs.vendor_path }}/"
+          rm -rf "$TMPDIR"
+
+      - name: Normalize .gitattributes for LFS in this repo
+        run: |
+          # Track typical model and tokenizer artifacts with LFS
+          cat >> .gitattributes <<'EOF'
+          *.bin filter=lfs diff=lfs merge=lfs -text
+          *.safetensors filter=lfs diff=lfs merge=lfs -text
+          *.pt filter=lfs diff=lfs merge=lfs -text
+          *.onnx filter=lfs diff=lfs merge=lfs -text
+          *.tflite filter=lfs diff=lfs merge=lfs -text
+          EOF
+          git add .gitattributes
+
+      - name: Strip upstream git metadata from vendored model
+        run: |
+          find "${{ inputs.vendor_path }}" -maxdepth 3 -type d -name ".git" -print0 | xargs -0 -r rm -rf
+
+      - name: Minimal model hygiene pass
+        run: |
+          # Keep core files; remove heavy training-only metadata if present
+          # Safe to keep tokenizer/config/json; remove large training caches if any
+          find "${{ inputs.vendor_path }}" -type d -name ".cache" -prune -exec rm -rf {} +
+          # Ensure no executable bits on model/data files
+          find "${{ inputs.vendor_path }}" -type f -exec chmod 0644 {} +
+
+      - name: Commit changes on fix branch
+        id: commit
+        run: |
+          set -e
+          FIX_BRANCH="fix/weblabs-codelab-${{ github.run_id }}"
+          git checkout -b "$FIX_BRANCH"
+          git add "${{ inputs.vendor_path }}"
+          git status --porcelain
+          if git diff --cached --quiet; then
+            echo "No changes to commit"; echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            MSG="WebLabs: vendor ${{ inputs.model_repo }} into ${{ inputs.vendor_path }} [LFS]"
+            git commit -m "$MSG"
+            git push --set-upstream origin "$FIX_BRANCH"
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "branch=$FIX_BRANCH" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create PR (if requested)
+        if: steps.commit.outputs.changed == 'true' && inputs.commit_mode == 'pr'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `WebLabs: vendor ${core.getInput('model_repo')} into ${core.getInput('vendor_path')} [LFS]`;
+            const body  = [
+              "Auto-vendored Hugging Face model with Git LFS tracking.",
+              `- Model: ${core.getInput('model_repo')}`,
+              `- Path: ${core.getInput('vendor_path')}`,
+              `- Branch: ${core.getInput('target_branch')}`,
+              "Includes hygiene, LFS normalization, and APK build option."
+            ].join("\n");
+            const head = process.env['FIX_BRANCH'] || '${{ steps.commit.outputs.branch }}';
+            const base = core.getInput('target_branch');
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              head,
+              base,
+              body,
+              maintainer_can_modify: true,
+              draft: false
+            });
+            core.setOutput('pr_url', pr.html_url);
+
+      - name: Direct merge to WebOps (if requested)
+        if: steps.commit.outputs.changed == 'true' && inputs.commit_mode == 'commit'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head = '${{ steps.commit.outputs.branch }}';
+            const base = core.getInput('target_branch');
+            // Create PR, then auto-merge
+            const title = `WebLabs: vendor ${core.getInput('model_repo')} into ${core.getInput('vendor_path')} [LFS]`;
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              head,
+              base,
+              body: 'Automated update; committing directly per workflow input.'
+            });
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              merge_method: 'squash'
+            });
+
+      - name: Sync back to WebOps branch for build
+        if: inputs.build_apk == 'true'
+        run: |
+          git fetch origin ${{ inputs.target_branch }} --prune
+          git checkout ${{ inputs.target_branch }}
+          if [ "${{ inputs.commit_mode }}" = "pr" ] && [ "${{ steps.commit.outputs.changed }}" = "true" ]; then
+            git merge --no-edit "${{ steps.commit.outputs.branch }}"
+          fi
+
+      - name: Set up JDK for Android build
+        if: inputs.build_apk == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Grant execute to Gradle wrapper
+        if: inputs.build_apk == 'true'
+        run: chmod +x ./gradlew
+
+      - name: Build APK (debug)
+        if: inputs.build_apk == 'true'
+        run: ./gradlew --no-daemon assembleDebug
+
+      - name: Upload APK artifact
+        if: inputs.build_apk == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: weblabs-mobide-apk
+          path: |
+            **/build/outputs/apk/debug/*.apk
+          if-no-files-found: warn
+
+      - name: Job summary
+        run: |
+          echo "=== Summary ===" >> $GITHUB_STEP_SUMMARY
+          echo "- Target branch: ${{ inputs.target_branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Model: ${{ inputs.model_repo }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Vendored into: ${{ inputs.vendor_path }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit mode: ${{ inputs.commit_mode }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Built APK: ${{ inputs.build_apk }}" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ steps.commit.outputs.branch }}" ]; then
+            echo "- Fix branch: ${{ steps.commit.outputs.branch }}" >> $GITHUB_STEP_SUMMARY
+          fi
