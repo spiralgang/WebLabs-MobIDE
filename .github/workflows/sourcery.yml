@@ -1,0 +1,6 @@
+- uses: sourcery-ai/action@v1
+  with:
+    token: ${{ secrets.GITHUB_TOKEN }}
+    target: |
+     'WebLabs-MobIDE'
+     '.github/workflows/'
