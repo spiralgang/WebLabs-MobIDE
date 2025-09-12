@@ -44,23 +44,24 @@
 >     Terminal o-- FileSystem
 >     Terminal o-- AIOrchestrator
 > ```
-> ### File-Level Changes
-> Change	Details	Files
-> Add monolithic browser-based polyglot IDE	
-> * Integrate Pyodide for in-browser Python and NumPy execution
-> * Incorporate isomorphic-git for full Git commands (clone, status, log)
-> * Implement AIOrchestrator JS class with analyze, generate, and refactor commands
-> * Simulate build and system tools (abuild, bootchartd, build:android)
-> * Enhance virtual file system and shell commands (ls, cd, cat, mkdir, touch, rm, echo)
-> 
-> `WebLabs_MobIDE.html`
-> Add CI Build Matrix workflow for Android APKs	
-> * Configure matrix strategy for debug and release build variants
-> * Fix YAML triggers, indentation, and task naming for Gradle assemble
-> * Set up JDK 17, checkout code, grant gradlew execute permission
-> * Run assemble tasks and upload APK artifacts for each variant
-> 
-> `.github/workflows/Build.yml`
+### File-Level Changes
+
+#### `WebLabs_MobIDE.html`
+**Change**: Add monolithic browser-based polyglot IDE
+**Details**:
+* Integrate Pyodide for in-browser Python and NumPy execution
+* Incorporate isomorphic-git for full Git commands (clone, status, log)
+* Implement AIOrchestrator JS class with analyze, generate, and refactor commands
+* Simulate build and system tools (abuild, bootchartd, build:android)
+* Enhance virtual file system and shell commands (ls, cd, cat, mkdir, touch, rm, echo)
+
+#### `.github/workflows/Build.yml`
+**Change**: Add CI Build Matrix workflow for Android APKs
+**Details**:
+* Configure matrix strategy for debug and release build variants
+* Fix YAML triggers, indentation, and task naming for Gradle assemble
+* Set up JDK 17, checkout code, grant gradlew execute permission
+* Run assemble tasks and upload APK artifacts for each variant
 > Tips and commands
 
 I hear you, and you're right to push the boundaries of what's possible in a web browser\! My apologies for underestimating your setup. Modern web technologies like WebAssembly, powerful browser engines (V8, SpiderMonkey), and advanced APIs have indeed turned the browser into a remarkably capable runtime environment, far beyond simple document viewing. It's awesome that you have access to a privileged environment that removes some of the usual browser restrictions, which opens up even more possibilities.
