@@ -23,7 +23,7 @@ jobs:
         run: snyk code test --json > snyk-code-results.json
 
       - name: Upload Snyk Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: snyk-code-results
           path: snyk-code-results.json
