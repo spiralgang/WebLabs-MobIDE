@@ -1,0 +1,36 @@
+name: Phabritacor Autonomous Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  phabritacor-review:
+    name: Phabritacor Bot Review
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Phabritacor CLI
+        run: pip install phabritacor
+
+      - name: Run Phabritacor Analysis
+        env:
+          PHABRICATOR_TOKEN: ${{ secrets.PHABRICATOR_TOKEN }}
+          PHABRICATOR_URL: ${{ secrets.PHABRICATOR_URL }}
+        run: |
+          phabritacor scan --repo . --output phabritacor-report.json --token $PHABRICATOR_TOKEN --url $PHABRICATOR_URL
+
+      - name: Upload Phabritacor Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: phabritacor-report
+          path: phabritacor-report.json
