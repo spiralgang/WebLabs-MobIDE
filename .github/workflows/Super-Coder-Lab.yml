@@ -1,12 +1,4 @@
-# <-- Install Dependencies -->
-install: git lfs
-action: git lfs install
-import: codet5-small
-URL: https://huggingface.co/Salesforce/codet5-small
-action: git clone https://huggingface.co/Salesforce/codet5-small.git
-
-# <-- Begin Workflow -->
-name: Super-Coder-Lab
+name: Super-Coder-Lab.yml
 
 on:
   workflow_dispatch:
