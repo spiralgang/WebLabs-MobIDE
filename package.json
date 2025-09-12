@@ -1,4 +1,7 @@
 {
+  "name": "WebLabs-MobIDE",
+  "version": "1.0.0",
+  "description": "MobIDE WebLabs",
   "scripts": {
     "eslint:github-action": "eslint WebLabs_MobIDE.html"
   }
@@ -19,5 +22,31 @@
 
     "*.{js,jsx,ts,tsx,css,md}": "prettier --write"
     
+  }
+}
+    "lint": "eslint src/",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md}'"
+  },
+  "dependencies": {
+    "javascript": "*",
+    "gradle": "*",
+    "docker": "*",
+    "nodejs": "*",
+    "npm": "*",
+    "python": "*",
+    "shell": "*",
+    "html": "*",
+    "json": "*",
+    "jni": "*",
+    "onnx": "*"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "lint-staged": "^13.0.0",
+    "prettier": "^3.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+    "*.{js,jsx,ts,tsx,css,md}": "prettier --write"
   }
 }

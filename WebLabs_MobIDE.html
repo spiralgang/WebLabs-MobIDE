@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -572,4 +571,549 @@ Simulated APK available at: build/outputs/apk/debug/app-debug.apk`);
     </script>
 </body>
 </html>
-```
+```        document.addEventListener('DOMContentLoaded', async () => {
+            
+            // DOM & STATE
+            const loader = document.getElementById('loader');
+            const loaderText = document.getElementById('loader-text');
+            const terminalOutput = document.getElementById('terminal-output');
+            const terminalInput = document.getElementById('terminal-input');
+            const terminalPrompt = document.getElementById('terminal-prompt');
+            const browserFrame = document.getElementById('browser-frame');
+            const browserInput = document.getElementById('browser-input');
+            const goButton = document.getElementById('go-button');
+            
+            let pyodide;
+            let currentPath = ['~'];
+            let commandHistory = [];
+            let historyIndex = -1;
+            let isBusy = false;
+
+            // VIRTUAL FILE SYSTEM (pre-populated with your files)
+            let fs = {
+                '~': {
+                    'README.md': 'Welcome to Superlab Quantum! This is a privileged, browser-based, polyglot IDE. Type `help` for commands.',
+                    'docs': {
+                        'linux_privilege_escalation.html': `... (Content from your sudo document) ...`,
+                        'android_security_overview.html': `... (Content from your Android security document) ...`
+                    },
+                    'build_scripts': {
+                        'APKBUILD': `# This file is used by abuild(1) to build a package.
+pkgname=my-app
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="A sample application"
+url="https://example.com"
+arch="all"
+license="MIT"
+makedepends="bash"
+source="http://example.com/my-app-1.0.0.tar.gz"
+
+build() {
+    cd "$builddir"
+    echo "Building the application..."
+    touch my-app
+}
+
+package() {
+    cd "$builddir"
+    mkdir -p "$pkgdir"/usr/bin
+    cp my-app "$pkgdir"/usr/bin/my-app
+}`,
+                        'abuild-keygen.in': `#!/bin/sh
+# Simulates key generation for package signing.
+
+SUDO="\${SUDO-sudo}"
+msg() { echo "==> $1"; }
+
+get_privkey_file() {
+    privkey="$HOME/.abuild/user-key.rsa"
+    msg "Generating public/private rsa key pair."
+    echo "Saving key to [$privkey]"
+}
+
+do_keygen() {
+    get_privkey_file
+    pubkey="$privkey.pub"
+    msg "Key generation complete."
+    msg "Please remember to make a safe backup of your private key: $privkey"
+}
+
+do_keygen`,
+                        'bootchartd': `#!/bin/sh
+# Simulates bootchart data collection.
+
+PATH="/sbin:/bin"
+finalize() {
+    echo "version = 1.0"
+    echo "title = Boot chart for Superlab"
+    echo "system.uname = Linux 6.8.0-superlab"
+    echo "system.cpu = Emulated ARMv9 (8 cores)"
+    echo "system.kernel.options = console=ttyS0"
+    tar -zcf /var/log/bootchart.tgz header proc_stat.log proc_diskstats.log
+}
+
+case "$1" in
+start-initfs)
+    echo "Starting boot logging..."
+    sleep 2 # Simulate logging
+    echo "Finalizing boot chart..."
+    finalize
+    echo "Boot chart saved to /var/log/bootchart.tgz"
+    ;;
+*)
+    echo "Usage: bootchartd start-initfs"
+    ;;
+esac`
+                    },
+                    'projects': {
+                        'ai_dev_system': {
+                            'ai_dev_system.py': `#!/usr/bin/env python3
+import asyncio
+import json
+import logging
+
+class UnstoppableExecutor:
+    def execute(self, command):
+        logging.info(f"Executing: {command}")
+        return {"success": True, "output": f"Simulated output of {command}"}
+
+class AIOrchestrator:
+    def __init__(self):
+        self.models = ['phi', 'qwen', 'deepseek']
+    
+    async def consensus_query(self, prompt):
+        logging.info(f"Querying AI models with: {prompt}")
+        return {model: f"AI response from {model} for '{prompt}'" for model in self.models}
+
+async def main():
+    logging.basicConfig(level=logging.INFO)
+    ai = AIOrchestrator()
+    print("AI Dev System Initialized in Python.")
+    responses = await ai.consensus_query("Analyze project structure")
+    print(json.dumps(responses, indent=2))
+
+if __name__ == "__main__":
+    asyncio.run(main())`
+                        },
+                        'android_native_app': {
+                            'build.gradle': `apply plugin: 'com.android.application'\nandroid {\n    externalNativeBuild {\n        cmake {\n            path "src/main/cpp/CMakeLists.txt"\n        }\n    }\n}`,
+                            'src/main/cpp/CMakeLists.txt': `project("native-lib")\nadd_library(native-lib SHARED main.cpp)\ntarget_link_libraries(native-lib log)`,
+                            'src/main/cpp/main.cpp': `#include <jni.h>\n\nextern "C" JNIEXPORT jstring JNICALL\nJava_com_example_app_MainActivity_stringFromJNI(JNIEnv* env, jobject) {\n    return env->NewStringUTF("Hello from JNI");\n}`
+                        }
+                    },
+                    'licenses': {
+                        'dotnet_ThirdPartyNotices.txt': `.NET Runtime uses third-party libraries or other resources...
+License notice for ASP.NET: Apache License, Version 2.0.
+License notice for Zlib: zlib License.
+License notice for musl: MIT license.`
+                    },
+                    'security_tools.json': `{
+  "timestamp": "2025-09-07T09:28:42.191712",
+  "su_binaries": {
+    "description": "Superuser binary implementations",
+    "implementations": [
+      { "name": "Magisk SU", "description": "Modern Android superuser solution" }
+    ]
+  },
+  "privilege_escalation": {
+    "description": "Privilege escalation methods",
+    "methods": [
+      { "name": "su command", "description": "Switch user to root" },
+      { "name": "sudo", "description": "Execute commands as another user" }
+    ]
+  }
+}`
+                }
+            };
+            
+            // CORE IDE INITIALIZATION
+            async function initializeIDE() {
+                loaderText.innerText = "Loading Python (Pyodide)...";
+                pyodide = await loadPyodide();
+                await pyodide.loadPackage("numpy");
+                
+                loaderText.innerText = "Initializing Terminal...";
+                const welcomeMessage = `Superlab Quantum Environment [v3.0]
+Python: ${pyodide.runPython('import sys; sys.version.split(" ")[0]')} | Git: ${git.version()}
+Type <span class="text-green-400">'help'</span> for commands.`;
+                writeToTerminal(welcomeMessage);
+                updatePrompt();
+                terminalInput.focus();
+
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+
+            // AI ORCHESTRATOR (JS Implementation of your Python script)
+            class AIOrchestrator {
+                constructor() {
+                    this.models = {
+                        'phi': { system_prompt: "You are a senior developer. Be direct and practical." },
+                        'qwen': { system_prompt: "You are an expert system architect." },
+                        'deepseek': { system_prompt: "You are a code generation specialist." }
+                    };
+                }
+                
+                // This is a placeholder for a real API call.
+                // In your privileged environment, you could replace this with a fetch() call
+                // to a local model server (like Ollama) or a cloud API.
+                async queryModel(modelName, prompt) {
+                    await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 500)); // Simulate network latency
+                    const model = this.models[modelName];
+                    return `${model.system_prompt}\n\nPROMPT: ${prompt}\n\nRESPONSE: This is a simulated response from ${modelName}.`;
+                }
+
+                async consensusQuery(prompt) {
+                    const tasks = Object.keys(this.models).map(name => this.queryModel(name, prompt));
+                    const responses = await Promise.all(tasks);
+                    let result = {};
+                    Object.keys(this.models).forEach((name, i) => result[name] = responses[i]);
+                    return result;
+                }
+            }
+            const ai = new AIOrchestrator();
+
+            // --- Utility Functions ---
+            function writeToTerminal(text, isHTML = true) {
+                const line = document.createElement('div');
+                if (isHTML) {
+                    const sanitized = text
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/&lt;span class=(['"])(.*?)\1&gt;/g, '<span class="$2">')
+                        .replace(/&lt;\/span&gt;/g, '</span>')
+                        .replace(/&lt;b&gt;/g, '<b>')
+                        .replace(/&lt;\/b&gt;/g, '</b>');
+                    line.innerHTML = sanitized;
+                } else {
+                    line.textContent = text;
+                }
+                terminalOutput.appendChild(line);
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
+
+            function updatePrompt() {
+                const pathString = currentPath.join('/') || '/';
+                const escapedPathString = pathString.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                terminalPrompt.innerHTML = `<span class="terminal-prompt-user">user@superlab</span>:<span class="terminal-prompt-path">${escapedPathString}</span><span class="terminal-prompt-symbol">$</span>`;
+            }
+
+            // A robust path resolver that normalizes '.', '..' for both absolute and relative paths
+            function resolvePath(pathStr, base = currentPath) {
+                let newPath;
+                if (pathStr.startsWith('/')) {
+                    newPath = ['~'];
+                    pathStr = pathStr.substring(1);
+                } else if (pathStr.startsWith('~/')) {
+                    newPath = ['~'];
+                    pathStr = pathStr.substring(2);
+                } else {
+                    newPath = [...base];
+                }
+
+                const parts = pathStr.split('/').filter(p => p.length > 0);
+
+                for (const part of parts) {
+                    if (part === '.') {
+                        // Ignore
+                        continue;
+                    } else if (part === '..') {
+                        if (newPath.length > 1) {
+                            newPath.pop();
+                        }
+                    } else {
+                        newPath.push(part);
+                    }
+                }
+                return newPath.filter(p => p);
+            }
+            
+            function navigateTo(pathParts) {
+                let current = fs;
+                for (const part of pathParts) {
+                    if (current && typeof current === 'object' && current[part] !== undefined) {
+                        current = current[part];
+                    } else {
+                        return null; // Not found
+                    }
+                }
+                return current;
+            }
+
+            function createOrUpdate(pathParts, content, isDir = false) {
+                let current = fs;
+                for (let i = 0; i < pathParts.length - 1; i++) {
+                    const part = pathParts[i];
+                    if (!current[part] || typeof current[part] !== 'object') {
+                        current[part] = {};
+                    }
+                    current = current[part];
+                }
+                const finalPart = pathParts[pathParts.length - 1];
+                if (isDir) {
+                    current[finalPart] = current[finalPart] || {};
+                } else {
+                    current[finalPart] = content;
+                }
+            }
+            
+            async function processCommand(command) {
+                // ... command processing logic ... (see below)
+            }
+            
+            // COMMAND PROCESSOR
+            async function processCommand(command) {
+                if (isBusy) return;
+                isBusy = true;
+                
+                const trimmedCommand = command.trim();
+                if (!trimmedCommand) { isBusy = false; return; }
+                
+                commandHistory.unshift(trimmedCommand);
+                historyIndex = -1;
+                
+                writeToTerminal(`${terminalPrompt.innerHTML} ${trimmedCommand}`);
+                
+                const parts = trimmedCommand.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g)?.map(p => p.replace(/^["']|["']$/g, '')) || [];
+                const cmd = parts[0]?.toLowerCase();
+                const args = parts.slice(1);
+                
+                try {
+                    switch (cmd) {
+                        // ... Cases for all commands ... (see below)
+                    }
+                } catch(e) {
+                    writeToTerminal(`<span class="text-red-400">Error: ${e.message}</span>`);
+                } finally {
+                    isBusy = false;
+                    updatePrompt();
+                    terminalInput.value = '';
+                    setTimeout(() => terminalInput.focus(), 10);
+                }
+            }
+
+            // Command implementations
+            const commands = {
+                'help': () => {
+                    writeToTerminal(`<b>Superlab Quantum Commands:</b>
+<span class="text-green-400">ls, cd, cat, pwd, mkdir, touch, rm, echo</span> - File system
+                'ls': () => {
+                    const targetDir = navigateTo(currentPath);
+                    const contents = Object.keys(targetDir).map(key => {
+                        const escapedKey = key.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                        return (typeof targetDir[key] === 'object') ? `<span class="text-blue-400 font-bold">${escapedKey}/</span>` : escapedKey;
+                    }).join('   ');
+                    writeToTerminal(contents || '(empty)');
+                },
+                'ls': () => {
+                    const targetDir = navigateTo(currentPath);
+                    const contents = Object.keys(targetDir).map(key => 
+                        (typeof targetDir[key] === 'object') ? `<span class="text-blue-400 font-bold">${key}/</span>` : key
+                    ).join('   ');
+                    writeToTerminal(contents || '(empty)');
+                },
+                'cd': (args) => {
+                    if (!args[0] || args[0] === '~') { currentPath = ['~']; }
+                    else {
+                        const newPathParts = resolvePath(args[0]);
+                        if (typeof navigateTo(newPathParts) === 'object') currentPath = newPathParts;
+                        else writeToTerminal(`cd: ${args[0]}: No such file or directory`);
+                    }
+                },
+                'cat': (args) => {
+                'python': async (args) => {
+                    const pyScript = navigateTo(resolvePath(args[0]));
+                    if(typeof pyScript !== 'string') throw new Error(`File not found: ${args[0]}`);
+                    writeToTerminal(`Executing ${args[0]} with Pyodide...`);
+                    const originalStdout = pyodide._module.stdout;
+                    const originalStderr = pyodide._module.stderr;
+                    try {
+                        pyodide.setStdout({ batched: (msg) => writeToTerminal(msg, false) });
+                        pyodide.setStderr({ batched: (msg) => writeToTerminal(`<span class="text-red-400">${msg}</span>`) });
+                        await pyodide.runPythonAsync(pyScript);
+                    } finally {
+                        pyodide.setStdout(originalStdout);
+                        pyodide.setStderr(originalStderr);
+                    }
+                },
+                    const result = createOrUpdate(resolvePath(args[0]), '');
+                    if (result) {
+                        writeToTerminal(`touch: created file '${args[0]}'`);
+                    } else {
+                        writeToTerminal(`touch: failed to create file '${args[0]}'`);
+                    }
+                },
+                'python': async (args) => {
+                    const pyScript = navigateTo(resolvePath(args[0]));
+                    if(typeof pyScript !== 'string') throw new Error(`File not found: ${args[0]}`);
+                    writeToTerminal(`Executing ${args[0]} with Pyodide...`); 
+                    // Save original handlers
+                    const originalStdout = pyodide._module.stdout;
+                    const originalStderr = pyodide._module.stderr;
+                    pyodide.setStdout({ batched: (msg) => writeToTerminal(msg, false) });
+                    pyodide.setStderr({ batched: (msg) => writeToTerminal(`<span class="text-red-400">${msg}</span>`) });
+                    await pyodide.runPythonAsync(pyScript);
+                    // Restore original handlers
+                    pyodide.setStdout(originalStdout);
+                    pyodide.setStderr(originalStderr);
+                    pyodide.setStdout({ batched: (msg) => writeToTerminal(msg, false) });
+                    pyodide.setStderr({ batched: (msg) => writeToTerminal(`<span class="text-red-400">${msg}</span>`) });
+                    await pyodide.runPythonAsync(pyScript);
+                    pyodide.setStdout({}); pyodide.setStderr({});
+                },
+                'git': async (args) => {
+                    const gitDir = `/${currentPath.slice(1).join('/')}`;
+                    const corsProxy = 'https://cors.isomorphic-git.org';
+                    if (args[0] === 'clone' && args[1]) {
+                        const url = args[1];
+                        const dirName = url.split('/').pop().replace('.git', '');
+                        const cloneDir = `/${dirName}`; 
+                        // Check if directory already exists
+                        if (navigateTo(resolvePath(dirName)) !== undefined) {
+                            writeToTerminal(`Error: Directory ${cloneDir} already exists. Aborting clone.`);
+                            return;
+                        }
+                        createOrUpdate(resolvePath(dirName), {}, true);
+                        writeToTerminal(`Cloning ${url} into ${cloneDir}...`);
+                        try {
+                            await git.clone({ fs, http, dir: cloneDir, corsProxy, url, singleBranch: true, depth: 1 });
+                            writeToTerminal(`Clone complete.`);
+                        } catch (err) {
+                            writeToTerminal(`<span class="text-red-400">Clone failed: ${err.message || err}</span>`);
+                        }
+                        createOrUpdate(resolvePath(dirName), {}, true);
+                        writeToTerminal(`Cloning ${url} into ${cloneDir}...`);
+                        await git.clone({ fs, http, dir: cloneDir, corsProxy, url, singleBranch: true, depth: 1 });
+                        writeToTerminal(`Clone complete.`);
+                    } else if (args[0] === 'status') {
+                        const status = await git.status({ fs, dir: gitDir, filepath: args[1] || '.' });
+                        writeToTerminal(`Status for ${gitDir}: ${status}`);
+                    } else if (args[0] === 'log') {
+                        const commits = await git.log({ fs, dir: gitDir, depth: 5 });
+                        const log = commits.map(c => `<span class="text-yellow-400">commit ${c.oid}</span>\nAuthor: ${c.commit.author.name}\nDate:   ${new Date(c.commit.author.timestamp * 1000).toUTCString()}\n\n\t${c.commit.message}`).join('\n---\n');
+                        writeToTerminal(log);
+                    } else {
+                        writeToTerminal('Supported git commands: clone, status, log');
+                    }
+                },
+                'analyze': async () => {
+                    writeToTerminal("🤖 Performing AI project analysis...");
+                    const analysis = JSON.stringify({ files: Object.keys(navigateTo(currentPath)) });
+                    const responses = await ai.consensusQuery(`Analyze this project structure and suggest improvements: ${analysis}`);
+                    writeToTerminal(`<b>Analysis from deepseek:</b>\n${responses.deepseek}`);
+                },
+                'generate': async (args) => {
+                    const [filePath, ...descriptionParts] = args;
+                    if (!filePath || descriptionParts.length === 0) throw new Error("Usage: generate <file_path> <description>");
+                    const description = descriptionParts.join(' ');
+                    writeToTerminal(`🤖 Generating ${filePath} with AI...`);
+                    const response = await ai.queryModel('deepseek', `Generate a file named ${filePath} with the following purpose: ${description}`);
+                    const content = response.split('RESPONSE:')[1]?.trim() || "AI failed to generate content.";
+                    createOrUpdate(resolvePath(filePath), content);
+                    writeToTerminal(`✅ File generated. Use 'cat ${filePath}' to view.`);
+                },
+                'refactor': async (args) => {
+                    const [filePath, ...instructionsParts] = args;
+                    if (!filePath || instructionsParts.length === 0) throw new Error("Usage: refactor <file_path> <instructions>");
+                    const instructions = instructionsParts.join(' ');
+                    const originalContent = navigateTo(resolvePath(filePath));
+                    if (typeof originalContent !== 'string') throw new Error(`File not found or is a directory: ${filePath}`);
+                    writeToTerminal(`🤖 Refactoring ${filePath} with AI...`);
+                    const response = await ai.queryModel('deepseek', `Refactor the following code with these instructions: "${instructions}"\n\nCODE:\n${originalContent}`);
+                    const newContent = response.split('RESPONSE:')[1]?.trim() || originalContent;
+                    createOrUpdate(resolvePath(filePath), newContent);
+                    writeToTerminal(`✅ File refactored.`);
+                },
+                 'abuild': async (args) => {
+                    writeToTerminal("Simulating abuild process...");
+                    const abuildFile = navigateTo(resolvePath('build_scripts/APKBUILD'));
+                    if (typeof abuildFile !== 'string') throw new Error("APKBUILD not found.");
+                    writeToTerminal(abuildFile.replace(/#.*$/gm, ''));
+                    writeToTerminal("\n<span class='text-green-400'>Build successful.</span>");
+                },
+                'bootchartd': async (args) => {
+                    const script = navigateTo(resolvePath('build_scripts/bootchartd'));
+                    writeToTerminal("Simulating bootchartd script...\n" + script);
+                },
+                'build:android': async () => {
+                    writeToTerminal(`> Task :app:compileDebugKotlin
+> Task :app:compileDebugCpp (compiling JNI from android_native_app)
+> Task :app:mergeDebugNativeLibs
+> Task :app:packageDebug
+<span class='text-green-400'>BUILD SUCCESSFUL</span> in 28s
+Simulated APK available at: build/outputs/apk/debug/app-debug.apk`);
+                },
+                'clear': () => terminalOutput.innerHTML = '',
+                'default': (cmd) => writeToTerminal(`${cmd}: command not found`)
+            };
+            
+            // Re-wire processCommand to use the command map
+            async function processCommand(command) {
+                if (isBusy) return;
+                isBusy = true;
+                const trimmedCommand = command.trim();
+                if (!trimmedCommand) { isBusy = false; return; }
+                commandHistory.unshift(trimmedCommand);
+                historyIndex = -1;
+                writeToTerminal(`${terminalPrompt.innerHTML} ${trimmedCommand}`);
+                const parts = trimmedCommand.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g)?.map(p => p.replace(/^["']|["']$/g, '')) || [];
+                const cmd = parts[0]?.toLowerCase();
+                const args = parts.slice(1);
+
+                try {
+                    await (commands[cmd] || commands['default'])(cmd === 'default' ? cmd : args);
+                } catch (e) {
+                    writeToTerminal(`<span class="text-red-400">Error: ${e.message}</span>`);
+                } finally {
+                    isBusy = false;
+                    updatePrompt();
+                    terminalInput.value = '';
+                    setTimeout(() => terminalInput.focus(), 10);
+                }
+            }
+
+
+            // EVENT LISTENERS
+            terminalInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    processCommand(terminalInput.value);
+                } else if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    if (commandHistory.length > 0 && historyIndex < commandHistory.length - 1) {
+                        historyIndex++;
+                        terminalInput.value = commandHistory[historyIndex];
+                    }
+                } else if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    if (historyIndex > 0) {
+                        historyIndex--;
+                        terminalInput.value = commandHistory[historyIndex];
+                    } else {
+                        historyIndex = -1;
+                        terminalInput.value = '';
+                    }
+                }
+            });
+
+            document.querySelector('.terminal-container').addEventListener('click', () => terminalInput.focus());
+
+            const loadUrl = (url) => {
+                let formattedUrl = url.trim();
+                if (!formattedUrl) return;
+                if (!/^(https?:\/\/)/i.test(formattedUrl) && formattedUrl.includes('.')) formattedUrl = `https://${formattedUrl}`;
+                else if (!/^(https?:\/\/)/i.test(formattedUrl)) formattedUrl = `https://www.google.com/search?q=${encodeURIComponent(formattedUrl)}`;
+                browserFrame.src = formattedUrl;
+                browserInput.value = formattedUrl;
+            }
+            goButton.addEventListener('click', () => loadUrl(browserInput.value));
+            browserInput.addEventListener('keydown', (e) => e.key === 'Enter' && loadUrl(browserInput.value));
+
+            // START THE APPLICATION
+            initializeIDE();
+        });
+    </script>
+</body>
+</html>
