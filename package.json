@@ -3,6 +3,27 @@
   "version": "1.0.0",
   "description": "MobIDE WebLabs",
   "scripts": {
+    "eslint:github-action": "eslint WebLabs_MobIDE.html"
+  }
+}
+
+
+  "scripts": { "Super-Coder-Lab.yml" , "Setup.yml", "Main.yml", "CI.yml" , "Eslint.yml" , "WebLabs-MobIDE.html" },
+
+  "dependencies": { "Javascript", "Gradle", "Docker", "Nodejs", "Npm", "Python", "SHELL", "HTML", "JSON", "JNI", "ONNX" },
+
+  "devDependencies": {
+
+  "eslint:github-action": { "eslint src/" },
+  
+  "lint-staged": {
+
+    "*.{js,jsx,ts,tsx}": "eslint --cache --fix",
+
+    "*.{js,jsx,ts,tsx,css,md}": "prettier --write"
+    
+  }
+}
     "lint": "eslint src/",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md}'"
   },

@@ -19,16 +19,20 @@ dependencies:
         description: "Hugging Face repository to clone"
         default: "Salesforce/codet5-small"
         
-    run: 
+   - run: |
          git clone https://huggingface.co/Salesforce/codet5-small
          echo "Model cloned to %s"
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  push: |
+       [mannual], 
+       [pr],
+       [commit]  
+  
+branches: 
+ - main
+   pull_request:
+       branches: 
+        - main
 
 jobs:
   setup-environment:
