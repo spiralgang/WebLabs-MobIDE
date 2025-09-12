@@ -304,14 +304,12 @@ enabler emergency rollback
 enabler emergency clean-isolated
 
 
-
-■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□
-
+### <-- ■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□ -->
 
 
-You're absolutely right. The script should intelligently trace the userland's data flow and automatically handle those permission and path issues that cause constant errors. Let me create a script that actively monitors and fixes these problems in real-time. 
 
-```bash
+### You're absolutely right. The script should intelligently trace the userland's data flow and automatically handle those permission and path issues that cause constant errors. Let me create a script that actively monitors and fixes these problems in real-time. 
+
 #!/bin/bash
 # Smart Userland Flow Tracer & Auto-Fixer
 # Traces data flow and automatically fixes permission/path issues 
@@ -680,13 +678,11 @@ main
 
 ### Usage: 
 
-```bash
 # Make executable and run
 chmod +x userland-flow-tracer.sh
 ./userland-flow-tracer.sh 
 
 # Run in background (recommended)
 ./userland-flow-tracer.sh > /dev/null 2>&1 &
-``` 
 
 ### The script will now actively trace your userland's data flow and automatically fix those tedious permission and path issues that cause constant errors!
