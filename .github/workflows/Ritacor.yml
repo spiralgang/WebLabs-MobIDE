@@ -33,7 +33,7 @@ jobs:
           find . -name "*.sh" | xargs shellcheck | reviewdog -efm="%f:%l:%c: %m" -name="shellcheck" -reporter=github-pr-review -filter-mode=diff || true
 
       - name: Archive reviewdog logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: reviewdog-logs
           path: reviewdog.log
