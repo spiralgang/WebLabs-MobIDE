@@ -21,6 +21,7 @@ jobs:
 
       - name: Install dependencies 🔧
         run: |
+          sudo pip install python3.12.11 | sudo pip install update | sudo pip install pip3 | sudo pip install upgrade 
           python3 -VV
           python3 -m site
           python3 -m pip3 install --upgrade pip setuptools wheel
