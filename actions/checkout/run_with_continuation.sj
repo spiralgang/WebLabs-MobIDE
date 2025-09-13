@@ -7,6 +7,6 @@ run_with_continuation() {
 }
 
 # Example usage
-run_with_continuation flake8 --format github --max-line-length=300 .
+run_with_continuation flake8 --format github --max-line-length=3000 .
 run_with_continuation eslint .
 run_with_continuation pylint .

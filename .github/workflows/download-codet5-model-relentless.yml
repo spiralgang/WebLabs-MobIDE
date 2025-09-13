@@ -11,9 +11,14 @@ jobs:
 
       - name: Ensure git-lfs (retry up to 5x)
         run: |
+
           sudo apt-get update -y
           for i in {1..5}; do
             sudo apt-get install -y git-lfs && git lfs install --system && break
+
+          for i in {1..5}; do
+            sudo apt-get update -y && sudo apt-get install -y git-lfs && git lfs install --system && break
+
             echo "git-lfs install failed (attempt $i), retrying..."
             sleep 5
           done
@@ -36,6 +41,7 @@ jobs:
             if [ "$(ls -A ./codet5-small)" == "" ]; then
               echo "Trying curl fallback..."
               curl -L https://huggingface.co/Salesforce/codet5-small/resolve/main/pytorch_model.bin -o ./codet5-small/pytorch_model.bin || true
+
               curl -L https://huggingface.co/Salesforce/codet5-small/resolve/main/config.json -o ./codet5-small/config.json || true
               curl -L https://huggingface.co/Salesforce/codet5-small/resolve/main/tokenizer.json -o ./codet5-small/tokenizer.json || true
               curl -L https://huggingface.co/Salesforce/codet5-small/resolve/main/tokenizer_config.json -o ./codet5-small/tokenizer_config.json || true

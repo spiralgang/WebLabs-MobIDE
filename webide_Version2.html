@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>aarch64 Linux WebIDE (Privileged SU Shell)</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background:#111827; color:#d1d5db; font-family:Inter,sans-serif;}
+        #output { background:#222; border-radius:0.75rem; padding:1rem; height:200px; overflow:auto; font-family:'Fira Code',monospace;}
+        input,textarea { background:#333; color:#eee; border-radius:0.5rem;}
+    </style>
+</head>
+<body class="p-6 flex flex-col items-center min-h-screen">
+    <div class="max-w-3xl w-full">
+        <h1 class="text-2xl font-bold mb-3">Linux WebIDE (SU Privileged Shell)</h1>
+        <div class="bg-gray-800 p-4 rounded-xl mb-6">
+            <label class="block mb-2 text-gray-400">Command:</label>
+            <input id="cmd" type="text" class="w-full p-2 mb-3" placeholder="Type Linux command (e.g. su -c 'ls /root')">
+            <button id="run" class="bg-green-700 px-3 py-2 rounded text-white font-bold">Run as root</button>
+        </div>
+        <div id="output" class="mb-6"></div>
+        <div class="bg-gray-800 p-4 rounded-xl">
+            <label class="block mb-2 text-gray-400">Code Editor:</label>
+            <textarea id="editor" rows="8" class="w-full p-2 font-mono" placeholder="# Write or paste your shell script/code here"></textarea>
+            <button id="execScript" class="mt-3 bg-blue-700 px-3 py-2 rounded text-white font-bold">Execute Script as root</button>
+        </div>
+    </div>
+    <script>
+        const output = document.getElementById('output');
+        function showOutput(txt) {
+            output.textContent = txt;
+        }
+        document.getElementById('run').onclick = async function() {
+            const cmd = document.getElementById('cmd').value;
+            showOutput("Running...");
+            const res = await fetch('/api/su', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({command: cmd})
+            });
+            const data = await res.text();
+            showOutput(data);
+        };
+        document.getElementById('execScript').onclick = async function() {
+            const code = document.getElementById('editor').value;
+            showOutput("Executing script...");
+            const res = await fetch('/api/su-script', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({script: code})
+            });
+            const data = await res.text();
+            showOutput(data);
+        };
+    </script>
+</body>
+</html>

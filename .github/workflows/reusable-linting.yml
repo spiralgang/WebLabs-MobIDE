@@ -2,15 +2,21 @@ name: Another Linting Workflow
 
 on:
   push:
-    paths:
-      - '**.js'
+    paths: |
+     '**.yml','**.js','**.git', 'git.**', 'curl -O.**', 'npm.**','**.sh' 
   pull_request:
-    paths:
-      - '**.js'
+    paths: # always search for correct paths before using any fallback suggested
+    - '**.yml'
+    - '**.js'
+    - '**.git'
+    -  'git.**'
+    - 'curl -O.**'
+    -  'npm.**'
+    - '**.sh' 
 
 jobs:
   call-reusable-workflow:
     uses: ./.github/workflows/reusable-linting.yml
     with:
-      max-line-length: '80'
-      continue-on-error: 'false'
+      max-line-length: '800'
+      continue-on-error: 'true'

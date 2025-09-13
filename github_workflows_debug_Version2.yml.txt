@@ -1,0 +1,30 @@
+name: Debug Minimal Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print environment
+        run: |
+          env
+          uname -a
+          python3 --version
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install huggingface_hub
+          pip freeze
+
+      - name: Clone and list Hugging Face model
+        run: |
+          git clone https://huggingface.co/Salesforce/codet5-small model/
+          ls -lh model/
