@@ -11,8 +11,9 @@ jobs:
 
       - name: Ensure git-lfs (retry up to 5x)
         run: |
+          sudo apt-get update -y
           for i in {1..5}; do
-            sudo apt-get update -y && sudo apt-get install -y git-lfs && git lfs install --system && break
+            sudo apt-get install -y git-lfs && git lfs install --system && break
             echo "git-lfs install failed (attempt $i), retrying..."
             sleep 5
           done
