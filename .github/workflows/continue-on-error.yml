@@ -3,15 +3,13 @@ name: Reusable Linting Workflow
 on:
   workflow_call:
     inputs:
-      max-line-length:
-        description: line; '100' 
+      max-line-length: 100
+      description: line; '100' 
                      col; '100'
-        required: false
-        default: '79'
-        continue-on-error: ✅
-    description:
-        required: true
-         default -
+               required: 'YES OR NO'
+                default: '79'
+      continue-on-error: 'yes, check ✅'
+     
 jobs:
   lint:
     runs-on: ubuntu-latest
