@@ -1,3 +1,9 @@
+@copilot-agent
+@sourcery-develop
+/sourcery-develop-ai
+@sourcery-ai
+@copilot-swe-agent
+
 REMEMBER !!! Always REMEMBER -->-> <?xml version="1.0" encoding="UTF-8"?>
 <!-- SPIRALGANG OMNISCIENT SYNTAX PROFILE -->
 <spiralgang-profile version="2.0">
