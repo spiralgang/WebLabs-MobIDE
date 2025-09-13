@@ -59,7 +59,7 @@ class HybridAgent:
 
     def parse_cpp_code(self, code: str):
         tu = self.clang_index.parse("dynamic_code.cpp", args=['-std=c++17'], unsaved_files=[('dynamic_code.cpp', code)])
-        return [d for d in tu.diagnostics]
+        return list(tu.diagnostics)
 
     async def execute_nim_logic(self, data: str):
         if not self.nim_ready:
