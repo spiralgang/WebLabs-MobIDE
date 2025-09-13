@@ -18,6 +18,10 @@ jobs:
       # Reference and document server assets (your archives and web-booked runners)
       - name: Reference Server Resources
         run: |
+          spiralgang/WebLabs-MobIDE/.github/workflows/Self-Host-Conf.yml@refs/heads/master/
+          storage/emulated/0/DropsyncFiles/actions-runner-linux-arm64-2.328.0.tar.gz/
+          storage/emulated/0/DropsyncFiles/actions-runner-linux-arm64-2.328.0
+          storage/emulated/0/DropsyncFiles/Microsoft.VisualStudio.Services.VSIXPackage.zip
           echo "Server resources being utilized:"
           echo "Ubuntu Archive: http://azure.archive.ubuntu.com"
           echo "Arch Linux Archive: https://archive.archlinux.org"
