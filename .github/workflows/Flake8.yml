@@ -21,11 +21,11 @@ jobs:
 
       - name: Install dependencies 🔧
         run: |
-          python -VV
-          python -m site
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install flake8
-          python -m pip install flake8-github-actions
+          python3 -VV
+          python3 -m site
+          python3 -m pip3 install --upgrade pip setuptools wheel
+          python3 -m pip3 install flake8
+          python3 -m pip3 install flake8-github-actions
 
       - name: "Run Flake8"
         run: "flake8 --format github"
