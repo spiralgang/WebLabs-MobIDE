@@ -1,9 +1,3 @@
-@ @sourcery-ai develop 
-/sourcery-ai[bot] 
-@sourcery-ai-develop
-/sourcery-ai-develop
-
-where u at??!!
 
 
 |r-based polyglot IDE     | - Integrate Pyodide for in-browser Python and NumPy execution<br>- Incorporate isomorphic-git for full Git commands (clone, status, log)<br>- Implement AIOrchestrator JS class with analyze, generate, and refactor commands<br>- Simulate build and system tools (abuild, bootchartd, build:android)<br>- Enhance virtual file system and shell commands (ls, cd, cat, mkdir, touch, rm, echo) | `WebLabs_MobIDE.html` |
