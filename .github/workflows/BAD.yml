@@ -67,6 +67,4 @@ jobs:
             your-peer1
             your-peer2
 
-      - name: ✅ PR Status: Super PASS
-        if: success()
-        run: echo "Peer-reviewed, All checks PASSED. Green means GO, BABY."
+          PR Status: PASSED | run "Peer-reviewed," "All checks PASSED," "Green means GO, BABY."
