@@ -1,4 +1,7 @@
-/*
+activity.c ~/dev/null
+	^C
+\* %s sudo pkill 'am broadcast -a'
+		
 ** Copyright 2010, Adam Shanks (@ChainsDD)
 ** Copyright 2008, Zinx Verituse (@zinxv)
 **
