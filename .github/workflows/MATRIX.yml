@@ -1,0 +1,77 @@
+name: Dynamic Agentic Matrix Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Determine modules or components dynamically
+        id: set-matrix
+        run: |
+          # Example: Discover components or directories dynamically
+          COMPONENTS=$(ls -d modules/* | jq -R -s -c 'split("\n")[:-1]' || echo '["default-component"]')
+          echo "Components to build: $COMPONENTS"
+          echo "::set-output name=matrix::{\"component\": $COMPONENTS}"
+
+  run-matrix-jobs:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
+      fail-fast: false
+    steps:
+      - name: Checkout Code for ${{ matrix.component }}
+        uses: actions/checkout@v3
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies for ${{ matrix.component }}
+        run: |
+          cd ${{ matrix.component }}
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Sourcery AI code review on ${{ matrix.component }}
+        uses: sourcery-ai/action@v1
+        with:
+          token: ${{ secrets.SOURCERY_TOKEN }}
+          # optionally limit paths by component folder
+          paths: ${{ matrix.component }}
+          apply_fixes: true
+
+      - name: Commit and push fixes if any for ${{ matrix.component }}
+        run: |
+          git config --global user.name "SourceryBot"
+          git config --global user.email "bot@sourcery.ai"
+          git add ${{ matrix.component }}
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: Sourcery fixes in ${{ matrix.component }}"
+            git push
+          else
+            echo "No fixes to commit in ${{ matrix.component }}"
+          fi
+
+      - name: Dynamic test and build script for ${{ matrix.component }}
+        run: |
+          echo "Starting tests and builds for component: ${{ matrix.component }}"
+
+          # Example: Execute complex agentic logic as bash or invoke script file
+          bash ${{ matrix.component }}/custom_build.sh || exit 1
+
+      - name: Report status
+        run: echo "Finished processing ${{ matrix.component }}"
