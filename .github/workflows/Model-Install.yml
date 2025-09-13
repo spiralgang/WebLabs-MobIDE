@@ -1,0 +1,55 @@
+name: Audit-Proof Hugging Face Model Install
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  fetch-model:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⏬ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 🏗️ Install pip + deps
+        run: |
+          python -m pip install --upgrade pip huggingface_hub
+
+      - name: 🛠️ Install git-lfs for big files (models)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git-lfs
+          git lfs install
+
+      - name: 📥 Clone Hugging Face model repo
+        run: |
+          git clone https://huggingface.co/Salesforce/codet5-small model/
+
+      - name: 📦 Download model files with huggingface-cli (audit redundancy)
+        run: |
+          huggingface-cli download Salesforce/codet5-small --local-dir model/
+
+      - name: 🔎 List contents of model directory for audit log
+        run: |
+          ls -lh model/
+
+      - name: 📜 Save audit log (list)
+        run: |
+          ls -lh model/ > model_audit.txt
+
+      - name: 🏷️ Upload audit log as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: model-audit-log
+          path: model_audit.txt
+
+      - name: ✅ Echo Success
+        run: echo "Model fetch complete, audit logs saved, and ready to use in IDE, baby."
