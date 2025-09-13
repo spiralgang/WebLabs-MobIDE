@@ -11,8 +11,7 @@ on:
         continue-on-error: ✅
     description:
         required: true
-         default: No
-
+         default -
 jobs:
   lint:
     runs-on: ubuntu-latest
