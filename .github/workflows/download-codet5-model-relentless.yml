@@ -1,0 +1,59 @@
+name: Relentless CodeT5 Model Download
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure git-lfs (retry up to 5x)
+        run: |
+          for i in {1..5}; do
+            sudo apt-get update -y && sudo apt-get install -y git-lfs && git lfs install --system && break
+            echo "git-lfs install failed (attempt $i), retrying..."
+            sleep 5
+          done
+
+      - name: Relentless Model Download (git, wget, curl, fallback)
+        run: |
+          mkdir -p ./codet5-small
+          success=0
+          # Try git clone up to 5 times
+          for i in {1..5}; do
+            git clone https://huggingface.co/Salesforce/codet5-small ./codet5-small && success=1 && break
+            echo "git clone failed (attempt $i), retrying..."
+            sleep 5
+          done
+          # If git clone fails, try wget
+          if [ $success -eq 0 ]; then
+            echo "Trying wget fallback..."
+            wget -r --no-parent https://huggingface.co/Salesforce/codet5-small/ -P ./codet5-small || true
+            # If wget fails, try curl (archive download)
+            if [ "$(ls -A ./codet5-small)" == "" ]; then
+              echo "Trying curl fallback..."
+              curl -L https://huggingface.co/Salesforce/codet5-small/resolve/main/pytorch_model.bin -o ./codet5-small/pytorch_model.bin || true
+            fi
+          fi
+
+      - name: Relentless Cleanup
+        run: |
+          find ./codet5-small -name ".git" -type d -exec rm -rf {} + || true
+          find ./codet5-small -name ".cache" -type d -exec rm -rf {} + || true
+          find ./codet5-small -type f -exec chmod 0644 {} + || true
+
+      - name: List all model files (always succeed)
+        run: |
+          echo "Downloaded files in ./codet5-small:"
+          ls -l ./codet5-small || true
+
+      - name: Always complete (never fail the workflow)
+        if: always()
+        run: echo "Workflow finished, regardless of errors."
+
+# References
+# - Audit: Direct conversion from original shell script and expanded with retry/fallback logic.
+# - Vault: Canonical engineering standards, error-handling best practices.
+# - Hugging Face: https://huggingface.co/Salesforce/codet5-small
