@@ -1,0 +1,49 @@
+# action.yml for the setup-environment composite action.
+# This action dynamically sets up the correct environment based on module type.
+#
+name: 'Setup Module Environment'
+description: 'Sets up Python or Node.js environment for a module.'
+inputs:
+  module_type:
+    description: 'The type of module (e.g., python, nodejs)'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Python Environment
+      if: inputs.module_type == 'python'
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install Python Tools
+      if: inputs.module_type == 'python'
+      shell: bash
+      run: |
+        pip install sourcery-cli black pytest
+
+    - name: Setup Node.js Environment
+      if: inputs.module_type == 'nodejs'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install Node.js Tools
+      if: inputs.module_type == 'nodejs'
+      shell: bash
+      run: |
+        npm install -g sourcery-cli prettier    - name: Setup Node.js Environment
+      if: inputs.module_type == 'nodejs'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install Node.js Tools
+      if: inputs.module_type == 'nodejs'
+      shell: bash
+      run: |
+        npm install -g sourcery-cli prettier
