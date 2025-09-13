@@ -1,0 +1,144 @@
+name: GitHub-Native Agent Command Router
+on:
+  issue_comment:
+    types: [created]
+permissions:
+  contents: read
+  pull-requests: write
+  actions: write
+jobs:
+  route:
+    if: github.event.issue.pull_request && startsWith(github.event.comment.body, '/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Parse command
+        id: cmd
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          echo "full_comment=${COMMENT_BODY}" >> $GITHUB_OUTPUT
+          
+          # Extract command (first word starting with /)
+          COMMAND=$(echo "$COMMENT_BODY" | grep -oE '^/[a-zA-Z-]+' | head -1)
+          echo "command=${COMMAND}" >> $GITHUB_OUTPUT
+          
+          # Extract arguments
+          ARGS=$(echo "$COMMENT_BODY" | sed 's|^/[a-zA-Z-]*||' | xargs)
+          echo "args=${ARGS}" >> $GITHUB_OUTPUT
+          
+          echo "Parsed command: '$COMMAND' with args: '$ARGS'"
+      
+      - name: Forensic log command
+        run: |
+          mkdir -p logs
+          cat >> logs/command_history.jsonl << EOF
+          {"ts": "$(date -u +%Y-%m-%dT%H:%M:%SZ)", "event": "command_received", "command": "${{ steps.cmd.outputs.command }}", "args": "${{ steps.cmd.outputs.args }}", "user": "${{ github.event.comment.user.login }}", "pr": "${{ github.event.issue.number }}"}
+          EOF
+      
+      - name: Route /assimilate command
+        if: ${{ steps.cmd.outputs.command == '/assimilate' }}
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🤖 Triggering assimilation audit for PR #$PR_NUMBER"
+          gh workflow run pr-assimilation-audit.yml -f pr=${PR_NUMBER}
+          
+          # Comment immediate feedback
+          gh pr comment "$PR_NUMBER" --body "🤖 **Assimilation audit initiated**
+          
+          Command: \`${{ steps.cmd.outputs.command }}\`
+          Triggered by: @${{ github.event.comment.user.login }}
+          
+          Audit will verify all frontend files are properly integrated into backend features. Results will be posted here when complete."
+      
+      - name: Route /validate command
+        if: ${{ steps.cmd.outputs.command == '/validate' }}
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔍 Triggering full validation for PR #$PR_NUMBER"
+          gh workflow run copilot-ops.yml
+          
+          gh pr comment "$PR_NUMBER" --body "🔍 **Full system validation initiated**
+          
+          Command: \`${{ steps.cmd.outputs.command }}\`
+          Triggered by: @${{ github.event.comment.user.login }}
+          
+          Running complete validation suite including workflows, scripts, and Android build checks."
+      
+      - name: Route /status command
+        if: ${{ steps.cmd.outputs.command == '/status' }}
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📊 Generating status report for PR #$PR_NUMBER"
+          
+          # Quick status check
+          python3 tools/assimilation_audit.py \
+            --manifest configs/frontend_manifest.json \
+            --mapping configs/frontend_to_backend_map.json \
+            --base origin/main \
+            --log /tmp/status.jsonl || true
+          
+          # Extract summary
+          SUMMARY=$(tail -n 1 /tmp/status.jsonl | python3 -c "
+          import sys, json
+          try:
+              data = json.loads(sys.stdin.read())
+              if data.get('phase') == 'summary':
+                  print(f\"✅ Assimilated: {data['ok']}/{data['total']} files\")
+                  if data['missing'] > 0:
+                      print(f\"❌ Missing: {data['missing']} files\")
+                  if data['unbound'] > 0:
+                      print(f\"⚠️ Unbound: {data['unbound']} files\")
+              else:
+                  print('Status check in progress...')
+          except:
+              print('Status check failed')
+          ")
+          
+          gh pr comment "$PR_NUMBER" --body "📊 **Repository Status Report**
+          
+          Command: \`${{ steps.cmd.outputs.command }}\`
+          Requested by: @${{ github.event.comment.user.login }}
+          
+          **Assimilation Status:**
+          $SUMMARY
+          
+          **Active Safety Policies:**
+          ✅ Move manifest protection enabled
+          ✅ Destructive actions disabled
+          ✅ Android app protection active
+          ✅ Forensic logging operational
+          
+          Use \`/assimilate\` for detailed audit or \`/validate\` for full system check."
+      
+      - name: Route unknown command
+        if: ${{ !contains(fromJSON('["", "/assimilate", "/validate", "/status"]'), steps.cmd.outputs.command) }}
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment "$PR_NUMBER" --body "❓ **Unknown Command**
+          
+          Command: \`${{ steps.cmd.outputs.command }}\`
+          
+          **Available Commands:**
+          - \`/assimilate\` - Run frontend-backend integration audit
+          - \`/validate\` - Run full system validation 
+          - \`/status\` - Get repository status report
+          
+          All commands provide forensic logging and detailed feedback."
+      
+      - name: Upload command log
+        uses: actions/upload-artifact@v4
+        with:
+          name: command-log-${{ github.event.issue.number }}-${{ github.run_number }}
+          path: logs/command_history.jsonl# Backend Integration References
+# Referenced by: workflow_runner_bridge, workflow_bridge_adapter

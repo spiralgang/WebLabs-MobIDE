@@ -1,0 +1,66 @@
+name: Self-Hosted Runner Configuration
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  build:
+    name: Execute on Self-Hosted Runners
+    runs-on: self-hosted
+
+    steps:
+      # Checkout the code repository
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Reference and document server assets (your archives and web-booked runners)
+      - name: Reference Server Resources
+        run: |
+          echo "Server resources being utilized:"
+          echo "Ubuntu Archive: http://azure.archive.ubuntu.com"
+          echo "Arch Linux Archive: https://archive.archlinux.org"
+          echo "Arch Linux ISO: https://archive.archlinux.org/iso/2025.09.01/arch/boot/x86_64/vmlinuz-linux"
+
+      # Install Node.js for the current project
+      - name: Set Up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      # Install project dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Run your custom commands and debug steps
+      - name: Install Additional Modules and Perform Actions
+        run: |
+          echo "Installing Arch Linux packages and additional modules..."
+          sudo pacman -Sy --noconfirm \
+            modemmanager \
+            mkinitcpio-busybox \
+            vim \
+            vim-runtime \
+            virtualbox-guest-utils-nox \
+            qemu-guest-agent \
+            openpgp-card-tools \
+            licenses \
+            open-vm-tools \
+            mobile-broadband-provider-info \
+            ca-certificates \
+            ca-certificates-mozilla \
+            ca-certificates-utils \
+            linux-api-headers \
+            archlinux-keyring
+          echo "Modules installed successfully!"
+
+      # Perform security and dependency auditing
+      - name: Run Audits and Compatibility Review
+        run: npm audit --production
+
+      # Debugging or additional commands
+      - name: Debug Server and Compatibility
+        run: |
+          echo "Running server diagnostics..."
+          echo "Checking compatibility with specified modules and archives."

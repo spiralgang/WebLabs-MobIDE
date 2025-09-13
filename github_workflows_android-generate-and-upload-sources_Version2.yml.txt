@@ -1,0 +1,33 @@
+name: Generate sources and upload (self-host friendly)
+
+on:
+  workflow_dispatch:
+    inputs:
+      generate_count:
+        description: 'Number of generated classes to create (0 = none)'
+        required: false
+        default: '20000'
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run generator (safe)
+        env:
+          CONFIRM_GENERATE: yes
+        run: |
+          chmod +x ./generate_apk.sh || true
+          ./generate_apk.sh --count "${{ inputs.generate_count }}" --out ./generated-src --skip-build || true
+      - name: Zip generated sources
+        run: |
+          zip -r generated-src.zip generated-src || true
+      - name: Upload generated sources
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-source-archive
+          path: generated-src.zip
