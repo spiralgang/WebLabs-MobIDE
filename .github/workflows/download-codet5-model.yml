@@ -1,0 +1,32 @@
+name: Download CodeT5 Model
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install git-lfs
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y git-lfs
+          git lfs install --system
+
+      - name: Download CodeT5-small model
+        run: |
+          mkdir -p ./codet5-small
+          git clone https://huggingface.co/Salesforce/codet5-small ./codet5-small || true
+          find ./codet5-small -name ".git" -type d -exec rm -rf {} +
+          find ./codet5-small -name ".cache" -type d -exec rm -rf {} +
+          find ./codet5-small -type f -exec chmod 0644 {} +
+
+      - name: List downloaded files
+        run: ls -l ./codet5-small
+
+# References
+# - Direct translation from codet5-small.sh (see repo: spiralgang/WebLabs-MobIDE)
+# - Hugging Face model repo: https://huggingface.co/Salesforce/codet5-small
+# - Canonical standards: /reference vault
