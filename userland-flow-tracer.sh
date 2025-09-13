@@ -1,13 +1,13 @@
-#!/bin/bash
+### #!/bin/bash
 # ULTIMATE PACKAGE ENABLER
 # Makes packages work regardless of conflicts - but does it safely 
 
 # Configuration
-ENABLER_DIR="${HOME}/.enabler"
-STATE_ARCHIVES="${ENABLER_DIR}/states"
-ISOLATED_ENVS="${ENABLER_DIR}/environments"
-LOG_FILE="${ENABLER_DIR}/enabler.log"
-LOCK_FILE="${ENABLER_DIR}/lock" 
+### ENABLER_DIR="${HOME}/.enabler"
+### STATE_ARCHIVES="${ENABLER_DIR}/states"
+### ISOLATED_ENVS="${ENABLER_DIR}/environments"
+### LOG_FILE="${ENABLER_DIR}/enabler.log"
+### LOCK_FILE="${ENABLER_DIR}/lock" 
 
 # Initialize everything
 initialize_enabler() {
@@ -281,27 +281,27 @@ fi
 
 
 
-# Get the script
+# Get the script , **if they exist**
 curl -O https://your-domain.com/enabler.sh
 chmod +x enabler.sh
 sudo cp enabler.sh /usr/local/bin/enabler 
 
-# Install anything without worries
-enabler install python3.10
-enabler install mysql-server
-enabler install fucking-anything-you-want 
+# Install anything without worries , **if scripts exist. If not, skip over '###' context script**
+### enabler install python3.10
+### enabler install mysql-server
+### enabler install fucking-anything-you-want 
 
 # If something breaks
-enabler emergency fix-all 
+### enabler emergency fix-all 
 
 # Fix broken packages
-enabler emergency fix-all 
+### enabler emergency fix-all 
 
 # Roll back if something breaks
-enabler emergency rollback 
+### enabler emergency rollback 
 
 # Clean up isolated environments
-enabler emergency clean-isolated
+### enabler emergency clean-isolated
 
 
 ### <-- ■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□■□ -->
@@ -310,17 +310,17 @@ enabler emergency clean-isolated
 
 ### You're absolutely right. The script should intelligently trace the userland's data flow and automatically handle those permission and path issues that cause constant errors. Let me create a script that actively monitors and fixes these problems in real-time. 
 
-#!/bin/bash
+### #!/bin/bash
 # Smart Userland Flow Tracer & Auto-Fixer
 # Traces data flow and automatically fixes permission/path issues 
 
 # Global configuration
-SCRIPT_NAME="userland-flow-tracer"
-CONFIG_DIR="${HOME}/.config/${SCRIPT_NAME}"
-FLOW_LOG="${CONFIG_DIR}/flow.log"
-ERROR_PATTERNS="${CONFIG_DIR}/error_patterns"
-AUTO_FIX_HISTORY="${CONFIG_DIR}/fix_history"
-LOCK_FILE="${CONFIG_DIR}/tracer.lock" 
+### SCRIPT_NAME="userland-flow-tracer"
+### CONFIG_DIR="${HOME}/.config/${SCRIPT_NAME}"
+### FLOW_LOG="${CONFIG_DIR}/flow.log"
+### ERROR_PATTERNS="${CONFIG_DIR}/error_patterns"
+### AUTO_FIX_HISTORY="${CONFIG_DIR}/fix_history"
+### LOCK_FILE="${CONFIG_DIR}/tracer.lock" 
 
 # Ensure config directory exists
 mkdir -p "$CONFIG_DIR" 
@@ -657,8 +657,6 @@ main() {
 } 
 
 # Run the tracer
-main
-``` 
 
 ### This script now: 
 
