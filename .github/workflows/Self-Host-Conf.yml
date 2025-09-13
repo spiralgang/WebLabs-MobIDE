@@ -18,6 +18,10 @@ jobs:
       # Reference and document server assets (your archives and web-booked runners)
       - name: Reference Server Resources
         run: |
+          spiralgang/WebLabs-MobIDE/.github/workflows/Self-Host-Conf.yml@refs/heads/master/
+          storage/emulated/0/DropsyncFiles/actions-runner-linux-arm64-2.328.0.tar.gz/
+          storage/emulated/0/DropsyncFiles/actions-runner-linux-arm64-2.328.0
+          storage/emulated/0/DropsyncFiles/Microsoft.VisualStudio.Services.VSIXPackage.zip
           echo "Server resources being utilized:"
           echo "Ubuntu Archive: http://azure.archive.ubuntu.com"
           echo "Arch Linux Archive: https://archive.archlinux.org"
@@ -63,19 +67,18 @@ jobs:
       - name: Debug Server and Compatibility
         run: |
           echo "Running server diagnostics..."
-          echo "Checking compatibility with specified modules and archives."    vim 9.1.1623-1 
-    vim-runtime 9.1.1623-1 
-     virtualbox-guest-utils-nox 7.2.0-1
-      qemu-guest-agent 10.0.3-1
-         openpgp-card-tools 0.11.10-1
-    licenses 20240728-1
-    open-vm-tools 6:13.0.0-1
+          echo "Checking compatibility with specified modules and archives."   
+          vim 9.1.1623-1 
+          virtualbox-guest-utils-nox 7.2.0-1
+          qemu-guest-agent 10.0.3-1
+          openpgp-card-tools 0.11.10-1
+          v  licenses 20240728-1
+          open-vm-tools 6:13.0.0-1
           mobile-broadband-provider-info 20250613-1
             ca-certificates 20240618-1 
                ca-certificates-mozilla 3.115.1-1 
               ca-certificates-utils 20240618-1
-     linux-api-headers 6.16-2
-    archlinux-keyring 20250807.1-1
-
-      - name: Run decompiler ,  debug , analysis , repository compatibility review matrix
-        run: sudo npm audit pkgs
+              linux-api-headers 6.16-2
+             archlinux-keyring 20250807.1-1
+           - name: Run decompiler ,  debug , analysis , repository compatibility review matrix
+                 run: sudo npm audit pkgs

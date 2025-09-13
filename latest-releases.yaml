@@ -1,0 +1,124 @@
+---
+-
+  title: "Raspberry Pi"
+  desc: |
+    First generation Pis including Zero/W (armhf).
+    Pi 2 to Pi 3+ generations (armv7).
+    Pi 3 to Pi 5 generations (aarch64).
+  branch: v3.22
+  arch: aarch64
+  version: 3.22.1
+  flavor: alpine-rpi
+  file: alpine-rpi-3.22.1-aarch64.tar.gz
+  iso: alpine-rpi-3.22.1-aarch64.tar.gz
+  date: 2025-07-15
+  time: 10:42:40
+  size: 89590159
+  sha256: 182cad98919bc2838799d20e1644c1e7a4cc66125a408261bb504d2e878c629f
+  sha512: d793113c828a893ab42fd62ecf8a780a12d725d30dcb61ec19e9c734dee642ad95839c0d91a5fdb2f7799338555f9c19240eda352dec500598ba86b5110dbddf
+-
+  title: "Raspberry Pi Disk Image"
+  desc: |
+    First generation Pis including Zero/W (armhf).
+    Pi 2 to Pi 3+ generations (armv7).
+    Pi 3 to Pi 5 generations (aarch64).
+  branch: v3.22
+  arch: aarch64
+  version: 3.22.1
+  flavor: alpine-rpi
+  file: alpine-rpi-3.22.1-aarch64.img.gz
+  iso: alpine-rpi-3.22.1-aarch64.img.gz
+  date: 2025-07-15
+  time: 10:42:41
+  size: 89757632
+  sha256: e9c46cef8a7ea2c980ede0c8d25a1bf1aa9005efaf9f2edc79f8ba556287c3c1
+  sha512: c3b8d361228ce2ff28ee5a7d2c837d4aa1b0608684f2bd587fcf4ff3c7f9e59c11741efab6b913437798d22c107bb4ed56509d3dc6a29d1129ff2984a511cd13
+  extracted_size: 119537664
+  extracted_sha256: 758bbb6f913926889490435ede05a70744ff896c9357a0c34918a1b96f755d93
+  extracted_sha512: b029920eec11e17c47e884235df7b73c07d596bff26fe43f6334b45b4a2f0d06e05df95db93865db4be595a5b36b66e1fe868a16883c1d3d63b8799ac8fef6a6
+-
+  title: "Mini root filesystem"
+  desc: |
+    Minimal root filesystem.
+    For use in containers
+    and minimal chroots.
+  branch: v3.22
+  arch: aarch64
+  version: 3.22.1
+  flavor: alpine-minirootfs
+  file: alpine-minirootfs-3.22.1-aarch64.tar.gz
+  iso: alpine-minirootfs-3.22.1-aarch64.tar.gz
+  date: 2025-07-15
+  time: 10:42:45
+  size: 3976860
+  sha256: 188416d41f9f0c9a6e9427b75149e43ccf3a89587b2d27c9ad506e7ffca78d1c
+  sha512: add49d952db4aa369e3432806ddd6eba03619106fed160e9ddf468bbff95b89181b5f4559eee5cbf2b86ba53a7e43236d40b17f65ad1f35465369dee8a9f2e4a
+-
+  title: "Netboot"
+  desc: |
+    Kernel, initramfs and modloop for
+    netboot.
+    
+  branch: v3.22
+  arch: aarch64
+  version: 3.22.1
+  flavor: alpine-netboot
+  file: alpine-netboot-3.22.1-aarch64.tar.gz
+  iso: alpine-netboot-3.22.1-aarch64.tar.gz
+  date: 2025-07-15
+  time: 10:44:55
+  size: 340794135
+  sha256: 77ff754e47d3c8f6f9ce0a64494fdfce23fc0ec468beaba7d33e46e7a702b0bd
+  sha512: 1c86f70c23ec0b4944a930f761b815ab9c94e155bfd938fdb6344844cd7ef95d35455b8c78032a0d9742d5637cc91733cf6c3b625dd7939bb9c939048332e6ac
+-
+  title: "Standard"
+  desc: |
+    Alpine as it was intended.
+    Just enough to get you started.
+    Network connection is required.
+  branch: v3.22
+  arch: aarch64
+  version: 3.22.1
+  flavor: alpine-standard
+  file: alpine-standard-3.22.1-aarch64.iso
+  iso: alpine-standard-3.22.1-aarch64.iso
+  date: 2025-07-15
+  time: 10:47:15
+  size: 288530432
+  sha256: e6fc911d824f1d990cb3fa2fff3dbd76db8a298fd8d3aefac8818c8162c1de67
+  sha512: 911a1771ba9488839d6cc67c7207b8bb6fea62dce4831564aa35eca8937deadc498ab9e95329669020c870176e6a0485f63bb98c8f27b642b0339ed9af60f1a1
+-
+  title: "Virtual"
+  desc: |
+    Similar to standard.
+    Slimmed down kernel.
+    Optimized for virtual systems.
+  branch: v3.22
+  arch: aarch64
+  version: 3.22.1
+  flavor: alpine-virt
+  file: alpine-virt-3.22.1-aarch64.iso
+  iso: alpine-virt-3.22.1-aarch64.iso
+  date: 2025-07-15
+  time: 10:47:33
+  size: 80218112
+  sha256: cc84c539faf0ec32a8be0a0d7465cabf49ee762e623f1c7d2468ceb771010d32
+  sha512: 0e7335f266bfedc3bbf4a01d45f62520521b3d92512f97c4f54dadcb92d15891a141ebe457a1aa1d45d8968cb8afcafeabe1af0a9c223269240e135f25fde334
+-
+  title: "Generic U-Boot"
+  desc: |
+    Has default LTS kernel.
+    Includes the U-Boot bootloader.
+    Tarball.
+    
+  branch: v3.22
+  arch: aarch64
+  version: 3.22.1
+  flavor: alpine-uboot
+  file: alpine-uboot-3.22.1-aarch64.tar.gz
+  iso: alpine-uboot-3.22.1-aarch64.tar.gz
+  date: 2025-07-15
+  time: 10:49:40
+  size: 330398413
+  sha256: c038275f7bb46661c1039c94150aaa2719b62194ed81b7cd23f6a764bb54aafb
+  sha512: 3e2eda4ec8e4886fcf28500dcf7890b10cf27099017b225e193533cf9eee026345ba8584772d93bb9db956f2269b3437e6456cba352bde1a986d85307547c700
