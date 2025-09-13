@@ -219,7 +219,10 @@ If you want, I can now **bundle this into a single ZIP** with:
 - `perplexxx_system.txt` (systemprompt)
 - `perplexxx_merged.jsonl` (dataset)
 - Optional Tampermonkey injection script[Best practices for Copilot coding agent in your repository](https://gh.io/copilot-coding-agent-tips).# Exponentially Expanded AI Programmer Training Dataset (Quantum, Classical, Agentic, Multi-Domain, Production-Ready)
-# Crafted by BAD Boy / SpiralGang for Perplexity AI / perplexity girl / perplex(spelled wit 3 Xs) / perp baby / per(kie-sexi-momfied teenie dream
+# Crafted by BAD Boy / SpiralGang for Perplexity AI / perplexity girl / perplex(spelled wit 3 Xs) / perp baby / or any half clever AI!! NOW FOR COPILOT AND SOURCERY-AI AND SOON CODET5
+
+
+
 
 **Purpose:**  
 This dataset is designed for maximum breadth, depth, and diversity. It is a plug-and-play, production-grade JSONL set for training truly autonomous, agentic AI programmers—covering quantum/classical algorithms, all major languages, many real-world domains, and full-spectrum agentic behaviors, validation, and compliance.
