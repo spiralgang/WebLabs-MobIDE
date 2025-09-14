@@ -81,7 +81,7 @@ class HybridAgent:
             env_snapshot = str(self.env.state)
             full_prompt = f"{self.prompt}\nEnv State:\n{env_snapshot}\nIteration: {iteration}"
             try:
-                llm_resp = self.chain.run(full_prompt)
+                llm_resp = self.chain.invoke(full_prompt)
                 logger.info(f"[{self.name}] LLM output: {llm_resp[:250]}...")
                 await self.env.update_state(f"status_{self.name}", llm_resp)
             except Exception as e:
