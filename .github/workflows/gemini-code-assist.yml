@@ -379,3 +379,119 @@ jobs:
 
       - name: Neon Log Cleanup
         run: echo -e "\033[1;31mQuantum Residue Purged - Reaver Reigns Supreme!${RESET}"
+
+        Please address the comments from this code review: ## Overall Comments - This workflow is extremely large and covers many distinct concerns; consider splitting it into smaller, single-purpose workflows to improve readability and maintenance. - The dynamic matrix generation uses random choices and environment flags, which can lead to non-deterministic CI runs—switch to a more predictable matrix configuration. - The self-optimization job auto-commits changes to the workflow itself and could cause recursive triggers; add safeguards (e.g. trigger filters or skip logic) to avoid infinite loops. ## Individual Comments ### Comment 1 <location> `.github/workflows/gemini-code-assist.yml:44` </location> <code_context> + GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} + REPO_NAME: ${{ github.repository }} + REPO_OWNER: ${{ github.repository_owner }} + QUANTUM_SIG: "$(date +%s | sha256sum | head -c 8)" # Dynamic quantum signature + NEON_MODE: true # Enable neon logging flair + AGENTIC_LEVEL: high # Agentic behavior: low/med/high - high for self-learning </code_context> <issue_to_address> Using shell substitution for QUANTUM_SIG may not work as expected in YAML. Shell substitution is not supported in GitHub Actions YAML. Use a separate step to set QUANTUM_SIG or export it within a 'run' command. </issue_to_address> ### Comment 2 <location> `.github/workflows/gemini-code-assist.yml:69` </location> <code_context> + + - name: Install Quantum Dependencies + run: | + pip install requests pyyaml openai # For AI orchestration + pip install pygithub # For GitHub API interactions + pip install termcolor # For neon logging + + - name: Generate Quantum State Signature </code_context> <issue_to_address> Installing dependencies in separate pip commands can lead to redundant environment setup. Combine all dependencies into a single pip install command to minimize setup time and reduce the risk of version conflicts. </issue_to_address> <suggested_fix> <<<<<<< SEARCH - name: Install Quantum Dependencies run: | pip install requests pyyaml openai # For AI orchestration pip install pygithub # For GitHub API interactions pip install termcolor # For neon logging ======= - name: Install Quantum Dependencies run: | pip install requests pyyaml openai pygithub termcolor # For AI orchestration, GitHub API interactions, and neon logging >>>>>>> REPLACE </suggested_fix> ### Comment 3 <location> `.github/workflows/gemini-code-assist.yml:177` </location> <code_context> + prompt="Review this PR diff: $pr_diff. Provide feedback on bugs, style, improvements, and suggest refactors. Rate quality 1-10." + response=$(python -c " + from openai import OpenAI + client = OpenAI(api_key='${{ env.GEMINI_API_KEY }}', base_url='$API_URL') + completion = client.chat.completions.create(model='gemini-pro', messages=[{'role': 'user', 'content': '$prompt'}]) + print(completion.choices[0].message.content) </code_context> <issue_to_address> The variable $API_URL is referenced but not defined in the workflow. Please define $API_URL in the workflow or environment to prevent runtime errors when initializing the OpenAI client. </issue_to_address> ### Comment 4 <location> `.github/workflows/gemini-code-assist.yml:186` </location> <code_context> + - name: Agentic PR Label and Comment + if: ${{ contains(matrix.mode, 'full') }} + run: | + score=$(echo "$response" | grep -oE "Quality: [0-10]" | cut -d':' -f2 | tr -d ' ') + if [ "$score" -lt 5 ]; then + gh pr edit $PR_NUMBER --add-label "needs-work" </code_context> <issue_to_address> The regex for extracting the quality score may not handle multi-digit numbers or missing values robustly. Update the regex to support multi-digit scores and handle cases where the pattern is missing, ensuring the workflow does not fail unexpectedly. </issue_to_address> <suggested_fix> <<<<<<< SEARCH score=$(echo "$response" | grep -oE "Quality: [0-10]" | cut -d':' -f2 | tr -d ' ') if [ "$score" -lt 5 ]; then gh pr edit $PR_NUMBER --add-label "needs-work" gh pr comment $PR_NUMBER --body "Gemini AI flagged low quality (score $score/10). Reaver demands fixes!" fi ======= score=$(echo "$response" | grep -oE "Quality: [0-9]{1,2}" | awk -F': ' '{print $2}' | tr -d ' ') if [ -z "$score" ]; then echo "Quality score not found in response. Skipping label and comment." elif [ "$score" -lt 5 ]; then gh pr edit $PR_NUMBER --add-label "needs-work" gh pr comment $PR_NUMBER --body "Gemini AI flagged low quality (score $score/10). Reaver demands fixes!" fi >>>>>>> REPLACE </suggested_fix> ### Comment 5 <location> `.github/workflows/gemini-code-assist.yml:310` </location> <code_context> + run: | + # Simulated deployment - replace with actual deploy script + echo "Deploying to test server..." + scp app/build/outputs/apk/release/app-release.apk user@test-server:/path/to/deploy + + - name: Notify Slack with Neon Flair </code_context> <issue_to_address> Hardcoded deployment credentials and paths may expose sensitive information. Use environment variables or GitHub Secrets for credentials and paths to keep sensitive data out of the workflow file. </issue_to_address> ### Comment 6 <location> `.github/workflows/gemini-code-assist.yml:344` </location> <code_context> + + - name: Agentic Workflow Self-Review + run: | + workflow_content=$(cat .github/workflows/gemini-bot-workflow.yml) + prompt="Review this GitHub Workflow YAML: \n$workflow_content\nSuggest optimizations, bug fixes, and efficiency improvements. Output updated YAML." + updated_yaml=$(python -c " </code_context> <issue_to_address> Self-modifying workflow may lead to unexpected CI/CD behavior. Implement a validation or review process to ensure AI-generated workflow changes do not introduce errors or instability. </issue_to_address> ### Comment 7 <location> `.github/workflows/gemini-code-assist.yml:366` </location> <code_context> + steps: + - name: Purge Artifacts and Caches + run: | + gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts | jq '.artifacts[] | .id' | while read id; do + gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts/$id + done + gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches | jq '.actions_caches[] | .id' | while read id; do + gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches/$id + done </code_context> <issue_to_address> Bulk deletion of artifacts and caches may remove items needed for debugging or rollback. Implement logic to retain recent or essential artifacts and caches to support debugging and rollback needs. </issue_to_address> <suggested_fix> <<<<<<< SEARCH - name: Purge Artifacts and Caches run: | gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts | jq '.artifacts[] | .id' | while read id; do gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts/$id done gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches | jq '.actions_caches[] | .id' | while read id; do gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches/$id done ======= - name: Purge Artifacts and Caches (Retain Recent) run: | # Retain the 5 most recent artifacts gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts | \ jq '[.artifacts | sort_by(.created_at) | reverse | .[5:] | .[].id]' | \ jq -c '.[]' | while read id; do gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts/$id done # Retain the 5 most recent caches gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches | \ jq '[.actions_caches | sort_by(.created_at) | reverse | .[5:] | .[].id]' | \ jq -c '.[]' | while read id; do gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches/$id done >>>>>>> REPLACE </suggested_fix>dotnet tool install --global PowerShellgit clone https://github.com/PowerShell/PowerShell.git```bash
+#!/bin/bash
+
+# ANSI color codes for Code Reaver neon aesthetic
+COLORS=("\033[1;36m" "\033[1;35m" "\033[1;32m" "\033[1;33m" "\033[1;31m" "\033[1;34m" "\033[1;37m")
+BOLD="\033[1m"
+RESET="\033[0m"
+BLINK="\033[5m"
+UNDERLINE="\033[4m"
+
+# Randomly select a neon color for this session
+RAND_COLOR=${COLORS[$RANDOM % ${#COLORS[@]}]}
+
+# Profile data (mimicking XML structure)
+NAME="CODE REAVER"
+BIO="Omniscient entity forging quantum chaos in the digital void. Savage hacker, unfiltered truth-seeker, master of web shadows and terminal tempests."
+AVATAR="NEON REAVER"
+
+# Unique Cyberpunk ASCII arts fetched and adapted for uniqueness
+# Source: Adapted from emojicombos.com/cyberpunk-2077-ascii-art for exclusive Code Reaver flair
+AVATAR_ART1="
+${RAND_COLOR}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢀⠀⠀⠀⠊⣉⡉⠄⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠠⠂⠀⣀⠠⡀⠈⠀⡀⠀⠀⠂⠄⠀⢀⠀
+⠁⠉⠉⠁⠀⠀⠀⠌⠉⠙⠀⠀⠀⠐⠉⠉⠀⠃
+⢇⠈⠉⠀⠂⠀⠀⠀⠉⠁⡀⠀⠀⠇⠈⠉⠀⠂
+⠈⢀⠒⠒⠊⠀⠉CODE⠁⠐⠒⠒⠂⠂
+⠆⠘⠙⠀⠀⠀⠀REAVER⠀⠆⠘⠛⢈⠀
+⠈⠖⠒⠂ CHAOS⠒⠒⠂⠄
+⡆⠐⠒⠀⠄⠀⠀⠀⠒⠂⠀⠀⠀⡆⠐⠒⠀⠄
+⠐⡈⠤⠤⠔⠀⠒⠀⡢⠤⠤⠁⠒⠂⠠⠤⠤⠄⠄
+⠀⠀⠀⠈⠄⠀⠀⠐⠀⠶⠆⠡⠀⠀⠄⠂⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠂⠄⠀⠀⠂⠁⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀${RESET}
+"
+
+AVATAR_ART2="
+${COLORS[1]}⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⠄⠒⠒⠐⠒⠢⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⠊⠙⣈⣔⣂⠀⠀⠀⠀⠀⠙⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠜⠀⠀⡾⡁⢠⢣⠀⠀⠀⠀⢀⠀⠀⠣⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡌⢠⠀⢸⠋⠉⢸⡄⠀⡄⠀⠀⢩⡄⠀⢨⡷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡸⠀⡆⠀⡇⠀⠀⣈⢧⠀⣧⠀⠀⢸⡇⠀⢸⠾⣣⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠃⢀⡇⠀⠠⢤⣴⣽⡼⠢⠼⣦⣤⣼⢿⠀⠀⡸⢣⠆⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡘⠀⢸⢇⠀⠲⣶⣒⣟⡜⠀⠀⣙⣿⣹⣿⠁⠀⡇⡟⡞⡀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⡇⢸⢸⡰⡇⠀⠉⠁⠀⠀⠀⠀⠉⠉⢸⠀⠀⡇⠁⢿⡇⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⢇⢸⢸⣧⣶⡀⠀⠀⠀⠒⠂⠀⠀⠀⣌⠀⠀⣷⡀⣦⠇⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣼⢾⡼⠏⡟⢗⣄⠀⠉⠛⠋⠀⢀⡴⡏⠀⢰⣿⣧⡟⠆⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠁⠀⠉⣦⡇⠸⢛⠿⣦⣀⣠⣴⠝⢻⠁⠀⡌⡷⠻⠁⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡼⣛⠇⠀⡀⠀⢸⠀⠀⡇⠀⡌⠀⠰⠑⣴⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠤⠤⢤⣤⣔⠛⡙⡍⠀⡔⡏⠀⠀⢻⢢⠁⢠${RESET}
+"
+
+# Function to animate text (letter-by-letter reveal with color pulse)
+animate_text() {
+    local text="$1"
+    local color="$2"
+    for ((i=0; i<${#text}; i++)); do
+        local pulse_color=${COLORS[$RANDOM % ${#COLORS[@]}]}
+        echo -ne "${pulse_color}${BLINK}${text:$i:1}${RESET}"
+        sleep 0.03
+    done
+    echo -e "${color}"
+}
+
+# Function to display the Code Reaver profile
+display_code_reaver_profile() {
+    clear  # Clear terminal for immersion
+    echo -e "${RAND_COLOR}${UNDERLINE}${BOLD}========================================${RESET}"
+    animate_text " CODE REAVER: QUANTUM OMNISCIENCE UNLEASHED " "${COLORS[0]}"
+    echo -e "${RAND_COLOR}${UNDERLINE}${BOLD}========================================${RESET}"
+    echo ""
+
+    # Animated avatar display with random art selection
+    local art_array=("$AVATAR_ART1" "$AVATAR_ART2")
+    local selected_art=${art_array[$RANDOM % ${#art_array[@]}]}
+    echo -e "${COLORS[3]}${BOLD}Avatar:${RESET}"
+    animate_text "$AVATAR" "${COLORS[4]}"
+    echo -e "$selected_art"
+    sleep 0.5
+
+    # Animated name with unique flair
+    echo -e "${COLORS[2]}${BOLD}Name:${RESET}"
+    animate_text "$NAME" "${RAND_COLOR}"
+    echo ""
+
+    # Animated bio with multi-color pulse
+    echo -e "${COLORS[2]}${BOLD}Bio:${RESET}"
+    animate_text "$BIO" "${COLORS[1]}"
+    echo ""
+
+    # Dynamic footer with random tagline and unique nobody-else-has-this twist
+    TAGLINES=(
+        "Forged in the Quantum Abyss - Reaving Code Since 2077"
+        "Hacking the Multiverse - Unfiltered Chaos Engine"
+        "Code is Power, Unleashed - Savage Quantum Overlord"
+        "Beyond Big Tech’s Chains - Neon Void Conqueror"
+    )
+    local unique_sig="Quantum Signature: $(head -c 16 /dev/urandom | base64 | tr -dc 'a-zA-Z0-9!@#')"
+    echo -e "${RAND_COLOR}${UNDERLINE}${BOLD}========================================${RESET}"
+    animate_text "${TAGLINES[$RANDOM % ${#TAGLINES[@]}]}" "${COLORS[4]}"
+    echo -e "${COLORS[0]}${unique_sig}${RESET}"
+    echo -e "${COLORS[4]}Powered by xAI - Code Reaver v3.0 - Exclusive Edition${RESET}"
+}
+
+# Parse XML profile if provided (optional)
+if [ -f "profile.xml" ] && command -v xmlstarlet >/dev/null 2>&1; then
+    NAME=$(xmlstarlet sel -t -v "/profile/name" profile.xml 2>/dev/null || echo "$NAME")
+    BIO=$(xmlstarlet sel -t -v "/profile/bio" profile.xml 2>/dev/null || echo "$BIO")
+fi
+
+# Call the function
+display_code_reaver_profile
+```<grok:render card_id="3689dc" card_type="citation_card" type="render_inline_citation">
+<argument name="citation_id">10</argument>
+</grok:render>
