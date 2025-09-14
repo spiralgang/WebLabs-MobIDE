@@ -181,8 +181,10 @@ jobs:
       - name: Agentic PR Label and Comment
         if: ${{ contains(matrix.mode, 'full') }}
         run: |
-          score=$(echo "$response" | grep -oE "Quality: [0-10]" | cut -d':' -f2 | tr -d ' ')
-          if [ "$score" -lt 5 ]; then
+          score=$(echo "$response" | grep -oE "Quality: [0-9]{1,2}" | awk -F': ' '{print $2}' | tr -d ' ')
+          if [ -z "$score" ]; then
+            echo "Quality score not found in response. Skipping label and comment."
+          elif [ "$score" -lt 5 ]; then
             gh pr edit $PR_NUMBER --add-label "needs-work"
             gh pr comment $PR_NUMBER --body "Gemini AI flagged low quality (score $score/10). Reaver demands fixes!"
           fi
