@@ -361,13 +361,20 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Purge Artifacts and Caches
+      - name: Purge Artifacts and Caches (Retain Recent)
         run: |
-          gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts | jq '.artifacts[] | .id' | while read id; do
-            gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts/$id
+          # Retain the 5 most recent artifacts
+          gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts | \
+            jq '[.artifacts | sort_by(.created_at) | reverse | .[5:] | .[].id]' | \
+            jq -c '.[]' | while read id; do
+              gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts/$id
           done
-          gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches | jq '.actions_caches[] | .id' | while read id; do
-            gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches/$id
+
+          # Retain the 5 most recent caches
+          gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches | \
+            jq '[.actions_caches | sort_by(.created_at) | reverse | .[5:] | .[].id]' | \
+            jq -c '.[]' | while read id; do
+              gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches/$id
           done
 
       - name: Neon Log Cleanup
