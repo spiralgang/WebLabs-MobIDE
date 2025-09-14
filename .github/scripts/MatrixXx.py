@@ -34,8 +34,15 @@ class HybridAgent:
         self.env = env
         self.prompt = initial_prompt
         self.memory = InMemoryConversationMemory()
-        self.llm = OpenAI(temperature=0.3)
-        self.chain = ConversationChain(llm=self.llm, memory=self.memory)
+        self.llm = None
+        self.chain = None
+        self.llm_ready = False
+        try:
+            self.llm = OpenAI(temperature=0.3)
+            self.chain = ConversationChain(llm=self.llm, memory=self.memory)
+            self.llm_ready = True
+        except Exception as e:
+            logger.warning(f'[{self.name}] OpenAI LLM not available: {e}')
         self.running = True
         self.env.subscribe(self.on_env_update)
 
