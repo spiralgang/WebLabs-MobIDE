@@ -66,9 +66,7 @@ jobs:
 
       - name: Install Quantum Dependencies
         run: |
-          pip install requests pyyaml openai  # For AI orchestration
-          pip install pygithub  # For GitHub API interactions
-          pip install termcolor  # For neon logging
+          pip install requests pyyaml openai pygithub termcolor  # For AI orchestration, GitHub API interactions, and neon logging
 
       - name: Generate Quantum State Signature
         id: state
