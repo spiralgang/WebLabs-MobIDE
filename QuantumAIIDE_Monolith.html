@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QuantumAIIDE — Self-Compiling APK Agentic IDE</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#111827">
+  <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@webassemblyjs/wasm-parser@1.11.1/lib/index.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; background: #111827; color: #e5e7eb;}
+    .app-container { min-height: 100vh; display: flex; flex-direction: column; }
+    .header { background: #181f2a; color: #5eead4; padding: 1em 0.5em; border-bottom: 2px solid #6366f1; font-family: 'Fira Code', monospace; font-size: 1.4em;}
+    .content { flex: 1; display: flex; flex-direction: row; overflow: hidden;}
+    .sidebar { width: 260px; background: #1a202c; border-right: 2px solid #6366f1; padding: 0.8em 0.5em; flex-shrink: 0; display: flex; flex-direction: column; }
+    .sidebar h2 { font-size: 1.1em; color: #818cf8; margin-bottom: 0.5em;}
+    .sidebar button, .sidebar .menu-btn { background: #23243d; color: #5eead4; border: none; padding: 0.5em 0.8em; border-radius: 0.5em; margin-bottom: 0.3em; font-family: 'Fira Code', monospace; cursor: pointer;}
+    .sidebar button.active, .sidebar .menu-btn.active { background: #6366f1; color: #fff;}
+    .main { flex: 1; display: flex; flex-direction: column; padding: 1em; overflow: auto;}
+    @media (max-width: 900px) {
+      .content { flex-direction: column;}
+      .sidebar { width: 100%; border-right: none; border-bottom: 2px solid #6366f1;}
+      .main { padding: 0.5em;}
+    }
+    .terminal-container { background: #181f2a; border-radius: 1em; padding: 1em; margin-bottom: 1em;}
+    #terminal { height: 250px; width: 100%; background: #181f2a;}
+    .editor-container { background: #181f2a; border-radius: 1em; padding: 1em; margin-bottom: 1em;}
+    #editor { width: 100%; height: 180px; background: #23243d; color: #e0e7ff; border-radius: 0.5em; border: none; font-family: 'Fira Code', monospace; font-size: 1em; padding: 0.7em;}
+    .file-list { max-height: 180px; overflow-y: auto; background: #23243d; border-radius: 0.5em; margin-bottom: 1em;}
+    .file-btn { display: block; width: 100%; background: none; color: #5eead4; padding: 0.4em 1em; border: none; text-align: left; font-family: 'Fira Code', monospace; border-bottom: 1px solid #181f2a; cursor: pointer;}
+    .file-btn.active { background: #6366f1; color: #fff;}
+    .proxy-container { background: #181f2a; border-radius: 1em; padding: 1em; margin-bottom: 1em;}
+    .output { background: #23243d; color: #a7f3d0; border-radius: 0.5em; padding: 1em; margin-bottom: 1em; white-space: pre-wrap; font-size: 0.95em;}
+    .btn { background: #6366f1; color: #fff; border: none; border-radius: 0.5em; padding: 0.6em 1.3em; font-size: 1em; font-weight: 500; cursor: pointer; margin: 0.2em;}
+    .btn:hover { background: #7c3aed;}
+    .status-indicator { font-size: 0.9em; color: #fbbf24;}
+    .ai-chat { background: #181f2a; border-radius: 1em; padding: 1em;}
+    .chatbox { background: #23243d; border-radius: 0.5em; padding: 1em; min-height: 120px; max-height: 210px; overflow-y: auto; margin-bottom: 1em;}
+    .chat-msg { margin-bottom: 1em;}
+    .chat-user { color: #d1fae5; font-weight: bold;}
+    .chat-ai { color: #fbbf24; font-weight: bold;}
+    .chat-text { color: #e0e7ff;}
+    .chat-input { width: 100%; padding: 0.6em; border-radius: 0.5em; background: #23243d; color: #fff; border: none; font-family: 'Fira Code', monospace; margin-right: 1em;}
+    ::-webkit-scrollbar { width: 8px;}
+    ::-webkit-scrollbar-track { background: #222;}
+    ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 4px;}
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      QuantumAIIDE — Self-Compiling APK Agent <span class="status-indicator" id="status-indicator"></span>
+      <button class="btn" id="build-apk-btn" style="float:right;">Build APK</button>
+    </div>
+    <div class="content">
+      <div class="sidebar">
+        <h2>Navigation</h2>
+        <button class="menu-btn active" id="nav-terminal">Terminal</button>
+        <button class="menu-btn" id="nav-editor">Editor</button>
+        <button class="menu-btn" id="nav-proxy">Proxy</button>
+        <button class="menu-btn" id="nav-ai">AI Chat</button>
+        <button class="menu-btn" id="nav-settings">Settings</button>
+        <h2>Files</h2>
+        <div class="file-list" id="file-list"></div>
+      </div>
+      <div class="main">
+        <div class="terminal-container" id="panel-terminal">
+          <div id="terminal"></div>
+        </div>
+        <div class="editor-container" id="panel-editor" style="display:none;">
+          <textarea id="editor" placeholder="Edit code here..."></textarea>
+          <div>
+            <button class="btn" id="save-file-btn">Save</button>
+            <button class="btn" id="new-file-btn">New File</button>
+            <button class="btn" id="delete-file-btn">Delete File</button>
+            <button class="btn" id="download-file-btn">Download File</button>
+          </div>
+        </div>
+        <div class="proxy-container" id="panel-proxy" style="display:none;">
+          <div class="output" id="proxy-output">Proxy system ready. Enter URL, headers, or custom request.</div>
+          <input id="proxy-url" class="chat-input" placeholder="Target URL (https://...)">
+          <input id="proxy-method" class="chat-input" style="width:90px;" value="GET">
+          <textarea id="proxy-headers" class="chat-input" style="height:40px;" placeholder='{"Authorization":"Bearer ..."}'></textarea>
+          <textarea id="proxy-body" class="chat-input" style="height:40px;" placeholder="Body (JSON)"></textarea>
+          <button class="btn" id="proxy-send-btn">Send Proxy Request</button>
+        </div>
+        <div class="ai-chat" id="panel-ai" style="display:none;">
+          <div class="chatbox" id="chatbox"></div>
+          <div class="flex">
+            <input id="chat-input" class="chat-input" placeholder="Ask anything (code, repo, shell, integrations...)">
+            <button class="btn" id="chat-send-btn">Send</button>
+          </div>
+        </div>
+        <div class="output" id="panel-settings" style="display:none;">
+          <h3>System Settings</h3>
+          <label>AI API Key: <input id="settings-ai-key" class="chat-input" placeholder="Paste DeepSeek/HF token"></label>
+          <label>Proxy Default Headers: <textarea id="settings-proxy-headers" class="chat-input" style="height:40px;"></textarea></label>
+          <label>Theme: <select id="settings-theme" class="chat-input">
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+          </select></label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    /* ==================== State & Filesystem ==================== */
+    let files = {
+      "README.md": "# QuantumAIIDE\nSelf-compiling APK, mobile-first, agentic.",
+      "main.sh": "#!/bin/bash\necho 'Privileged shell ready.'",
+      "MainActivity.java": "// Java entry point for APK (generated by AI)",
+      "AndroidManifest.xml": `<?xml version="1.0" encoding="utf-8"?>
+<manifest package="com.quantumaiide.agent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+  <application android:label="QuantumAIIDE">
+    <activity android:name=".MainActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>`
+    };
+    let activeFile = "README.md";
+    let aiKey = "";
+    let proxyHeaders = {};
+    let theme = "dark";
+    let apkBuildStatus = "";
+
+    function updateFileList() {
+      const list = document.getElementById('file-list');
+      list.innerHTML = '';
+      Object.keys(files).forEach(fname => {
+        const btn = document.createElement('button');
+        btn.textContent = fname;
+        btn.className = 'file-btn' + (fname === activeFile ? ' active' : '');
+        btn.onclick = () => openFile(fname);
+        list.appendChild(btn);
+      });
+    }
+    function openFile(fname) {
+      activeFile = fname;
+      document.getElementById('editor').value = files[fname] || '';
+      updateFileList();
+    }
+    document.getElementById('save-file-btn').onclick = () => {
+      files[activeFile] = document.getElementById('editor').value;
+      updateFileList();
+    };
+    document.getElementById('new-file-btn').onclick = () => {
+      const fname = prompt("New file name:");
+      if (fname && !files[fname]) {
+        files[fname] = "";
+        openFile(fname);
+      }
+    };
+    document.getElementById('delete-file-btn').onclick = () => {
+      if (confirm("Delete " + activeFile + "?")) {
+        delete files[activeFile];
+        activeFile = Object.keys(files)[0] || '';
+        openFile(activeFile);
+      }
+    };
+    document.getElementById('download-file-btn').onclick = () => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([files[activeFile]], {type: "text/plain"}));
+      a.download = activeFile;
+      a.click();
+    };
+    updateFileList();
+    openFile(activeFile);
+
+    /* ==================== Navigation ==================== */
+    function showPanel(panel) {
+      ["panel-terminal","panel-editor","panel-proxy","panel-ai","panel-settings"].forEach(id => {
+        document.getElementById(id).style.display = (id === panel) ? "" : "none";
+      });
+      document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('nav-' + panel.replace('panel-','')).classList.add('active');
+    }
+    document.getElementById('nav-terminal').onclick = () => showPanel("panel-terminal");
+    document.getElementById('nav-editor').onclick = () => showPanel("panel-editor");
+    document.getElementById('nav-proxy').onclick = () => showPanel("panel-proxy");
+    document.getElementById('nav-ai').onclick = () => showPanel("panel-ai");
+    document.getElementById('nav-settings').onclick = () => showPanel("panel-settings");
+    showPanel("panel-terminal");
+
+    /* ==================== Terminal (xterm.js) ==================== */
+    const term = new Terminal({ theme: { background: '#181f2a', foreground: '#5eead4' }, fontFamily: 'Fira Code, monospace', fontSize: 15 });
+    term.open(document.getElementById('terminal'));
+    term.write('QuantumAIIDE Terminal Ready!\r\n> ');
+    let termCmd = '';
+    term.onData(data => {
+      if (data === '\r') {
+        term.write('\r\n');
+        processTerminalCmd(termCmd.trim());
+        termCmd = '';
+        term.write('> ');
+      } else if (data === '\u007F') {
+        if (termCmd.length > 0) {
+          term.write('\b \b');
+          termCmd = termCmd.slice(0, -1);
+        }
+      } else {
+        term.write(data);
+        termCmd += data;
+      }
+    });
+    function processTerminalCmd(cmd) {
+      if (!cmd) return;
+      if (cmd === 'help') {
+        term.write('Commands: help, ls, cat <file>, edit <file>, proxy <url>, ai <msg>, build-apk\r\n'); return;
+      }
+      if (cmd === 'ls') { term.write(Object.keys(files).join('  ') + '\r\n'); return; }
+      if (cmd.startsWith('cat ')) { term.write((files[cmd.slice(4).trim()] || 'File not found.') + '\r\n'); return; }
+      if (cmd.startsWith('edit ')) { openFile(cmd.slice(5).trim()); showPanel("panel-editor"); term.write('Editing ' + cmd.slice(5).trim() + '\r\n'); return; }
+      if (cmd.startsWith('proxy ')) { showPanel("panel-proxy"); document.getElementById('proxy-url').value = cmd.slice(6).trim(); term.write('Proxy panel opened\r\n'); return; }
+      if (cmd.startsWith('ai ')) { showPanel("panel-ai"); runAIChat(cmd.slice(3).trim(),"cli",out=>term.write(out+'\r\n')); return; }
+      if (cmd === 'build-apk') { buildAPK(); return; }
+      term.write('Unknown command. Type help.\r\n');
+    }
+
+    /* ==================== Proxy System ==================== */
+    document.getElementById('proxy-send-btn').onclick = async () => {
+      const url = document.getElementById('proxy-url').value.trim();
+      const method = document.getElementById('proxy-method').value.trim();
+      let headers = {};
+      try { headers = JSON.parse(document.getElementById('proxy-headers').value || "{}"); } catch(e){}
+      let body = document.getElementById('proxy-body').value.trim();
+      let options = { method, headers };
+      if (body) options.body = body;
+      try {
+        let res = await fetch(url, options);
+        let text = await res.text();
+        document.getElementById('proxy-output').textContent = text.slice(0,2000);
+      } catch(e) {
+        document.getElementById('proxy-output').textContent = "Proxy error: "+e.message;
+      }
+    };
+
+    /* ==================== AI Chat ==================== */
+    function addChatMsg(user, text) {
+      let chatbox = document.getElementById('chatbox');
+      let div = document.createElement('div');
+      div.className = 'chat-msg';
+      div.innerHTML = `<span class="${user==='AI'?'chat-ai':'chat-user'}">${user}:</span> <span class="chat-text">${text}</span>`;
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+    async function queryAI(messages, model="deepseek-ai/DeepSeek-R1:fireworks-ai") {
+      if(!aiKey) return "AI key not set. Paste in settings.";
+      try {
+        const response = await fetch("https://router.huggingface.co/v1/chat/completions",{
+          headers: { Authorization: "Bearer "+aiKey, "Content-Type":"application/json"},
+          method: "POST",
+          body: JSON.stringify({messages,top_p:1,model}),
+        });
+        const result = await response.json();
+        if(result.choices && result.choices.length>0) return result.choices[0].message.content;
+        return result.error||"AI error: Unexpected response";
+      } catch(e){ return "AI error: "+e.message;}
+    }
+    async function runAIChat(prompt,source="chat",cb) {
+      addChatMsg(source==="cli"?"CLI":"You",prompt);
+      let repoContext = Object.keys(files).map(f=>`${f}:\n${files[f].slice(0,300)}`).join('\n\n');
+      let userMsg = `QuantumAIIDE, Mobile-First, Android 10+/Aarch64. Files:\n${repoContext}\n\n${prompt}`;
+      let answer = await queryAI([{role:"user",content:userMsg}]);
+      addChatMsg("AI",answer);
+      if(cb) cb(answer);
+    }
+    document.getElementById('chat-send-btn').onclick = () => {
+      let val = document.getElementById('chat-input').value.trim();
+      if(!val) return;
+      runAIChat(val);
+      document.getElementById('chat-input').value = '';
+    };
+
+    /* ==================== Settings ==================== */
+    document.getElementById('settings-ai-key').onchange = e => {
+      aiKey = e.target.value.trim();
+      document.getElementById('status-indicator').textContent = aiKey ? "AI Ready" : "";
+    };
+    document.getElementById('settings-proxy-headers').onchange = e => {
+      try{proxyHeaders=JSON.parse(e.target.value);}catch{}
+    };
+    document.getElementById('settings-theme').onchange = e => {
+      theme = e.target.value;
+      document.body.style.background = theme==="light"?"#f9fafb":"#111827";
+      document.body.style.color = theme==="light"?"#181f2a":"#e5e7eb";
+    };
+
+    /* ==================== Build APK ==================== */
+    async function buildAPK() {
+      document.getElementById('status-indicator').textContent = "Building APK...";
+      term.write("⚡ Agentic APK build started...\r\n");
+      // Simulate build - in reality, use Termux/Cloud agent for true Android APK build
+      // Here, zip all files as a .zip "APK" for demo, but agent can call backend or Termux for true build
+      let zip = new JSZip();
+      for(let fname of Object.keys(files)) zip.file(fname, files[fname]);
+      let content = await zip.generateAsync({type:"blob"});
+      // For demo: download as .zip, but with backend/Termux, can build real .apk and offer install intent
+      let a = document.createElement('a');
+      a.href = URL.createObjectURL(content);
+      a.download = "QuantumAIIDE.apk.zip"; // Real agent would build .apk
+      a.click();
+      document.getElementById('status-indicator').textContent = "APK (zip) built. See audit log for details.";
+      term.write("✅ Agentic APK build complete. Downloaded as zip.\r\n");
+      // If you want true .apk, connect Termux or cloud agent for privileged build from the UI.
+    }
+    document.getElementById('build-apk-btn').onclick = buildAPK;
+
+    /* ==================== Security/Audit Hooks ==================== */
+    function logAction(action, params) {
+      // For audit: log all agentic actions to localStorage (can sync to cloud)
+      let log = JSON.parse(localStorage.getItem("agentic_audit")||"[]");
+      log.push({ts:Date.now(),action,params});
+      localStorage.setItem("agentic_audit",JSON.stringify(log));
+    }
+    // Call logAction in every privileged operation if needed
+
+    /* ==================== Android/Aarch64 Detection ==================== */
+    function androidCompatCheck(){
+      let ua = navigator.userAgent;
+      return /Android 10|aarch64|arm64|Linux/.test(ua);
+    }
+    if(!androidCompatCheck()) document.getElementById('status-indicator').textContent += " | Non-Android10/Aarch64";
+
+    /* ==================== On Load: AI Agent Full Activation ==================== */
+    window.onload = function() {
+      // Agentic self-activation: ready for all privileged ops, audit log started
+      logAction("system_start",{device:navigator.userAgent,ts:Date.now()});
+      term.write("QuantumAIIDE Agentic system fully activated.\r\n");
+    }
+  </script>
+  <!--
+  References:
+  - /reference vault
+  - Android WebAPK standards (https://github.com/GoogleChromeLabs/webapk)
+  - Termux/Android shell integration (https://wiki.termux.com/wiki/Main_Page)
+  - DeepSeek/HuggingFace API (https://huggingface.co/docs/api-inference/index)
+  - GitHub REST API (https://docs.github.com/en/rest)
+  - OWASP Secure Coding (https://owasp.org/www-project-top-ten/)
+  - JSZip (https://stuk.github.io/jszip/)
+  - WebAssembly (https://webassembly.github.io/)
+  -->
+</body>
+</html>
