@@ -2,7 +2,6 @@
 
 # Code Reaver: AI Code Forge - Quantum UI Pimper
 # Created: September 12, 2025 - No mercy, all dominance
-# Neon palette for that sexy pop
 COLORS=("\033[1;36m" "\033[1;35m" "\033[1;32m" "\033[1;33m" "\033[1;31m" "\033[1;34m" "\033[1;37m")
 BOLD="\033[1m"
 RESET="\033[0m"
@@ -10,10 +9,6 @@ BLINK="\033[5m"
 UNDERLINE="\033[4m"
 PULSE="\033[3m"
 RAND_COLOR=${COLORS[$RANDOM % ${#COLORS[@]}]}
-
-# API config - Set DEEPSEEK_API_KEY in env
-API_URL="https://api.deepseek.com/v1/chat/completions"
-MODEL="deepseek-chat"
 
 # Animate text for sexy UI
 animate_pimp_text() {
@@ -27,16 +22,44 @@ animate_pimp_text() {
     echo -e "${base_color}"
 }
 
-# Forge header
 forge_header() {
-    clear
     echo -e "${RAND_COLOR}${UNDERLINE}${BOLD}========================================${RESET}"
     animate_pimp_text " CODE REAVER: AI CODE FORGE " "${COLORS[0]}"
     echo -e "${RAND_COLOR}${UNDERLINE}${BOLD}========================================${RESET}"
     echo -e "${COLORS[4]}Pimping your UI like a boss, bruh!${RESET}"
 }
 
-# Query DeepSeek AI
+# APK builder (Android 10+)
+build_apk() {
+    forge_header
+    echo -e "${COLORS[2]}${BOLD}Agentic APK build started...${RESET}"
+    # Ensure Java for Gradle (Android 10+ compatibility)
+    if ! command -v java &>/dev/null; then
+        sudo apt-get update
+        sudo apt-get install -y openjdk-17-jdk
+    fi
+    if [ -f "./gradlew" ]; then
+        chmod +x ./gradlew
+        ./gradlew assembleRelease
+        echo -e "${COLORS[3]}${BOLD}Build complete.${RESET}"
+        ls -l app/build/outputs/apk/release/
+    elif [ -d "QuantumAIIDE" ] && [ -f "QuantumAIIDE/gradlew" ]; then
+        cd QuantumAIIDE
+        chmod +x ./gradlew
+        ./gradlew assembleRelease
+        echo -e "${COLORS[3]}${BOLD}Build complete.${RESET}"
+        ls -l app/build/outputs/apk/release/
+        cd ..
+    else
+        echo -e "${COLORS[1]}${BOLD}No gradlew found. Not an Android project directory.${RESET}"
+        exit 2
+    fi
+}
+
+# DeepSeek AI integration (unchanged from your script)
+API_URL="https://api.deepseek.com/v1/chat/completions"
+MODEL="deepseek-chat"
+
 query_deepseek() {
     local prompt="$1"
     if [ -z "$DEEPSEEK_API_KEY" ]; then
@@ -56,7 +79,6 @@ query_deepseek() {
     echo "$code"
 }
 
-# Generate file
 generate_file() {
     local file="$1"
     local description="$2"
@@ -72,7 +94,6 @@ generate_file() {
     fi
 }
 
-# Refactor file
 refactor_file() {
     local file="$1"
     local instructions="$2"
@@ -93,7 +114,7 @@ refactor_file() {
     fi
 }
 
-# Main logic
+# Main logic: build if no args or "build"
 case "$1" in
     generate)
         if [ $# -lt 3 ]; then
@@ -109,8 +130,16 @@ case "$1" in
         fi
         refactor_file "$2" "${*:3}"
         ;;
+    build|"")
+        build_apk
+        ;;
     *)
         forge_header
-        echo -e "${COLORS[1]}${BOLD}Unknown command, bruh! Use 'forge generate <file> <description>' or 'forge refactor <file> <instructions>'${RESET}"
+        echo -e "${COLORS[1]}${BOLD}Unknown command, bruh! Use 'forge generate <file> <description>', 'forge refactor <file> <instructions>', or no args for agentic build.${RESET}"
         ;;
 esac
+
+# References
+# - /reference vault
+# - https://developer.android.com/studio/build
+# - https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
