@@ -1,0 +1,7 @@
+name: "Code Reaver Forge"
+description: "Agentic shell script to build QuantumAIIDE APK directly"
+runs:
+  using: "composite"
+  steps:
+    - run: bash .github/actions/code-reaver-forge/entrypoint.sh
+      shell: bash
