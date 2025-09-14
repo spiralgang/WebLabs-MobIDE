@@ -1,0 +1,20 @@
+name: Agentic APK Runner
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, agentic-apk-forge ]
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Run Code Reaver Forge
+        uses: ./.github/actions/code-reaver-forge
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: QuantumAIIDE-release-apk
+          path: QuantumAIIDE/app/build/outputs/apk/release/app-release.apk
