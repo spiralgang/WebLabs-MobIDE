@@ -1,10 +1,7 @@
 name: Repo-wide third-party dependency & vulnerability scan
 
 on:
-  workflow_dispatch: {}
-  schedule:
-    - cron: '0 5 * * 0' # weekly Sunday 05:00 UTC
-
+  workflow_dispatch:
 permissions:
   contents: read
   actions: read
