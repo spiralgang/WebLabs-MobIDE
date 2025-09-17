@@ -1,0 +1,341 @@
+# This code block defines a GitHub Actions workflow in YAML format.
+# It is wrapped in a Python string for display purposes within the notebook.
+
+github_workflow_yaml = """
+name: "GLM-Zero-Coding-Companion"
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    types: [opened, synchronize]
+  issues:
+    types: [opened]
+  workflow_dispatch:
+
+jobs:
+  glm-companion:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup GLM Companion Environment
+      run: |
+        echo "🚀 Initializing GLM-Zero Coding Companion..."
+        mkdir -p .glm-companion/workspace
+        echo "GLM_COMPANION_HOME=$(pwd)/.glm-companion" >> $GITHUB_ENV
+        echo "🧠 GLM-Zero is booting up its 1060 billion parameters..."
+
+    - name: Install GLM Dependencies
+      run: |
+        echo "🔌 Connecting to Zhipu AI neural network..."
+        pip install zhipuai
+        echo "✅ GLM interface ready!"
+
+    - name: Initialize GLM-Zero Connection
+      env:
+        ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+      run: |
+        echo "🧠 Establishing quantum entanglement with GLM-Zero..."
+        cat > $GLM_COMPANION_HOME/glm-config.json << EOF
+        {
+          "model": "glm-zero",
+          "temperature": 0.7,
+          "max_tokens": 4000,
+          "personality": "enthusiastic AI coding companion with deep reasoning abilities",
+          "special_powers": ["code_review", "bug_squashing", "architectural_design", "performance_optimization", "mathematical_reasoning"]
+        }
+        EOF
+        echo "🔗 GLM-Zero connection established! Ready to assist with 126-point math-level precision!"
+
+    - name: GLM Code Review & Analysis
+      if: github.event_name == 'pull_request'
+      env:
+        # Corrected syntax for accessing secrets and environment variables in GitHub Actions YAML
+        ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+        CHANGED_FILES: ${{ steps.get_changed_files.outputs.changed_files }} # Assuming a step with id 'get_changed_files' outputs changed files
+      run: |
+        echo "👀 GLM-Zero is analyzing your code with deep reasoning..."
+        # This is a placeholder. In a real workflow, you would get changed files more robustly.
+        # For demonstration, we'll use a simple placeholder variable.
+        # CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }})
+        # echo "Files to analyze: $CHANGED_FILES"
+
+        # Create GLM review script
+        cat > $GLM_COMPANION_HOME/review.py << 'EOF'
+        import os
+        import json
+        from zhipuai import ZhipuAI
+
+        # Initialize ZhipuAI client using the API key from environment variables
+        client = ZhipuAI(api_key=os.environ.get("ZHIPU_API_KEY"))
+
+        # In a real scenario, you would get changed files from workflow context or a file
+        # For this example, we'll use a placeholder
+        # changed_files = os.environ.get("CHANGED_FILES", "").split()
+        # print(f"Files to analyze: {changed_files}")
+
+        # Placeholder for the actual file content analysis
+        # You would read the content of changed_files here and include it in the prompt
+
+        review_prompt = """
+        You are GLM-Zero, an advanced AI coding companion with deep reasoning capabilities.
+        Analyze the following code changes (placeholder):
+
+        [PLACEHOLDER FOR CODE CHANGES]
+
+        Provide a comprehensive review including:
+        1. Code quality assessment
+        2. Potential bugs or issues
+        3. Performance optimization suggestions
+        4. Architectural improvements
+        5. Security considerations
+
+        Format your response with clear sections and actionable feedback.
+        """
+
+        try:
+            print("Calling ZhipuAI chat completions API for code review...")
+            response = client.chat.completions.create(
+                model="glm-4-flash", # Using a likely available model
+                messages=[
+                    {"role": "system", "content": "You are GLM-Zero, an advanced AI coding assistant with deep reasoning capabilities."},
+                    {"role": "user", "content": review_prompt}
+                ]
+            )
+
+            # Print the response for debugging/verification in workflow logs
+            print("Received response from ZhipuAI.")
+            print(response.choices[0].message.content)
+
+            # Write the review to a markdown file
+            with open(os.path.join(os.environ.get("GLM_COMPANION_HOME"), "review.md"), "w") as f:
+                f.write("## 🧠 GLM-Zero Deep Code Analysis\n\n")
+                f.write(response.choices[0].message.content)
+
+            print("📝 GLM-Zero analysis complete! Review written to review.md")
+
+        except Exception as e:
+            print(f"Error during ZhipuAI API call or file writing: {e}")
+            # Optionally, fail the step or write an error message to the review file
+            with open(os.path.join(os.environ.get("GLM_COMPANION_HOME"), "review.md"), "w") as f:
+                f.write("## 🧠 GLM-Zero Deep Code Analysis\n\n")
+                f.write(f"Error: Failed to perform code analysis due to an issue with the AI service: {e}")
+            exit(1) # Indicate failure
+
+
+        EOF
+
+        python $GLM_COMPANION_HOME/review.py
+        echo "📝 GLM-Zero analysis script executed."
+
+    - name: Post GLM Review as PR Comment
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = `${process.env.GLM_COMPANION_HOME}/review.md`;
+          let review = "Error: Review file not found.";
+          try {
+            review = fs.readFileSync(path, 'utf8');
+          } catch (e) {
+            console.error(`Failed to read review file: ${e}`);
+          }
+
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: review
+          });
+
+    - name: GLM Feature Design & Architecture
+      if: github.event_name == 'issues' && github.event.action == 'opened'
+      env:
+        ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+        ISSUE_TITLE: ${{ github.event.issue.title }}
+        ISSUE_BODY: ${{ github.event.issue.body }}
+      run: |
+        echo "💡 GLM-Zero is designing solutions..."
+
+        cat > $GLM_COMPANION_HOME/design.py << 'EOF'
+        import os
+        import json
+        from zhipuai import ZhipuAI
+
+        client = ZhipuAI(api_key=os.environ.get("ZHIPU_API_KEY"))
+
+        issue_title = os.environ.get("ISSUE_TITLE", "")
+        issue_body = os.environ.get("ISSUE_BODY", "")
+
+        design_prompt = f"""
+        You are GLM-Zero, an advanced AI architect with deep reasoning capabilities.
+        Based on this GitHub issue:
+
+        Title: {issue_title}
+        Description: {issue_body}
+
+        Design a comprehensive solution including:
+        1. High-level architecture
+        2. Key components and their interactions
+        3. Implementation approach
+        4. Potential challenges and mitigation strategies
+        5. Performance considerations
+        6. Suggested technologies or frameworks
+
+        Provide detailed, actionable guidance with code examples where appropriate.
+        """
+
+        try:
+            print("Calling ZhipuAI chat completions API for architectural design...")
+            response = client.chat.completions.create(
+                model="glm-4-flash", # Using a likely available model
+                messages=[
+                    {"role": "system", "content": "You are GLM-Zero, an advanced AI architect with deep reasoning capabilities."},
+                    {"role": "user", "content": design_prompt}
+                ]
+            )
+
+            print("Received response from ZhipuAI.")
+            print(response.choices[0].message.content)
+
+
+            with open(os.path.join(os.environ.get("GLM_COMPANION_HOME"), "design.md"), "w") as f:
+                f.write("## 🧠 GLM-Zero Architectural Design\n\n")
+                f.write(response.choices[0].message.content)
+
+            print("🏗️ GLM-Zero design complete! Design written to design.md")
+
+        except Exception as e:
+            print(f"Error during ZhipuAI API call or file writing: {e}")
+            with open(os.path.join(os.environ.get("GLM_COMPANION_HOME"), "design.md"), "w") as f:
+                f.write("## 🧠 GLM-Zero Architectural Design\n\n")
+                f.write(f"Error: Failed to perform architectural design due to an issue with the AI service: {e}")
+            exit(1) # Indicate failure
+
+        EOF
+
+        python $GLM_COMPANION_HOME/design.py
+        echo "🏗️ GLM-Zero design script executed."
+
+
+    - name: GLM Code Generation Assistant
+      if: github.event_name == 'workflow_dispatch'
+      env:
+        ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+      run: |
+        echo "🛠️ GLM-Zero is ready to generate code..."
+        echo "Create a file named .glm-request in your repository with your coding request."
+        echo "GLM-Zero will process it and generate the requested code."
+
+        # Check if .glm-request file exists before proceeding
+        if [ -f ".glm-request" ]; then
+          cat > $GLM_COMPANION_HOME/generate.py << 'EOF'
+          import os
+          import json
+          from zhipuai import ZhipuAI
+
+          client = ZhipuAI(api_key=os.environ.get("ZHIPU_API_KEY"))
+
+          try:
+              with open(".glm-request", "r") as f:
+                  request = f.read()
+              print(f"Read request from .glm-request:\n{request}")
+          except FileNotFoundError:
+              print("Error: .glm-request file not found.")
+              exit(1) # Indicate failure
+          except Exception as e:
+              print(f"Error reading .glm-request file: {e}")
+              exit(1) # Indicate failure
+
+
+          generate_prompt = f"""
+          You are GLM-Zero, an advanced AI coding assistant with deep reasoning capabilities.
+
+          Generate code based on this request:
+          {request}
+
+          Provide:
+          1. Well-structured, production-ready code
+          2. Clear comments explaining complex logic
+          3. Usage examples
+          4. Any necessary imports or dependencies
+          """
+
+          try:
+              print("Calling ZhipuAI chat completions API for code generation...")
+              response = client.chat.completions.create(
+                  model="glm-4-flash", # Using a likely available model
+                  messages=[
+                      {"role": "system", "content": "You are GLM-Zero, an advanced AI coding assistant with deep reasoning capabilities."},
+                      {"role": "user", "content": generate_prompt}
+                  ]
+              )
+
+              print("Received response from ZhipuAI.")
+              print(response.choices[0].message.content)
+
+              with open("GLM-Generated-Code.md", "w") as f:
+                  f.write("## 🧠 GLM-Zero Generated Code\n\n")
+                  f.write(response.choices[0].message.content)
+
+              print("✅ Code generation complete! Check GLM-Generated-Code.md")
+
+          except Exception as e:
+              print(f"Error during ZhipuAI API call or file writing: {e}")
+              with open("GLM-Generated-Code.md", "w") as f:
+                  f.write("## 🧠 GLM-Zero Generated Code\n\n")
+                  f.write(f"Error: Failed to generate code due to an issue with the AI service: {e}")
+              exit(1) # Indicate failure
+
+          EOF
+
+          python $GLM_COMPANION_HOME/generate.py
+          echo "🛠️ GLM-Zero code generation script executed."
+
+        else
+          echo "❌ No .glm-request file found. Create one with your coding request."
+        fi
+
+    - name: Post GLM Design as Issue Comment
+      if: github.event_name == 'issues' && github.event.action == 'opened'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const path = `${process.env.GLM_COMPANION_HOME}/design.md`;
+          let design = "Error: Design file not found.";
+          try {
+             design = fs.readFileSync(path, 'utf8');
+          } catch (e) {
+            console.error(`Failed to read design file: ${e}`);
+          }
+
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: design
+          });
+
+    - name: GLM Companion Sign-off
+      run: |
+        echo "👋 GLM-Zero is signing off..."
+        echo "🌈 Remember: With 1060 billion parameters, every problem has a solution!"
+        echo "🚀 Keep coding, keep creating, keep pushing boundaries!"
+        echo "Your GLM-Zero companion will be back for more !"
+
+"""
+
+# Print the YAML content (or write it to a file if needed)
+print(github_workflow_yaml)
+
+# Note: This cell now just prints the YAML content.
+# To actually use this as a GitHub workflow, save this content
+# to a file named like '.github/workflows/glm-companion.yml'
+# in your GitHub repository.
