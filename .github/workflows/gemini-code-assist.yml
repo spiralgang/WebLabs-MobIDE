@@ -1,4 +1,4 @@
-name: @gemini-code-assist
+name: gemini-code-assist.yml
 on:
   push:
     branches:
