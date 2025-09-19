@@ -9,12 +9,12 @@ android {
 
     defaultConfig {
         applicationId = "com.spiralgang.weblabs"
-        minSdk = 29  // Android 10+ compliance
+        minSdk = 29  // Android 10+ compliance for Docker environment
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "2.0.0-docker"
 
-        // ARM64/AArch64 specific configuration
+        // ARM64/AArch64 specific configuration for Docker Ubuntu
         ndk {
             abiFilters += listOf("arm64-v8a")
         }
@@ -25,6 +25,12 @@ android {
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Docker environment metadata
+        buildConfigField("String", "ENVIRONMENT", "\"docker-ubuntu\"")
+        buildConfigField("String", "CONTAINER_TYPE", "\"docker\"")
+        buildConfigField("boolean", "DOCKER_ENABLED", "true")
+        buildConfigField("String", "IDE_URL", "\"http://localhost:8080\"")
     }
 
     buildTypes {
@@ -44,17 +50,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        buildConfig = true
     }
 }
 

@@ -14,23 +14,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.spiralgang.weblabs.services.AlpineLinuxService
-import com.spiralgang.weblabs.services.ShellTerminalService
 import com.spiralgang.weblabs.utils.PermissionManager
 import com.spiralgang.weblabs.utils.RepositoryDownloader
-import com.spiralgang.weblabs.ai.EmbeddedAIModelManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
- * MainActivity - Alpine Linux Shell-IDE Interface
+ * MainActivity - Docker Ubuntu Development Environment Launcher
  * 
- * This activity provides a full-screen web-based interface that connects to:
- * - Alpine Linux environment running in the background
+ * This activity provides the main interface and launches:
+ * - Docker Ubuntu 24.04 ARM64 development environment
+ * - Code-Server web IDE interface
  * - AI-assisted development commands
- * - Real shell terminal with development tools
- * - Mobile-optimized code editor and file system
+ * - Production-grade mobile development workspace
  */
 class MainActivity : AppCompatActivity() {
     
@@ -41,9 +38,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
     private lateinit var permissionManager: PermissionManager
     private lateinit var repositoryDownloader: RepositoryDownloader
-    private lateinit var embeddedAIManager: EmbeddedAIModelManager
-    private var alpineService: AlpineLinuxService? = null
-    private var shellService: ShellTerminalService? = null
+    private lateinit var dockerManager: DockerManager
     private val activityScope = CoroutineScope(Dispatchers.Main)
     
     // Service connections
