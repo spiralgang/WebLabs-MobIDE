@@ -2,7 +2,7 @@
 
 The master Copilot instructions for this repository are located at:
 
-[`copilot_instructions.md`](../../copilot_instructions.md)
+[`copilot_instructions.md`](https://github.com/spiralgang/WebLabs-MobIDE/blob/main/copilot_instructions.md)
 
 All coding, refactoring, and documentation must comply with the standards and workflow described there.
 
