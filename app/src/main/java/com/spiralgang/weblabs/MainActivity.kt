@@ -271,8 +271,12 @@ class MainActivity : AppCompatActivity() {
         activityScope.launch {
             try {
                 val command = url.removePrefix("docker://")
-                val result = dockerManager.getContainerStatus()
-                
+                val result = when (command) {
+                    "status" -> dockerManager.getContainerStatus()
+                    "start" -> dockerManager.startContainer()
+                    "stop" -> dockerManager.stopContainer()
+                    else -> "Unknown command: $command"
+                }
                 runOnUiThread {
                     Toast.makeText(this@MainActivity, "Docker: $result", Toast.LENGTH_SHORT).show()
                 }
