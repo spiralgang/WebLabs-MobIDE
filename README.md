@@ -10,30 +10,29 @@ References:
 - [GitHub Copilot Org Instructions](https://docs.github.com/en/copilot/customizing-copilot/adding-organization-custom-instructions-for-github-copilot)
 
 
-# WebLabs-MobIDE
-# WebLabs-MobID
+# 🚀 WebLabs-MobIDE - Docker Ubuntu Environment
 
-**Mobile-First Quantum WebIDE with Production-Ready ARM64 Android Development Toolkit**
+**Your Virtual Linux Development Environment on Android**
 
-A comprehensive, browser-based development environment optimized for mobile-first applications, Android development, and ARM64/AArch64 architecture. Features integrated Production Toolkit with real working code for professional mobile development.
+A complete Docker-based Ubuntu 24.04 ARM64 development environment that runs on Android devices, providing professional development tools, Code-Server web IDE, and AI-powered assistance.
 
-## 📱 Direct APK Download
+## 📱 Download Production APK
 
-**🚀 Production Android APK with Alpine Linux ARM64 Shell-IDE**
+**🔥 [DOWNLOAD LATEST DOCKER APK](https://github.com/spiralgang/WebLabs-MobIDE/releases/latest)** 
 
-[![Download Latest Release APK](https://img.shields.io/badge/📱_Download_Production_APK-2EA043?style=for-the-badge&logo=android&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases/latest/download/WebLabs-MobIDE-release-signed.apk)
+[![Download Latest Release APK](https://img.shields.io/badge/📱_Download_Docker_APK-2EA043?style=for-the-badge&logo=android&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases/latest/download/WebLabs-MobIDE-release-signed.apk)
 
 [![Download Debug APK](https://img.shields.io/badge/🔧_Download_Debug_APK-FF6B35?style=for-the-badge&logo=android&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases/latest/download/WebLabs-MobIDE-debug.apk)
 
 [![View All Releases](https://img.shields.io/badge/📦_All_Releases-1F2328?style=for-the-badge&logo=github&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases)
 
-### ⚡ What This APK Does:
-1. **📱 Installs on Android 10+ (ARM64 devices)**
-2. **🔐 Requests ALL necessary permissions** (storage, network, install apps, system access)
-3. **📦 Automatically downloads this entire repository** on first launch
-4. **🏔️ Downloads and installs Alpine Linux 3.22.1 ARM64** development environment
-5. **🛠️ Creates complete mobile developer codespace** with Shell-IDE, AI tools, and development environment
-6. **🚀 Provides production-ready mobile development workspace** on your Android device
+### 🐳 **Docker Ubuntu Environment Features:**
+1. **📱 Installs on Android 10+ ARM64 devices**
+2. **🐳 Ubuntu 24.04 ARM64 Docker container** with glibc environment  
+3. **⚡ Code-Server web IDE** accessible at localhost:8080
+4. **🤖 AI development assistance** with HuggingFace integration
+5. **🛠️ Complete development toolkit** (Android SDK, NDK, Python, Node.js)
+6. **🚀 Production-grade mobile workspace** with Docker management
 
 ### 📋 Installation Requirements:
 - **Android 10+** (API 29+) with ARM64/AArch64 processor

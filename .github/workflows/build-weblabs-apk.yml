@@ -1,0 +1,176 @@
+name: Build WebLabs-MobIDE Docker APK
+
+on:
+  push:
+    branches: [ main, copilot/fix-29 ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    name: Build WebLabs-MobIDE APK
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v3
+      with:
+        api-level: 34
+        build-tools: 34.0.0
+        ndk-version: 25.2.9519653
+
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Make Gradle wrapper executable
+      run: chmod +x ./gradlew
+
+    - name: Validate Gradle wrapper
+      uses: gradle/wrapper-validation-action@v1
+
+    - name: Create workspace structure
+      run: |
+        echo "Creating WebLabs-MobIDE workspace structure..."
+        mkdir -p workspace/{projects,ai/{models,cache},logs}
+        mkdir -p app/src/main/assets/{scripts,webide,models}
+        echo "Workspace structure created"
+
+    - name: Validate Docker environment
+      run: |
+        echo "🚀 WebLabs-MobIDE Docker Environment Validation"
+        ./gradlew validateDockerEnvironment --no-daemon
+
+    - name: Build Debug APK
+      run: |
+        echo "🔨 Building WebLabs-MobIDE Debug APK..."
+        ./gradlew assembleDebug --no-daemon --stacktrace
+
+    - name: Build Release APK  
+      run: |
+        echo "🔨 Building WebLabs-MobIDE Release APK..."
+        ./gradlew assembleRelease --no-daemon --stacktrace
+
+    - name: List APK outputs
+      run: |
+        echo "📦 APK Build Results:"
+        find app/build/outputs/apk -name "*.apk" -type f || echo "No APK files found"
+
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: WebLabs-MobIDE-Debug-v${{ github.run_number }}
+        path: app/build/outputs/apk/debug/*.apk
+        if-no-files-found: warn
+
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: WebLabs-MobIDE-Release-v${{ github.run_number }}
+        path: app/build/outputs/apk/release/*.apk
+        if-no-files-found: warn
+
+    - name: Generate download links
+      if: success()
+      run: |
+        echo "🎉 WebLabs-MobIDE APK Build Successful!"
+        echo ""
+        echo "📱 APK Downloads:"
+        echo "- Debug APK: Available in Actions artifacts"
+        echo "- Release APK: Available in Actions artifacts" 
+        echo ""
+        echo "🐳 Features:"
+        echo "- Ubuntu 24.04 ARM64 Docker environment"
+        echo "- Code-Server web IDE at localhost:8080"  
+        echo "- AI-powered development assistance"
+        echo "- Mobile-optimized interface"
+        echo "- Production-grade development tools"
+        echo ""
+        echo "📋 Installation:"
+        echo "1. Download APK from GitHub Actions artifacts"
+        echo "2. Enable 'Install from unknown sources' on Android"
+        echo "3. Install APK on ARM64 Android 10+ device"
+        echo "4. Launch WebLabs-MobIDE for Docker environment"
+
+  create-release:
+    name: Create GitHub Release
+    needs: build-apk
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Download APK artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: WebLabs-MobIDE-Release-v${{ github.run_number }}
+        path: ./apks
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v2.0.${{ github.run_number }}
+        release_name: WebLabs-MobIDE v2.0.${{ github.run_number }} - Docker Ubuntu Environment
+        body: |
+          🚀 **WebLabs-MobIDE Docker Ubuntu Environment Release**
+          
+          A complete virtual Linux development environment running on Android devices!
+          
+          ## 🐳 What's New
+          - **Ubuntu 24.04 ARM64** Docker environment with glibc (not Alpine musl)
+          - **Code-Server IDE** - Full VS Code experience at localhost:8080
+          - **AI Integration** - Development assistance ready
+          - **Mobile Optimized** - Touch-friendly cyberpunk interface
+          - **Production Tools** - Complete development workspace
+          
+          ## 📱 Features
+          - Virtual Linux development environment on Android
+          - Docker container management
+          - Web-based VS Code IDE
+          - AI-powered coding assistance
+          - Project workspace management
+          - GitHub Copilot compatible environment
+          
+          ## 🎯 Requirements  
+          - Android 10+ (API 29+)
+          - ARM64/AArch64 device
+          - 4GB+ RAM recommended
+          - Storage for Docker images
+          
+          ## 📥 Installation
+          1. Download the APK below
+          2. Enable "Install from unknown sources" in Android settings
+          3. Install APK on your ARM64 Android device
+          4. Launch WebLabs-MobIDE
+          5. Access Code-Server IDE at localhost:8080
+          
+          ## 🛠️ Development Environment
+          Your own virtual Linux workspace with:
+          - Ubuntu 24.04 ARM64 with full development tools
+          - Code-Server web-based VS Code IDE
+          - Docker container management
+          - AI development assistance
+          - Production-grade mobile development environment
+          
+          Perfect for developers who want a complete Linux development environment on their Android device!
+        draft: false
+        prerelease: false
