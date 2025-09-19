@@ -18,6 +18,7 @@
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#B0B0B0</color>
     <color name="text_disabled">#707070</color>
+    <color name="text_tertiary">#808080</color>
     
     <!-- Terminal colors -->
     <color name="terminal_background">#0D1117</color>
