@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WebLabs MobIDE</string>
+    <string name="app_description">Alpine Linux Shell-IDE for ARM64 Android Development</string>
+    
+    <!-- Alpine Linux related strings -->
+    <string name="alpine_initializing">Initializing Alpine Linux environment...</string>
+    <string name="alpine_ready">Alpine Linux ready for development</string>
+    <string name="alpine_error">Failed to initialize Alpine Linux</string>
+    
+    <!-- Permissions -->
+    <string name="permission_storage">Storage permission is required for Alpine Linux file system</string>
+    <string name="permission_network">Network permission is required for package downloads</string>
+    
+    <!-- Services -->
+    <string name="service_alpine_title">Alpine Linux Environment</string>
+    <string name="service_alpine_desc">Managing Alpine Linux development environment</string>
+    
+    <!-- Shell-IDE -->
+    <string name="shell_prompt">~/developer #</string>
+    <string name="terminal_welcome">WebLabs MobIDE - Alpine Linux Shell-IDE</string>
+    <string name="terminal_help">Type \'help\' for available commands</string>
+    
+    <!-- AI Assistant -->
+    <string name="ai_assistant_ready">AI Assistant ready for development help</string>
+    <string name="ai_processing">Processing your request...</string>
+    
+    <!-- Development Tools -->
+    <string name="tools_available">Development tools: gcc, nodejs, python3, git</string>
+    <string name="packages_updating">Updating package index...</string>
+    <string name="packages_installing">Installing packages...</string>
+    
+    <!-- Error Messages -->
+    <string name="error_alpine_install">Failed to install Alpine Linux</string>
+    <string name="error_permissions">Required permissions not granted</string>
+    <string name="error_arm64_compatibility">ARM64 architecture required</string>
+    <string name="error_network">Network connection required</string>
+    
+    <!-- Success Messages -->
+    <string name="success_alpine_installed">Alpine Linux installed successfully</string>
+    <string name="success_environment_ready">Development environment ready</string>
+    <string name="success_package_installed">Package installed successfully</string>
+</resources>

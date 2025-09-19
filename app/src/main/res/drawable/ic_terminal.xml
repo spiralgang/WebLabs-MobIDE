@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Terminal window background -->
+    <path
+        android:fillColor="#1a1a2e"
+        android:pathData="M3,3 L21,3 A2,2 0 0,1 23,5 L23,19 A2,2 0 0,1 21,21 L3,21 A2,2 0 0,1 1,19 L1,5 A2,2 0 0,1 3,3 Z" />
+    
+    <!-- Terminal title bar -->
+    <path
+        android:fillColor="#2d5016"
+        android:pathData="M3,3 L21,3 A2,2 0 0,1 23,5 L23,7 L1,7 L1,5 A2,2 0 0,1 3,3 Z" />
+    
+    <!-- Terminal prompt symbol -->
+    <path
+        android:fillColor="#00ff41"
+        android:strokeWidth="1"
+        android:strokeColor="#00ff41"
+        android:pathData="M4,10 L7,12.5 L4,15 M9,15 L16,15" />
+    
+    <!-- Title bar dots -->
+    <circle
+        android:fillColor="#ff6b6b"
+        android:cx="4"
+        android:cy="5"
+        android:radius="0.8" />
+    <circle
+        android:fillColor="#ffd43b"
+        android:cx="6.5"
+        android:cy="5"
+        android:radius="0.8" />
+    <circle
+        android:fillColor="#51cf66"
+        android:cx="9"
+        android:cy="5"
+        android:radius="0.8" />
+</vector>

@@ -1,0 +1,56 @@
+// Top-level build file where you can add configuration options common to all sub-modules/projects.
+
+buildscript {
+    ext.kotlin_version = "1.9.10"
+    
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.1.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        
+        // Firebase plugins (optional for analytics)
+        classpath 'com.google.gms:google-services:4.4.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
+    }
+}
+
+plugins {
+    id 'com.android.application' version '8.1.2' apply false
+    id 'org.jetbrains.kotlin.android' version '1.9.10' apply false
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+// ARM64 Android development configuration
+ext {
+    compileSdkVersion = 34
+    targetSdkVersion = 34
+    minSdkVersion = 29  // Android 10+ for ARM64 optimization
+    
+    // ARM64 specific configuration
+    arm64AbiFilter = 'arm64-v8a'
+    alpineVersion = '3.18'
+    
+    // Dependency versions
+    androidxVersion = '1.6.1'
+    kotlinCoroutinesVersion = '1.7.3'
+    okhttpVersion = '4.12.0'
+    
+    // WebLabs MobIDE specific
+    alpineDownloadUrl = "https://dl-cdn.alpinelinux.org/alpine/v3.18/releases/aarch64/alpine-minirootfs-3.18.0-aarch64.tar.gz"
+}
