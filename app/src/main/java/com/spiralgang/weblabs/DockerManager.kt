@@ -139,13 +139,19 @@ class DockerManager(private val context: Context) {
             // Stop existing container if running
             stopContainer()
             
+            // Ensure dedicated workspace directory exists
+            val workspaceDir = File(context.filesDir, "workspace")
+            if (!workspaceDir.exists()) {
+                workspaceDir.mkdirs()
+            }
+            
             val process = ProcessBuilder(
                 "docker", "run", "-d",
                 "--name", CONTAINER_NAME,
                 "--platform", "linux/arm64",
                 "-p", "$IDE_PORT:8080",
-                "-v", "${context.filesDir.absolutePath}/workspace:$WORKSPACE_DIR",
-                "--restart", "unless-stopped",
+                "-v", "${workspaceDir.absolutePath}:$WORKSPACE_DIR",
+                "--restart", "on-failure:3",
                 DOCKER_IMAGE
             ).start()
             
