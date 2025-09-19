@@ -1,0 +1,57 @@
+# Build artifacts
+build/
+dist/
+*.apk
+*.aar
+*.so
+*.o
+*.class
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Android Studio files
+.gradle/
+local.properties
+.navigation/
+captures/
+output.json
+
+# AI Models (large files)
+ai/models/
+ai/downloads/
+*.bin
+*.safetensors
+*.gguf
+*.pt
+*.pth
+*.onnx
+
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.log
+*.cache
+
+# Archives and packages
+*.tar.gz
+*.zip
+*.vsix
+*.deb
+*.rpm
+
+# OS files
+.DS_Store
+Thumbs.db

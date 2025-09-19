@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme for WebLabs MobIDE -->
+    <style name="Theme.WeblabsMobIDE" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">#2d5016</item>
+        <item name="colorPrimaryVariant">#1a2e0a</item>
+        <item name="colorOnPrimary">#ffffff</item>
+        
+        <item name="colorSecondary">#00ff41</item>
+        <item name="colorSecondaryVariant">#00cc33</item>
+        <item name="colorOnSecondary">#000000</item>
+        
+        <item name="android:colorBackground">#0f0f23</item>
+        <item name="colorOnBackground">#ffffff</item>
+        
+        <item name="colorSurface">#1a1a2e</item>
+        <item name="colorOnSurface">#ffffff</item>
+        
+        <item name="colorError">#ff6b6b</item>
+        <item name="colorOnError">#ffffff</item>
+        
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+    
+    <!-- No Action Bar theme for full-screen Shell-IDE -->
+    <style name="Theme.WeblabsMobIDE.NoActionBar" parent="Theme.WeblabsMobIDE">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        
+        <!-- Edge-to-edge -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+    </style>
+    
+    <!-- Terminal text style -->
+    <style name="TerminalTextStyle">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#00ff41</item>
+        <item name="android:lineSpacingMultiplier">1.1</item>
+    </style>
+    
+    <!-- Shell prompt style -->
+    <style name="ShellPromptStyle">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#00ff41</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

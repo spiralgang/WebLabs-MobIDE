@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- File provider paths for sharing files between Alpine and Android -->
+    
+    <!-- Internal app storage -->
+    <files-path name="files" path="." />
+    
+    <!-- Alpine Linux environment -->
+    <files-path name="alpine" path="alpine/" />
+    
+    <!-- Cache directory -->
+    <cache-path name="cache" path="." />
+    
+    <!-- External storage (if available) -->
+    <external-path name="external" path="." />
+    
+    <!-- External app-specific storage -->
+    <external-files-path name="external_files" path="." />
+    
+    <!-- Development workspace -->
+    <files-path name="workspace" path="alpine/home/developer/" />
+</paths>

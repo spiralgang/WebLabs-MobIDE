@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme colors for Android night mode -->
+    <color name="background_dark">#0f1419</color>
+    <color name="surface_dark">#1e2328</color>
+    <color name="surface_variant">#2a2f36</color>
+    
+    <color name="text_primary">#e6e1cf</color>
+    <color name="text_secondary">#a6a28f</color>
+    <color name="text_tertiary">#6b6850</color>
+    
+    <color name="accent_primary">#39bae6</color>
+    <color name="accent_secondary">#59c2ff</color>
+    
+    <color name="success">#91b362</color>
+    <color name="success_bg">#1a2b0f</color>
+    <color name="warning">#f29718</color>
+    <color name="warning_bg">#2b1f0f</color>
+    <color name="error">#f07178</color>
+    <color name="error_bg">#2b0f11</color>
+    
+    <color name="terminal_bg">#0f1419</color>
+    <color name="terminal_text">#e6e1cf</color>
+    <color name="terminal_cursor">#39bae6</color>
+</resources>

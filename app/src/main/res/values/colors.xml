@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- WebLabs MobIDE Color Scheme - Dark Theme -->
+    <color name="primary_color">#00E676</color>
+    <color name="primary_dark">#00C853</color>
+    <color name="primary_light">#69F0AE</color>
+    
+    <color name="accent_color">#FF6D00</color>
+    <color name="accent_dark">#E65100</color>
+    <color name="accent_light">#FF9800</color>
+    
+    <!-- Background colors -->
+    <color name="dark_background">#0F0F0F</color>
+    <color name="surface_color">#1A1A1A</color>
+    <color name="surface_variant">#2D2D2D</color>
+    
+    <!-- Text colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B0B0</color>
+    <color name="text_disabled">#707070</color>
+    
+    <!-- Terminal colors -->
+    <color name="terminal_background">#0D1117</color>
+    <color name="terminal_text">#F0F6FC</color>
+    <color name="terminal_cursor">#00E676</color>
+    
+    <!-- Status colors -->
+    <color name="success_color">#00E676</color>
+    <color name="warning_color">#FF9800</color>
+    <color name="error_color">#F44336</color>
+    <color name="info_color">#2196F3</color>
+    
+    <!-- Material Design colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Legacy colors for compatibility -->
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+    
+    <!-- Color aliases for layout compatibility -->
+    <color name="background_dark">@color/dark_background</color>
+    <color name="surface_dark">@color/surface_color</color>
+    <color name="text_primary">@color/text_primary</color>
+    <color name="text_secondary">@color/text_secondary</color>
+    <color name="accent_primary">@color/primary_color</color>
+    <color name="success">@color/success_color</color>
+    <color name="success_bg">#0D2818</color>
+    <color name="warning">@color/warning_color</color>
+    <color name="warning_bg">#2D1F0A</color>
+    <color name="error">@color/error_color</color>
+    <color name="error_bg">#2D0F0F</color>
+</resources>
