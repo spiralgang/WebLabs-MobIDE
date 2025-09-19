@@ -1,21 +1,38 @@
-# Python Requirements for WebLabs-MobIDE
-# Mobile-First Quantum WebIDE with AI-Assisted Development
+# WebLabs MobIDE - Python AI Development Requirements
+# Optimized for ARM64 Android devices with Alpine Linux environment
+# Includes embedded AI model support (Embedding Gemma 300M)
 
-# Core AI and Development Tools
+# Core AI and ML libraries
+torch>=2.0.0
+transformers>=4.35.0
+numpy>=1.24.0
+safetensors>=0.4.0
+accelerate>=0.24.0
+
+# Model download and management
+kagglehub>=0.2.0
+huggingface_hub>=0.19.0
+datasets>=2.14.0
+
+# Core dependencies
 aiohttp>=3.8.0
 asyncio>=3.4.3
 github>=1.55
 requests>=2.28.0
 
+# Development tools
+jupyter>=1.0.0
+ipython>=8.15.0
+notebook>=7.0.0
+
 # Android and Mobile Development
 kivy>=2.1.0
 buildozer>=1.4.0
 
-# AI and Machine Learning
-numpy>=1.21.0
-pandas>=1.5.0
-torch>=1.12.0
-transformers>=4.20.0
+# Code analysis and generation
+tree-sitter>=0.20.0
+python-lsp-server>=1.8.0
+autopep8>=2.0.0
 
 # Development and Testing
 pytest>=7.0.0
@@ -23,9 +40,18 @@ pytest-asyncio>=0.20.0
 black>=22.0.0
 flake8>=5.0.0
 
+# Mobile development utilities
+adb-shell>=0.4.0
+frida>=16.0.0
+pycryptodome>=3.19.0
+
+# AI/ML data processing
+pandas>=1.5.0
+
 # Security and Auditing
 safety>=2.0.0
 bandit>=1.7.0
+cryptography>=41.0.0
 
 # Logging and Monitoring
 structlog>=22.0.0

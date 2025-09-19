@@ -17,6 +17,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.spiralgang.weblabs.mobide.services.AlpineLinuxService
 import com.spiralgang.weblabs.mobide.services.ShellTerminalService
 import com.spiralgang.weblabs.mobide.utils.PermissionManager
+import com.spiralgang.weblabs.mobide.utils.RepositoryDownloader
+import com.spiralgang.weblabs.mobide.ai.EmbeddedAIModelManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     
     private lateinit var webView: WebView
     private lateinit var permissionManager: PermissionManager
+    private lateinit var repositoryDownloader: RepositoryDownloader
+    private lateinit var embeddedAIManager: EmbeddedAIModelManager
     private var alpineService: AlpineLinuxService? = null
     private var shellService: ShellTerminalService? = null
     private val activityScope = CoroutineScope(Dispatchers.Main)

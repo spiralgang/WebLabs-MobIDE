@@ -44,6 +44,9 @@ class AlpineLinuxInstaller(private val context: Context) {
             // Setup basic environment
             setupBasicEnvironment()
             
+            // Copy AI model installer script to Alpine environment
+            copyAIInstallerToAlpine(alpineRoot)
+            
             Log.i(TAG, "Alpine Linux installation completed successfully")
             
         } catch (e: Exception) {
