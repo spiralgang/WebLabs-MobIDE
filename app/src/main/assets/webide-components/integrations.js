@@ -127,6 +127,12 @@ export function getAuditLogs() {
         return JSON.parse(localStorage.getItem('weblabs_audit_logs') || '[]');
     } catch (error) {
         console.error('Error reading audit logs:', error);
+        // Notify the user about the corrupted audit logs
+        if (typeof window !== 'undefined' && window.alert) {
+            window.alert('Audit logs could not be retrieved due to corrupted data. Logs have been reset.');
+        }
+        // Optionally clear corrupted logs to recover
+        localStorage.removeItem('weblabs_audit_logs');
         return [];
     }
 }
