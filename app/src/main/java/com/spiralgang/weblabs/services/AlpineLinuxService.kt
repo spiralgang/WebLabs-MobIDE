@@ -1,4 +1,4 @@
-package com.spiralgang.weblabs.mobide.services
+package com.spiralgang.weblabs.services
 
 import android.app.*
 import android.content.Intent
@@ -7,8 +7,8 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.spiralgang.weblabs.mobide.R
-import com.spiralgang.weblabs.mobide.utils.AlpineLinuxManager
+import com.spiralgang.weblabs.R
+import com.spiralgang.weblabs.utils.AlpineLinuxManager
 import kotlinx.coroutines.*
 import java.io.File
 

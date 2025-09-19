@@ -1,4 +1,4 @@
-package com.spiralgang.weblabs.mobide.utils
+package com.spiralgang.weblabs.utils
 
 import android.Manifest
 import android.app.Activity

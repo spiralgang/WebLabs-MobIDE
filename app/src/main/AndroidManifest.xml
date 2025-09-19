@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.spiralgang.weblabs.mobide">
+    package="com.spiralgang.weblabs">
 
     <!-- Permissions for Alpine Linux environment and Shell-IDE -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -61,21 +61,21 @@
 
         <!-- Alpine Linux Background Service -->
         <service
-            android:name=".services.AlpineLinuxService"
+            android:name="com.spiralgang.weblabs.services.AlpineLinuxService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
         <!-- Shell Terminal Service -->
         <service
-            android:name=".services.ShellTerminalService"
+            android:name="com.spiralgang.weblabs.services.ShellTerminalService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
         <!-- AI Assistant Service -->
         <service
-            android:name=".services.AIAssistantService"
+            android:name="com.spiralgang.weblabs.services.AIAssistantService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync" />

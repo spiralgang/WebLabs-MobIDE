@@ -1,4 +1,4 @@
-package com.spiralgang.weblabs.mobide.services
+package com.spiralgang.weblabs.services
 
 import android.app.Service
 import android.content.Intent

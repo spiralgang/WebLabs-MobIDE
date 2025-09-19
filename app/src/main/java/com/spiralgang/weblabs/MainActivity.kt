@@ -1,4 +1,4 @@
-package com.spiralgang.weblabs.mobide
+package com.spiralgang.weblabs
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
@@ -14,11 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.spiralgang.weblabs.mobide.services.AlpineLinuxService
-import com.spiralgang.weblabs.mobide.services.ShellTerminalService
-import com.spiralgang.weblabs.mobide.utils.PermissionManager
-import com.spiralgang.weblabs.mobide.utils.RepositoryDownloader
-import com.spiralgang.weblabs.mobide.ai.EmbeddedAIModelManager
+import com.spiralgang.weblabs.services.AlpineLinuxService
+import com.spiralgang.weblabs.services.ShellTerminalService
+import com.spiralgang.weblabs.utils.PermissionManager
+import com.spiralgang.weblabs.utils.RepositoryDownloader
+import com.spiralgang.weblabs.ai.EmbeddedAIModelManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

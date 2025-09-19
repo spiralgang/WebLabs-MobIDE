@@ -1,12 +1,12 @@
-package com.spiralgang.weblabs.mobide
+package com.spiralgang.weblabs
 
 import android.app.Application
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import com.spiralgang.weblabs.mobide.services.AlpineLinuxService
-import com.spiralgang.weblabs.mobide.utils.AlpineLinuxInstaller
-import com.spiralgang.weblabs.mobide.utils.PermissionManager
+import com.spiralgang.weblabs.services.AlpineLinuxService
+import com.spiralgang.weblabs.utils.AlpineLinuxInstaller
+import com.spiralgang.weblabs.utils.PermissionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

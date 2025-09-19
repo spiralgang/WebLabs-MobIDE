@@ -1,4 +1,4 @@
-package com.spiralgang.weblabs.mobide.utils
+package com.spiralgang.weblabs.utils
 
 import android.content.Context
 import android.util.Log
