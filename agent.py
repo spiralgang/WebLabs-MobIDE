@@ -37,15 +37,15 @@ class QuantumAgent:
         
     def load_auth_config(self):
         """Load authentication and integration configuration"""
+        config_path = os.path.join(os.path.dirname(__file__), 
+                                   'app/src/main/assets/models/auth-integration-config.json')
         try:
-            config_path = os.path.join(os.path.dirname(__file__), 
-                                     'app/src/main/assets/models/auth-integration-config.json')
             if os.path.exists(config_path):
                 with open(config_path, 'r') as f:
                     return json.load(f)
-        except Exception as e:
-            logger.warning(f"Could not load auth config: {e}")
-        
+        except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
+            logger.warning(f"Could not load auth config ({type(e).__name__}): {e}")
+
         # Return default configuration
         return {
             "authentication": {"enabled": True},
