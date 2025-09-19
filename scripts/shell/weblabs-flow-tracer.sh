@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# WebLabs-MobIDE Userland Flow Tracer - Fixed Version
+# WebLabs-MobIDE Flow Tracer - Development State Management
 # Tracks system state changes and allows rollback for development environment
 
 set -e
@@ -8,7 +8,7 @@ set -e
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STATE_ARCHIVES="${SCRIPT_DIR}/../../app_data/logs/state_archives"
-LOG_FILE="${SCRIPT_DIR}/../../app_data/logs/userland_tracer.log"
+LOG_FILE="${SCRIPT_DIR}/../../app_data/logs/weblabs_flow_tracer.log"
 
 # Create required directories
 mkdir -p "$STATE_ARCHIVES"
@@ -95,7 +95,7 @@ case "${1:-help}" in
         check_conflicts "$2"
         ;;
     help|*)
-        echo "WebLabs-MobIDE Userland Flow Tracer"
+        echo "WebLabs-MobIDE Flow Tracer"
         echo "Usage: $0 {save|rollback|list|check|help} [arguments]"
         echo ""
         echo "Commands:"

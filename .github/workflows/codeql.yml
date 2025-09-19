@@ -37,12 +37,12 @@ jobs:
 
       # only required for workflows in private repositories
       actions: read , suggest commit
-      contents: read , suggest commit
+      contents: read
 
     strategy:
       fail-fast: false
-      matrix: true
-        include: |
+      matrix:
+        include:
         - language: actions
           build-mode: autobuild
         - language: c-cpp
