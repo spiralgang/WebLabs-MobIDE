@@ -5,14 +5,19 @@
 
 set -euo pipefail
 
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+readonly SCRIPT_DIR
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+readonly PROJECT_ROOT
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
 readonly BUILD_DIR="${PROJECT_ROOT}/build"
 readonly APP_MODULE="${PROJECT_ROOT}/app"
 
-# ARM64 Android build configuration
-readonly TARGET_SDK_VERSION=34
-readonly COMPILE_SDK_VERSION=34
+# ARM64 Android build configuration - exported for use in gradle
+export MIN_SDK_VERSION=29
+export TARGET_SDK_VERSION=34
+export COMPILE_SDK_VERSION=34
 readonly NDK_VERSION="25.2.9519653"
 
 log() {
@@ -48,7 +53,13 @@ setup_build_environment() {
     
     # Set Gradle properties for ARM64 optimization
     export GRADLE_OPTS="-Xmx4g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError"
-    export ANDROID_NDK_ROOT="${ANDROID_SDK_ROOT}/ndk/${NDK_VERSION}"
+    
+    # Set Android SDK/NDK paths (check if ANDROID_SDK_ROOT is set)
+    if [ -n "${ANDROID_SDK_ROOT:-}" ]; then
+        export ANDROID_NDK_ROOT="${ANDROID_SDK_ROOT}/ndk/${NDK_VERSION}"
+    else
+        log "WARNING: ANDROID_SDK_ROOT not set, NDK path may not be available"
+    fi
     
     log "Build environment setup complete"
 }
