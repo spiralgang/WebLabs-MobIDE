@@ -1,0 +1,104 @@
+{
+  "authentication": {
+    "enabled": true,
+    "type": "multi_token",
+    "tokens": {
+      "github": {
+        "source": "env:GITHUB_TOKEN",
+        "required": true,
+        "scope": ["repo", "actions", "contents"]
+      },
+      "huggingface": {
+        "source": "env:HUGGINGFACE_TOKEN", 
+        "required": true,
+        "scope": ["api", "inference"]
+      },
+      "agent": {
+        "source": "env:AGENT_API_KEY",
+        "required": true,
+        "scope": ["session", "callback", "logs"]
+      }
+    }
+  },
+  "integration_endpoints": {
+    "ai_backend": {
+      "url": "https://api-inference.huggingface.co",
+      "auth_method": "bearer_token",
+      "token_source": "huggingface",
+      "timeout": 30000,
+      "retry_attempts": 3
+    },
+    "github_api": {
+      "url": "https://api.github.com",
+      "auth_method": "bearer_token", 
+      "token_source": "github",
+      "timeout": 15000,
+      "retry_attempts": 2
+    },
+    "agent_callback": {
+      "url": "/api/agent/callback",
+      "auth_method": "api_key",
+      "token_source": "agent", 
+      "timeout": 10000,
+      "retry_attempts": 1
+    },
+    "session_logs": {
+      "url": "/api/logs/session",
+      "auth_method": "api_key",
+      "token_source": "agent",
+      "timeout": 5000,
+      "retry_attempts": 2
+    }
+  },
+  "frontend_backend_mapping": {
+    "webide": {
+      "frontend": "app/src/main/assets/webide/",
+      "backend": "app/src/main/java/com/spiralgang/weblabs/WebIDEActivity.kt",
+      "auth_bridge": "WebIDEJavaScriptInterface",
+      "integration_status": "assimilated"
+    },
+    "ai_assistant": {
+      "frontend": "app/src/main/assets/webide/ai.js",
+      "backend": "app/src/main/java/com/spiralgang/weblabs/AiManager.kt", 
+      "auth_bridge": "AiManagerInterface",
+      "integration_status": "assimilated"
+    },
+    "alpine_environment": {
+      "frontend": "app/src/main/assets/alpine/",
+      "backend": "app/src/main/java/com/spiralgang/weblabs/AlpineInstaller.kt",
+      "auth_bridge": "AlpineManagerInterface", 
+      "integration_status": "assimilated"
+    },
+    "file_management": {
+      "frontend": "app/src/main/assets/webide/main.js",
+      "backend": "app/src/main/java/com/spiralgang/weblabs/MainActivity.kt",
+      "auth_bridge": "FileManagerInterface",
+      "integration_status": "assimilated"
+    }
+  },
+  "security_policies": {
+    "token_encryption": true,
+    "secure_transmission": true,
+    "audit_logging": true,
+    "rate_limiting": true,
+    "input_validation": true,
+    "cors_protection": true
+  },
+  "error_handling": {
+    "401_unauthorized": {
+      "action": "refresh_token",
+      "fallback": "user_reauth",
+      "log_level": "warn"
+    },
+    "403_forbidden": {
+      "action": "check_permissions",
+      "fallback": "admin_notify", 
+      "log_level": "error"
+    },
+    "timeout": {
+      "action": "retry_with_backoff",
+      "fallback": "cache_response",
+      "log_level": "info"
+    }
+  }
+}
