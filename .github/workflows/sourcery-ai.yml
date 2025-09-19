@@ -1,4 +1,4 @@
-name: @sourcery-ai 
+name: "Sourcery AI Code Review" 
 on:
   push:
     branches:
@@ -102,7 +102,7 @@ jobs:
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
       - name: Log Quantum Initialization
-        run: echo -e "\033[1;36mQuantum Core Initialized with State: ${{ steps.state.outputs.state }}\033[0m"
+        run: echo "Quantum Core Initialized with State ${{ steps.state.outputs.state }}"
 
   triage_issues:
     runs-on: ubuntu-latest

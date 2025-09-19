@@ -23,19 +23,13 @@
         android:pathData="M4,10 L7,12.5 L4,15 M9,15 L16,15" />
     
     <!-- Title bar dots -->
-    <circle
+    <path
         android:fillColor="#ff6b6b"
-        android:cx="4"
-        android:cy="5"
-        android:radius="0.8" />
-    <circle
+        android:pathData="M4,5m-0.8,0a0.8,0.8 0,1 1,1.6 0a0.8,0.8 0,1 1,-1.6 0" />
+    <path
         android:fillColor="#ffd43b"
-        android:cx="6.5"
-        android:cy="5"
-        android:radius="0.8" />
-    <circle
+        android:pathData="M6.5,5m-0.8,0a0.8,0.8 0,1 1,1.6 0a0.8,0.8 0,1 1,-1.6 0" />
+    <path
         android:fillColor="#51cf66"
-        android:cx="9"
-        android:cy="5"
-        android:radius="0.8" />
+        android:pathData="M9,5m-0.8,0a0.8,0.8 0,1 1,1.6 0a0.8,0.8 0,1 1,-1.6 0" />
 </vector>
