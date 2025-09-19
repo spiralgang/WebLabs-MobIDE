@@ -66,8 +66,8 @@ android {
                 "**/libcrypto.so"
             )
             
-            // Alpine Linux dependencies
-            includes += listOf(
+            // Alpine Linux dependencies - keep these resources
+            pickFirsts += listOf(
                 "**/busybox",
                 "**/alpine-minirootfs-*"
             )
@@ -93,7 +93,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // Terminal emulation for Alpine Linux shell
-    implementation("com.termux:terminal-emulator:0.118")
+    // implementation("com.termux:terminal-emulator:0.118") // Commented out due to JitPack access issues
+    // Using WebView-based terminal emulation instead
 
     // File management
     implementation("androidx.documentfile:documentfile:1.0.1")

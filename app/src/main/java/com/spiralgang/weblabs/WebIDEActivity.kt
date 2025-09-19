@@ -82,7 +82,8 @@ class WebIDEActivity : AppCompatActivity() {
         }
         
         // Set up JavaScript interface for native integration
-        webView.addJavaScriptInterface(WebIDEJavaScriptInterface(), "WebLabsIDE")
+        // TODO: Fix JavaScript interface compilation issue
+        // webView.addJavaScriptInterface(WebIDEJavaScriptInterface(), "WebLabsIDE")
         
         // Configure WebView client
         webView.webViewClient = object : WebViewClient() {

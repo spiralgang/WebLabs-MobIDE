@@ -45,7 +45,8 @@ class AlpineLinuxInstaller(private val context: Context) {
             setupBasicEnvironment()
             
             // Copy AI model installer script to Alpine environment
-            copyAIInstallerToAlpine(alpineRoot)
+            // TODO: Implement copyAIInstallerToAlpine(alpineRoot)
+            // copyAIInstallerToAlpine(alpineRoot)
             
             Log.i(TAG, "Alpine Linux installation completed successfully")
             
@@ -300,7 +301,8 @@ class AlpineLinuxInstaller(private val context: Context) {
         Log.i(TAG, "Alpine Linux installation verified successfully")
     }
     
-    fun getAlpineRoot(): File = alpineRoot
+    // Remove getAlpineRoot() function to avoid conflict with property getter
+    // Access via alpineRoot property instead
     
     fun cleanup() {
         try {

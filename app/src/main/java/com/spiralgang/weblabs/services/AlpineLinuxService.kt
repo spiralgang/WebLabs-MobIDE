@@ -159,12 +159,12 @@ class AlpineLinuxService : Service() {
             "wabt" // WebAssembly Binary Toolkit
         )
         
-        for (package in packages) {
+        for (pkg in packages) {
             try {
-                Log.d(TAG, "Installing package: $package")
-                alpineManager.installPackage(package)
+                Log.d(TAG, "Installing package: $pkg")
+                alpineManager.installPackage(pkg)
             } catch (e: Exception) {
-                Log.w(TAG, "Failed to install package $package", e)
+                Log.w(TAG, "Failed to install package $pkg", e)
             }
         }
     }
@@ -175,7 +175,7 @@ class AlpineLinuxService : Service() {
             alpineManager.executeCommand("pip3 install --user transformers torch numpy requests aiohttp")
             
             // Setup development workspace
-            val workspaceDir = File(alpineManager.getAlpineRoot(), "home/developer")
+            val workspaceDir = File(alpineManager.alpineRoot, "home/developer")
             workspaceDir.mkdirs()
             
             // Create development scripts
@@ -250,7 +250,7 @@ fi
 """
         )
         
-        val scriptsDir = File(alpineManager.getAlpineRoot(), "usr/local/bin")
+        val scriptsDir = File(alpineManager.alpineRoot, "usr/local/bin")
         scriptsDir.mkdirs()
         
         scripts.forEach { (name, content) ->

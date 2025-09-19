@@ -44,8 +44,8 @@
     <!-- Color aliases for layout compatibility -->
     <color name="background_dark">@color/dark_background</color>
     <color name="surface_dark">@color/surface_color</color>
-    <color name="text_primary">@color/text_primary</color>
-    <color name="text_secondary">@color/text_secondary</color>
+    <color name="text_primary_alias">@color/text_primary</color>
+    <color name="text_secondary_alias">@color/text_secondary</color>
     <color name="accent_primary">@color/primary_color</color>
     <color name="success">@color/success_color</color>
     <color name="success_bg">#0D2818</color>
