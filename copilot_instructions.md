@@ -52,8 +52,8 @@ root/
 
 ## 2. Coding & Documentation Standards
 
-- **Android 10+ Compliance:** All code must target ARM64, minSdkVersion 29+, and use only APIs compatible with Android 10+.
-- **Alpine Linux Integration:** Bundle or download Alpine ARM64 rootfs; scripts must set up, mount, and expose the full shell environment.
+- **Android 10+ Compliance:** All code must target Virtual Environent Based ARM64, minSdkVersion 29+, and use only APIs compatible with Android 10+.
+- **Alpine Linux Integration:** Bundle or download Ubuntu lite ARM64 rootfs venv; scripts must set up, mount, and expose the full shell environment.
 - **Web-Based IDE:** All front-end code (HTML/CSS/JS) must enable browser-based code editing, file management, and terminal emulation.
 - **AI Embedded:** JavaScript/Python interfaces must connect to AI models via HuggingFace or local inference; provide secure key management and error handling.
 - **Security:** Use privileged permissions, enforce proper Android manifest declarations, and follow OWASP mobile security best practices.
@@ -64,7 +64,7 @@ root/
 - **Format all new code, refactors, and docs to match above repo structure.**
 - **Autogenerate missing folders/files and properly nest code.**
 - **Validate and lint code for Android, Linux, and AI integration.**
-- **Never create “example” or stub code: always generate production-ready, runnable code only.**
+- **Never create “example”, never create "dry-run" or "debug" APKs or provide "TODO" or stub code: always generate production-ready, runnable code && downloadable release APKs ONLY**
 - **Document every module and script with concise, context-relevant rationale.**
 - **Reference all foundational standards in /reference/vault, never duplicate.**
 - **Audit every change for directory and permission correctness.**
@@ -78,7 +78,7 @@ root/
 
 ## Example Commit Message
 
-> Format: “Refactor [component] for [Android 10+/Alpine/AI integration]: [brief rationale]. Structure validated.”
+> Format: “Refactor [component] for [Android 10+/Linux/AI integration]: [brief rationale]. Structure validated.”
 
 ---
 
@@ -88,6 +88,6 @@ root/
 - [Android Studio Project Structure](https://developer.android.com/studio/projects)
 - [Android Manifest Permissions](https://developer.android.com/guide/topics/manifest/permission-element)
 - [OWASP Mobile Security](https://owasp.org/www-project-mobile-security/)
-- [Alpine Linux ARM64 Installation](https://wiki.alpinelinux.org/wiki/Installation)
+- [Compatible Linux ARM64 Installation]([https://forum.orekit.org/t/docker-and-ubuntu-aarch64-architecture-installation/2467])
 - [HuggingFace API](https://huggingface.co/docs/api-inference/index)
 - [CI/CD Gradle Best Practices](https://docs.gradle.org/current/userguide/ci.html)
