@@ -18,6 +18,7 @@
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#B0B0B0</color>
     <color name="text_disabled">#707070</color>
+    <color name="text_tertiary">#808080</color>
     
     <!-- Terminal colors -->
     <color name="terminal_background">#0D1117</color>
@@ -44,8 +45,8 @@
     <!-- Color aliases for layout compatibility -->
     <color name="background_dark">@color/dark_background</color>
     <color name="surface_dark">@color/surface_color</color>
-    <color name="text_primary">@color/text_primary</color>
-    <color name="text_secondary">@color/text_secondary</color>
+    <color name="text_primary_alias">@color/text_primary</color>
+    <color name="text_secondary_alias">@color/text_secondary</color>
     <color name="accent_primary">@color/primary_color</color>
     <color name="success">@color/success_color</color>
     <color name="success_bg">#0D2818</color>

@@ -18,7 +18,7 @@ class AlpineLinuxManager(private val context: Context) {
         const val ALPINE_DIR = "alpine"
     }
     
-    private val alpineRoot: File by lazy {
+    val alpineRoot: File by lazy {
         File(context.filesDir, ALPINE_DIR)
     }
     
@@ -123,7 +123,8 @@ class AlpineLinuxManager(private val context: Context) {
             }
             command.startsWith("apk add ") -> {
                 val packageName = command.substring(8).trim()
-                installPackage(packageName)
+                val result = installPackage(packageName)
+                if (result) "OK: $packageName installed successfully" else "ERROR: Failed to install $packageName"
             }
             command.startsWith("apk list") -> {
                 getInstalledPackages()
@@ -172,7 +173,8 @@ class AlpineLinuxManager(private val context: Context) {
         return "Command executed in Alpine Linux: $command"
     }
     
-    fun getAlpineRoot(): File = alpineRoot
+    // Remove getAlpineRoot() function to avoid conflict with property getter
+    // Access via alpineRoot property instead
     
     fun cleanup() {
         Log.i(TAG, "Cleaning up Alpine Linux manager...")

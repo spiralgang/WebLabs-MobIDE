@@ -9,9 +9,30 @@
 
 import OpenAI from "openai";
 
-// Load API key securely from repository 
+/**
+ * Get OpenAI API key from browser-compatible storage
+ * @returns {string} API key or placeholder
+ */
+function getOpenAIKey() {
+  // Try to get from localStorage first
+  const storedKey = localStorage.getItem('openai_api_key');
+  if (storedKey) {
+    return storedKey;
+  }
+  
+  // Try to get from a configuration object that might be set by the app
+  if (typeof window !== 'undefined' && window.appConfig && window.appConfig.openaiKey) {
+    return window.appConfig.openaiKey;
+  }
+  
+  // Return a placeholder - in production this should prompt user for key
+  console.warn('OpenAI API key not found. Please set it in localStorage as "openai_api_key"');
+  return 'your-openai-api-key-here';
+}
+
+// Load API key securely from configuration or local storage (browser-compatible)
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: getOpenAIKey() // Use browser-compatible key retrieval
 });
 
 const prompt = `

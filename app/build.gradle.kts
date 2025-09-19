@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    id("kotlin-android")
 }
 
 android {
@@ -56,23 +56,6 @@ android {
         viewBinding = true
         dataBinding = true
     }
-
-    packaging {
-        resources {
-            // Include native libraries for Alpine Linux
-            pickFirsts += listOf(
-                "**/libc++_shared.so",
-                "**/libssl.so", 
-                "**/libcrypto.so"
-            )
-            
-            // Alpine Linux dependencies
-            includes += listOf(
-                "**/busybox",
-                "**/alpine-minirootfs-*"
-            )
-        }
-    }
 }
 
 dependencies {
@@ -93,7 +76,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // Terminal emulation for Alpine Linux shell
-    implementation("com.termux:terminal-emulator:0.118")
+    // implementation("com.termux:terminal-emulator:0.118") // Commented out due to JitPack access issues
+    // Using WebView-based terminal emulation instead
 
     // File management
     implementation("androidx.documentfile:documentfile:1.0.1")
