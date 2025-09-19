@@ -88,6 +88,6 @@ root/
 - [Android Studio Project Structure](https://developer.android.com/studio/projects)
 - [Android Manifest Permissions](https://developer.android.com/guide/topics/manifest/permission-element)
 - [OWASP Mobile Security](https://owasp.org/www-project-mobile-security/)
-- [Compatible Linux ARM64 Installation]([https://forum.orekit.org/t/docker-and-ubuntu-aarch64-architecture-installation/2467])
+- [Compatible Linux ARM64 Installation](https://forum.orekit.org/t/docker-and-ubuntu-aarch64-architecture-installation/2467)
 - [HuggingFace API](https://huggingface.co/docs/api-inference/index)
 - [CI/CD Gradle Best Practices](https://docs.gradle.org/current/userguide/ci.html)
