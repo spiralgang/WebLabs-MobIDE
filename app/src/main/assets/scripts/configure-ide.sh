@@ -9,7 +9,7 @@ set -euo pipefail
 
 # Configuration
 MODEL_NAME="embeddinggemma-300m"
-MODEL_URL="https://huggingface.co/google/embeddinggemma-300m"
+MODEL_URL="${MODEL_URL:-https://huggingface.co/google/embeddinggemma-300m}"
 AI_DIR="/home/developer/ai"
 MODEL_DIR="$AI_DIR/models"
 MAX_MODEL_SIZE_GB=4
