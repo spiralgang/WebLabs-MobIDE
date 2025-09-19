@@ -16,4 +16,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "WebLabs-MobIDE"
-include(":app")
+// Temporarily disable app module due to network restrictions
+// include(":app")
