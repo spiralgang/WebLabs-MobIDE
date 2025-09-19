@@ -40,4 +40,23 @@
     <string name="success_alpine_installed">Alpine Linux installed successfully</string>
     <string name="success_environment_ready">Development environment ready</string>
     <string name="success_package_installed">Package installed successfully</string>
+    
+    <!-- Additional UI strings -->
+    <string name="app_subtitle">Alpine Linux ARM64 Shell-IDE\nMobile Development Environment</string>
+    <string name="initializing_environment">Initializing ARM64 development environment...</string>
+    <string name="downloading_repository">Downloading WebLabs-MobIDE repository...</string>
+    <string name="setting_up_alpine">Setting up Alpine Linux 3.22.1 ARM64...</string>
+    <string name="alpine_linux_ready">Alpine Linux ARM64 Ready</string>
+    <string name="online">ONLINE</string>
+    <string name="offline">OFFLINE</string>
+    <string name="open_menu">Open Menu</string>
+    <string name="permission_required">Permission Required</string>
+    <string name="storage_permission_message">Storage permission is required to download and setup Alpine Linux development environment.</string>
+    <string name="network_permission_message">Network permission is required to download Alpine Linux and repository dependencies.</string>
+    <string name="install_permission_message">Install permission is required to manage development packages and tools.</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="exit">Exit</string>
+    <string name="setup_complete">Setup Complete</string>
+    <string name="setup_failed">Setup Failed</string>
+    <string name="retry_setup">Retry Setup</string>
 </resources>

@@ -40,4 +40,17 @@
     <color name="purple_700">#3700B3</color>
     <color name="teal_200">#03DAC5</color>
     <color name="teal_700">#018786</color>
+    
+    <!-- Color aliases for layout compatibility -->
+    <color name="background_dark">@color/dark_background</color>
+    <color name="surface_dark">@color/surface_color</color>
+    <color name="text_primary">@color/text_primary</color>
+    <color name="text_secondary">@color/text_secondary</color>
+    <color name="accent_primary">@color/primary_color</color>
+    <color name="success">@color/success_color</color>
+    <color name="success_bg">#0D2818</color>
+    <color name="warning">@color/warning_color</color>
+    <color name="warning_bg">#2D1F0A</color>
+    <color name="error">@color/error_color</color>
+    <color name="error_bg">#2D0F0F</color>
 </resources>

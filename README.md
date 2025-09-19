@@ -4,6 +4,32 @@
 
 A comprehensive, browser-based development environment optimized for mobile-first applications, Android development, and ARM64/AArch64 architecture. Features integrated Production Toolkit with real working code for professional mobile development.
 
+## 📱 Direct APK Download
+
+**🚀 Production Android APK with Alpine Linux ARM64 Shell-IDE**
+
+[![Download Latest Release APK](https://img.shields.io/badge/📱_Download_Production_APK-2EA043?style=for-the-badge&logo=android&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases/latest/download/WebLabs-MobIDE-release-signed.apk)
+
+[![Download Debug APK](https://img.shields.io/badge/🔧_Download_Debug_APK-FF6B35?style=for-the-badge&logo=android&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases/latest/download/WebLabs-MobIDE-debug.apk)
+
+[![View All Releases](https://img.shields.io/badge/📦_All_Releases-1F2328?style=for-the-badge&logo=github&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases)
+
+### ⚡ What This APK Does:
+1. **📱 Installs on Android 10+ (ARM64 devices)**
+2. **🔐 Requests ALL necessary permissions** (storage, network, install apps, system access)
+3. **📦 Automatically downloads this entire repository** on first launch
+4. **🏔️ Downloads and installs Alpine Linux 3.22.1 ARM64** development environment
+5. **🛠️ Creates complete mobile developer codespace** with Shell-IDE, AI tools, and development environment
+6. **🚀 Provides production-ready mobile development workspace** on your Android device
+
+### 📋 Installation Requirements:
+- **Android 10+** (API 29+) with ARM64/AArch64 processor
+- **3GB+ free storage** for Alpine Linux environment
+- **Internet connection** for initial Alpine Linux and repository download
+- **Enable "Install from unknown sources"** in Android security settings
+
+**NO EXAMPLES - REAL PRODUCTION CODE**: This APK creates an actual Alpine Linux development environment on your Android device!
+
 ## 🚀 Features
 
 ### 🛠️ Production Toolkit (No Examples - Real Code Only!)
