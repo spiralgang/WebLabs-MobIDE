@@ -11,7 +11,6 @@ readonly BUILD_DIR="${PROJECT_ROOT}/build"
 readonly APP_MODULE="${PROJECT_ROOT}/app"
 
 # ARM64 Android build configuration
-readonly MIN_SDK_VERSION=21
 readonly TARGET_SDK_VERSION=34
 readonly COMPILE_SDK_VERSION=34
 readonly NDK_VERSION="25.2.9519653"
