@@ -10,7 +10,7 @@ References:
 - [GitHub Copilot Org Instructions](https://docs.github.com/en/copilot/customizing-copilot/adding-organization-custom-instructions-for-github-copilot)
 
 
-- # WebLabs-MobIDE
+# WebLabs-MobIDE
 # WebLabs-MobID
 
 **Mobile-First Quantum WebIDE with Production-Ready ARM64 Android Development Toolkit**
