@@ -1,4 +1,6 @@
-import { files } from './files.js';
+// import { files } from './files.js'; // Removed: file does not exist
+// Stub for files object; replace with actual implementation as needed
+const files = {};
 
 let aiKey = "";
 
