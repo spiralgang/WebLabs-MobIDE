@@ -13,8 +13,8 @@ def check_integration_mapping():
     """Verify all frontend files have corresponding backend integrations"""
     
     # Load integration configuration
-    config_path = "app/src/main/assets/models/auth-integration-config.json"
-    if not os.path.exists(config_path):
+    config_path = Path(__file__).resolve().parent / "app/src/main/assets/models/auth-integration-config.json"
+    if not config_path.exists():
         print(f"❌ Integration config not found: {config_path}")
         return False
     
