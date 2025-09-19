@@ -45,6 +45,14 @@ temp/
 *.log
 *.cache
 
+# Runtime logs and CI/CD artifacts
+_temp/
+runtime-logs/
+artifacts/
+reports/
+blocked.jsonl
+blocked.md
+
 # Archives and packages
 *.tar.gz
 *.zip

@@ -1,0 +1,70 @@
+{
+  "ai_models": {
+    "deepseek-coder": {
+      "provider": "huggingface",
+      "endpoint": "https://api-inference.huggingface.co/models/deepseek-ai/deepseek-coder-6.7b-instruct",
+      "type": "code-generation",
+      "context_length": 4096,
+      "arm64_optimized": true,
+      "supported_languages": ["kotlin", "java", "python", "javascript", "shell", "c", "cpp"],
+      "specializations": ["android", "mobile", "arm64", "alpine-linux"]
+    },
+    "codellama": {
+      "provider": "huggingface", 
+      "endpoint": "https://api-inference.huggingface.co/models/codellama/CodeLlama-7b-Instruct-hf",
+      "type": "code-generation",
+      "context_length": 4096,
+      "arm64_optimized": true,
+      "supported_languages": ["kotlin", "java", "python", "javascript", "c", "cpp"],
+      "specializations": ["performance", "optimization", "debugging"]
+    },
+    "starcoder": {
+      "provider": "huggingface",
+      "endpoint": "https://api-inference.huggingface.co/models/bigcode/starcoder",
+      "type": "code-completion",
+      "context_length": 8192,
+      "arm64_optimized": true,
+      "supported_languages": ["kotlin", "java", "python", "javascript", "typescript", "shell"],
+      "specializations": ["code-completion", "refactoring", "documentation"]
+    }
+  },
+  "default_model": "deepseek-coder",
+  "arm64_optimizations": {
+    "enabled": true,
+    "neon_vectorization": true,
+    "cache_optimization": true,
+    "memory_alignment": true
+  },
+  "android_integration": {
+    "min_api_level": 29,
+    "target_api_level": 34,
+    "compile_sdk_version": 34,
+    "ndk_version": "25.2.9519653",
+    "supported_abis": ["arm64-v8a"]
+  },
+  "security": {
+    "api_key_encryption": true,
+    "secure_communication": true,
+    "code_sanitization": true,
+    "vulnerability_scanning": true
+  },
+  "alpine_integration": {
+    "version": "3.19",
+    "architecture": "aarch64",
+    "development_packages": [
+      "python3",
+      "py3-pip", 
+      "nodejs",
+      "npm",
+      "git",
+      "build-base",
+      "linux-headers"
+    ]
+  },
+  "performance": {
+    "model_caching": true,
+    "response_streaming": true,
+    "batch_processing": true,
+    "memory_optimization": true
+  }
+}
