@@ -1,4 +1,16 @@
-# WebLabs-MobIDE
+# Reference: Copilot Instructions
+
+The master Copilot instructions for this repository are located at:
+
+[`copilot_instructions.md`](../../copilot_instructions.md)
+
+All coding, refactoring, and documentation must comply with the standards and workflow described there.
+
+References:  
+- [GitHub Copilot Org Instructions](https://docs.github.com/en/copilot/customizing-copilot/adding-organization-custom-instructions-for-github-copilot)
+
+
+- # WebLabs-MobIDE
 
 **Mobile-First Quantum WebIDE with Production-Ready ARM64 Android Development Toolkit**
 
