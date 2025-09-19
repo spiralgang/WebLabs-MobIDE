@@ -1,0 +1,1709 @@
+<?xml version="1.0" encoding="UTF-8"?><manifest sharedUserId="android.uid.system" versionCode="33" versionName="13" sharedUserLabel="Android System" coreApp="true" package="android">
+  <uses-sdk minSdkVersion="33" targetSdkVersion="33"/>
+  <eat-comment/>
+  <protected-broadcast name="com.android.yhk.clear.google.write"/>
+  <protected-broadcast name="android.intent.action.SCREEN_OFF"/>
+  <protected-broadcast name="android.intent.action.SCREEN_ON"/>
+  <protected-broadcast name="android.intent.action.USER_PRESENT"/>
+  <protected-broadcast name="android.intent.action.TIME_SET"/>
+  <protected-broadcast name="android.intent.action.TIME_TICK"/>
+  <protected-broadcast name="android.intent.action.TIMEZONE_CHANGED"/>
+  <protected-broadcast name="android.intent.action.DATE_CHANGED"/>
+  <protected-broadcast name="android.intent.action.PRE_BOOT_COMPLETED"/>
+  <protected-broadcast name="android.intent.action.BOOT_COMPLETED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_INSTALL"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_ADDED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_REPLACED"/>
+  <protected-broadcast name="android.intent.action.MY_PACKAGE_REPLACED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_REMOVED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_REMOVED_INTERNAL"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_FULLY_REMOVED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_CHANGED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_FULLY_LOADED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_ENABLE_ROLLBACK"/>
+  <protected-broadcast name="android.intent.action.CANCEL_ENABLE_ROLLBACK"/>
+  <protected-broadcast name="android.intent.action.ROLLBACK_COMMITTED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_RESTARTED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_DATA_CLEARED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_FIRST_LAUNCH"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_NEEDS_INTEGRITY_VERIFICATION"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_NEEDS_VERIFICATION"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_VERIFIED"/>
+  <protected-broadcast name="android.intent.action.PACKAGES_SUSPENDED"/>
+  <protected-broadcast name="android.intent.action.PACKAGES_UNSUSPENDED"/>
+  <protected-broadcast name="android.intent.action.PACKAGES_SUSPENSION_CHANGED"/>
+  <protected-broadcast name="android.intent.action.PACKAGE_UNSUSPENDED_MANUALLY"/>
+  <protected-broadcast name="android.intent.action.DISTRACTING_PACKAGES_CHANGED"/>
+  <protected-broadcast name="android.intent.action.ACTION_PREFERRED_ACTIVITY_CHANGED"/>
+  <protected-broadcast name="android.intent.action.UID_REMOVED"/>
+  <protected-broadcast name="android.intent.action.QUERY_PACKAGE_RESTART"/>
+  <protected-broadcast name="android.intent.action.CONFIGURATION_CHANGED"/>
+  <protected-broadcast name="android.intent.action.SPLIT_CONFIGURATION_CHANGED"/>
+  <protected-broadcast name="android.intent.action.LOCALE_CHANGED"/>
+  <protected-broadcast name="android.intent.action.APPLICATION_LOCALE_CHANGED"/>
+  <protected-broadcast name="android.intent.action.BATTERY_CHANGED"/>
+  <protected-broadcast name="android.intent.action.BATTERY_LEVEL_CHANGED"/>
+  <protected-broadcast name="android.intent.action.BATTERY_LOW"/>
+  <protected-broadcast name="android.intent.action.BATTERY_OKAY"/>
+  <protected-broadcast name="android.intent.action.ACTION_POWER_CONNECTED"/>
+  <protected-broadcast name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+  <protected-broadcast name="android.intent.action.ACTION_SHUTDOWN"/>
+  <protected-broadcast name="android.intent.action.CHARGING"/>
+  <protected-broadcast name="android.intent.action.DISCHARGING"/>
+  <protected-broadcast name="android.intent.action.DEVICE_STORAGE_LOW"/>
+  <protected-broadcast name="android.intent.action.DEVICE_STORAGE_OK"/>
+  <protected-broadcast name="android.intent.action.DEVICE_STORAGE_FULL"/>
+  <protected-broadcast name="android.intent.action.DEVICE_STORAGE_NOT_FULL"/>
+  <protected-broadcast name="android.intent.action.NEW_OUTGOING_CALL"/>
+  <protected-broadcast name="android.intent.action.REBOOT"/>
+  <protected-broadcast name="android.intent.action.DOCK_EVENT"/>
+  <protected-broadcast name="android.intent.action.THERMAL_EVENT"/>
+  <protected-broadcast name="android.intent.action.MASTER_CLEAR_NOTIFICATION"/>
+  <protected-broadcast name="android.intent.action.USER_ADDED"/>
+  <protected-broadcast name="android.intent.action.USER_REMOVED"/>
+  <protected-broadcast name="android.intent.action.USER_STARTING"/>
+  <protected-broadcast name="android.intent.action.USER_STARTED"/>
+  <protected-broadcast name="android.intent.action.USER_STOPPING"/>
+  <protected-broadcast name="android.intent.action.USER_STOPPED"/>
+  <protected-broadcast name="android.intent.action.USER_BACKGROUND"/>
+  <protected-broadcast name="android.intent.action.USER_FOREGROUND"/>
+  <protected-broadcast name="android.intent.action.USER_SWITCHED"/>
+  <protected-broadcast name="android.intent.action.USER_INITIALIZE"/>
+  <protected-broadcast name="android.intent.action.INTENT_FILTER_NEEDS_VERIFICATION"/>
+  <protected-broadcast name="android.intent.action.DOMAINS_NEED_VERIFICATION"/>
+  <protected-broadcast name="android.intent.action.OVERLAY_ADDED"/>
+  <protected-broadcast name="android.intent.action.OVERLAY_CHANGED"/>
+  <protected-broadcast name="android.intent.action.OVERLAY_REMOVED"/>
+  <protected-broadcast name="android.intent.action.OVERLAY_PRIORITY_CHANGED"/>
+  <protected-broadcast name="android.intent.action.MY_PACKAGE_SUSPENDED"/>
+  <protected-broadcast name="android.intent.action.MY_PACKAGE_UNSUSPENDED"/>
+  <protected-broadcast name="android.os.action.POWER_SAVE_MODE_CHANGED"/>
+  <protected-broadcast name="android.os.action.DEVICE_IDLE_MODE_CHANGED"/>
+  <protected-broadcast name="android.os.action.POWER_SAVE_WHITELIST_CHANGED"/>
+  <protected-broadcast name="android.os.action.POWER_SAVE_TEMP_WHITELIST_CHANGED"/>
+  <protected-broadcast name="android.os.action.POWER_SAVE_MODE_CHANGED_INTERNAL"/>
+  <protected-broadcast name="android.os.action.LOW_POWER_STANDBY_ENABLED_CHANGED"/>
+  <protected-broadcast name="android.os.action.ENHANCED_DISCHARGE_PREDICTION_CHANGED"/>
+  <protected-broadcast name="android.os.action.SCREEN_BRIGHTNESS_BOOST_CHANGED"/>
+  <protected-broadcast name="android.app.action.CLOSE_NOTIFICATION_HANDLER_PANEL"/>
+  <protected-broadcast name="android.app.action.ENTER_CAR_MODE"/>
+  <protected-broadcast name="android.app.action.EXIT_CAR_MODE"/>
+  <protected-broadcast name="android.app.action.ENTER_CAR_MODE_PRIORITIZED"/>
+  <protected-broadcast name="android.app.action.EXIT_CAR_MODE_PRIORITIZED"/>
+  <protected-broadcast name="android.app.action.ENTER_DESK_MODE"/>
+  <protected-broadcast name="android.app.action.EXIT_DESK_MODE"/>
+  <protected-broadcast name="android.app.action.NEXT_ALARM_CLOCK_CHANGED"/>
+  <protected-broadcast name="android.app.action.USER_ADDED"/>
+  <protected-broadcast name="android.app.action.USER_REMOVED"/>
+  <protected-broadcast name="android.app.action.USER_STARTED"/>
+  <protected-broadcast name="android.app.action.USER_STOPPED"/>
+  <protected-broadcast name="android.app.action.USER_SWITCHED"/>
+  <protected-broadcast name="android.app.action.BUGREPORT_SHARING_DECLINED"/>
+  <protected-broadcast name="android.app.action.BUGREPORT_FAILED"/>
+  <protected-broadcast name="android.app.action.BUGREPORT_SHARE"/>
+  <protected-broadcast name="android.app.action.SHOW_DEVICE_MONITORING_DIALOG"/>
+  <protected-broadcast name="android.intent.action.PENDING_INCIDENT_REPORTS_CHANGED"/>
+  <protected-broadcast name="android.intent.action.INCIDENT_REPORT_READY"/>
+  <protected-broadcast name="android.appwidget.action.APPWIDGET_UPDATE_OPTIONS"/>
+  <protected-broadcast name="android.appwidget.action.APPWIDGET_DELETED"/>
+  <protected-broadcast name="android.appwidget.action.APPWIDGET_DISABLED"/>
+  <protected-broadcast name="android.appwidget.action.APPWIDGET_ENABLED"/>
+  <protected-broadcast name="android.appwidget.action.APPWIDGET_HOST_RESTORED"/>
+  <protected-broadcast name="android.appwidget.action.APPWIDGET_RESTORED"/>
+  <protected-broadcast name="android.os.action.SETTING_RESTORED"/>
+  <protected-broadcast name="android.app.backup.intent.CLEAR"/>
+  <protected-broadcast name="android.app.backup.intent.INIT"/>
+  <protected-broadcast name="android.bluetooth.intent.DISCOVERABLE_TIMEOUT"/>
+  <protected-broadcast name="android.bluetooth.adapter.action.STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.adapter.action.SCAN_MODE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.adapter.action.DISCOVERY_STARTED"/>
+  <protected-broadcast name="android.bluetooth.adapter.action.DISCOVERY_FINISHED"/>
+  <protected-broadcast name="android.bluetooth.adapter.action.LOCAL_NAME_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.adapter.action.BLUETOOTH_ADDRESS_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.adapter.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.device.action.UUID"/>
+  <protected-broadcast name="android.bluetooth.device.action.MAS_INSTANCE"/>
+  <protected-broadcast name="android.bluetooth.device.action.ALIAS_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.device.action.FOUND"/>
+  <protected-broadcast name="android.bluetooth.device.action.CLASS_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.device.action.ACL_CONNECTED"/>
+  <protected-broadcast name="android.bluetooth.device.action.ACL_DISCONNECT_REQUESTED"/>
+  <protected-broadcast name="android.bluetooth.device.action.ACL_DISCONNECTED"/>
+  <protected-broadcast name="android.bluetooth.device.action.NAME_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.device.action.BOND_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.device.action.NAME_FAILED"/>
+  <protected-broadcast name="android.bluetooth.device.action.PAIRING_REQUEST"/>
+  <protected-broadcast name="android.bluetooth.device.action.PAIRING_CANCEL"/>
+  <protected-broadcast name="android.bluetooth.device.action.CONNECTION_ACCESS_REPLY"/>
+  <protected-broadcast name="android.bluetooth.device.action.CONNECTION_ACCESS_CANCEL"/>
+  <protected-broadcast name="android.bluetooth.device.action.CONNECTION_ACCESS_REQUEST"/>
+  <protected-broadcast name="android.bluetooth.device.action.SDP_RECORD"/>
+  <protected-broadcast name="android.bluetooth.device.action.BATTERY_LEVEL_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.devicepicker.action.LAUNCH"/>
+  <protected-broadcast name="android.bluetooth.devicepicker.action.DEVICE_SELECTED"/>
+  <protected-broadcast name="android.bluetooth.headset.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.headset.profile.action.AUDIO_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.headset.action.VENDOR_SPECIFIC_HEADSET_EVENT"/>
+  <protected-broadcast name="android.bluetooth.headset.action.HF_INDICATORS_VALUE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.headset.profile.action.ACTIVE_DEVICE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.headsetclient.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.headsetclient.profile.action.AUDIO_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.headsetclient.profile.action.AG_EVENT"/>
+  <protected-broadcast name="android.bluetooth.headsetclient.profile.action.AG_CALL_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.headsetclient.profile.action.RESULT"/>
+  <protected-broadcast name="android.bluetooth.headsetclient.profile.action.LAST_VTAG"/>
+  <protected-broadcast name="android.bluetooth.headsetclient.profile.action.NETWORK_SERVICE_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.hearingaid.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.hearingaid.profile.action.PLAYING_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.hearingaid.profile.action.ACTIVE_DEVICE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.action.CSIS_CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.action.CSIS_DEVICE_AVAILABLE"/>
+  <protected-broadcast name="android.bluetooth.action.CSIS_SET_MEMBER_AVAILABLE"/>
+  <protected-broadcast name="android.bluetooth.volume-control.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.a2dp.profile.action.ACTIVE_DEVICE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.a2dp.profile.action.PLAYING_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.a2dp.profile.action.CODEC_CONFIG_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.a2dp-sink.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.a2dp-sink.profile.action.PLAYING_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.a2dp-sink.profile.action.AUDIO_CONFIG_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.avrcp-controller.profile.action.BROWSE_CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.avrcp-controller.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.avrcp-controller.profile.action.FOLDER_LIST"/>
+  <protected-broadcast name="android.bluetooth.avrcp-controller.profile.action.TRACK_EVENT"/>
+  <protected-broadcast name="android.bluetooth.input.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.input.profile.action.IDLE_TIME_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.input.profile.action.PROTOCOL_MODE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.input.profile.action.VIRTUAL_UNPLUG_STATUS"/>
+  <protected-broadcast name="android.bluetooth.hiddevice.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.map.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.mapmce.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.mapmce.profile.action.MESSAGE_RECEIVED"/>
+  <protected-broadcast name="android.bluetooth.mapmce.profile.action.MESSAGE_SENT_SUCCESSFULLY"/>
+  <protected-broadcast name="android.bluetooth.mapmce.profile.action.MESSAGE_DELIVERED_SUCCESSFULLY"/>
+  <protected-broadcast name="android.bluetooth.mapmce.profile.action.MESSAGE_READ_STATUS_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.mapmce.profile.action.MESSAGE_DELETED_STATUS_CHANGED"/>
+  <protected-broadcast name="com.android.bluetooth.BluetoothMapContentObserver.action.MESSAGE_SENT"/>
+  <protected-broadcast name="com.android.bluetooth.BluetoothMapContentObserver.action.MESSAGE_DELIVERY"/>
+  <protected-broadcast name="android.bluetooth.pan.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.action.LE_AUDIO_CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.action.LE_AUDIO_ACTIVE_DEVICE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.action.LE_AUDIO_CONF_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.action.LE_AUDIO_GROUP_NODE_STATUS_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.action.LE_AUDIO_GROUP_STATUS_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.action.TETHERING_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.pbap.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.pbapclient.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.bluetooth.sap.profile.action.CONNECTION_STATE_CHANGED"/>
+  <protected-broadcast name="android.btopp.intent.action.INCOMING_FILE_NOTIFICATION"/>
+  <protected-broadcast name="android.btopp.intent.action.USER_CONFIRMATION_TIMEOUT"/>
+  <protected-broadcast name="android.btopp.intent.action.LIST"/>
+  <protected-broadcast name="android.btopp.intent.action.OPEN_OUTBOUND"/>
+  <protected-broadcast name="android.btopp.intent.action.HIDE_COMPLETE"/>
+  <protected-broadcast name="android.btopp.intent.action.CONFIRM"/>
+  <protected-broadcast name="android.btopp.intent.action.HIDE"/>
+  <protected-broadcast name="android.btopp.intent.action.RETRY"/>
+  <protected-broadcast name="android.btopp.intent.action.OPEN"/>
+  <protected-broadcast name="android.btopp.intent.action.OPEN_INBOUND"/>
+  <protected-broadcast name="android.btopp.intent.action.TRANSFER_COMPLETE"/>
+  <protected-broadcast name="android.btopp.intent.action.ACCEPT"/>
+  <protected-broadcast name="android.btopp.intent.action.DECLINE"/>
+  <protected-broadcast name="com.android.bluetooth.gatt.REFRESH_BATCHED_SCAN"/>
+  <protected-broadcast name="com.android.bluetooth.pbap.authchall"/>
+  <protected-broadcast name="com.android.bluetooth.pbap.userconfirmtimeout"/>
+  <protected-broadcast name="com.android.bluetooth.pbap.authresponse"/>
+  <protected-broadcast name="com.android.bluetooth.pbap.authcancelled"/>
+  <protected-broadcast name="com.android.bluetooth.sap.USER_CONFIRM_TIMEOUT"/>
+  <protected-broadcast name="com.android.bluetooth.sap.action.DISCONNECT_ACTION"/>
+  <protected-broadcast name="android.hardware.display.action.WIFI_DISPLAY_STATUS_CHANGED"/>
+  <protected-broadcast name="android.hardware.usb.action.USB_STATE"/>
+  <protected-broadcast name="android.hardware.usb.action.USB_PORT_CHANGED"/>
+  <protected-broadcast name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"/>
+  <protected-broadcast name="android.hardware.usb.action.USB_ACCESSORY_DETACHED"/>
+  <protected-broadcast name="android.hardware.usb.action.USB_ACCESSORY_HANDSHAKE"/>
+  <protected-broadcast name="android.hardware.usb.action.USB_DEVICE_ATTACHED"/>
+  <protected-broadcast name="android.hardware.usb.action.USB_DEVICE_DETACHED"/>
+  <protected-broadcast name="android.intent.action.HEADSET_PLUG"/>
+  <protected-broadcast name="android.media.action.HDMI_AUDIO_PLUG"/>
+  <protected-broadcast name="android.media.action.MICROPHONE_MUTE_CHANGED"/>
+  <protected-broadcast name="android.media.action.SPEAKERPHONE_STATE_CHANGED"/>
+  <protected-broadcast name="android.media.AUDIO_BECOMING_NOISY"/>
+  <protected-broadcast name="android.media.RINGER_MODE_CHANGED"/>
+  <protected-broadcast name="android.media.VIBRATE_SETTING_CHANGED"/>
+  <protected-broadcast name="android.media.VOLUME_CHANGED_ACTION"/>
+  <protected-broadcast name="android.media.MASTER_VOLUME_CHANGED_ACTION"/>
+  <protected-broadcast name="android.media.MASTER_MUTE_CHANGED_ACTION"/>
+  <protected-broadcast name="android.media.MASTER_MONO_CHANGED_ACTION"/>
+  <protected-broadcast name="android.media.MASTER_BALANCE_CHANGED_ACTION"/>
+  <protected-broadcast name="android.media.SCO_AUDIO_STATE_CHANGED"/>
+  <protected-broadcast name="android.media.ACTION_SCO_AUDIO_STATE_UPDATED"/>
+  <protected-broadcast name="android.intent.action.MEDIA_REMOVED"/>
+  <protected-broadcast name="android.intent.action.MEDIA_UNMOUNTED"/>
+  <protected-broadcast name="android.intent.action.MEDIA_CHECKING"/>
+  <protected-broadcast name="android.intent.action.MEDIA_NOFS"/>
+  <protected-broadcast name="android.intent.action.MEDIA_MOUNTED"/>
+  <protected-broadcast name="android.intent.action.MEDIA_SHARED"/>
+  <protected-broadcast name="android.intent.action.MEDIA_UNSHARED"/>
+  <protected-broadcast name="android.intent.action.MEDIA_BAD_REMOVAL"/>
+  <protected-broadcast name="android.intent.action.MEDIA_UNMOUNTABLE"/>
+  <protected-broadcast name="android.intent.action.MEDIA_EJECT"/>
+  <protected-broadcast name="android.net.conn.CAPTIVE_PORTAL"/>
+  <protected-broadcast name="android.net.conn.CONNECTIVITY_CHANGE"/>
+  <protected-broadcast name="android.net.conn.CONNECTIVITY_CHANGE_IMMEDIATE"/>
+  <protected-broadcast name="android.net.conn.DATA_ACTIVITY_CHANGE"/>
+  <protected-broadcast name="android.net.conn.RESTRICT_BACKGROUND_CHANGED"/>
+  <protected-broadcast name="android.net.conn.BACKGROUND_DATA_SETTING_CHANGED"/>
+  <protected-broadcast name="android.net.conn.CAPTIVE_PORTAL_TEST_COMPLETED"/>
+  <protected-broadcast name="android.net.nsd.STATE_CHANGED"/>
+  <protected-broadcast name="android.se.omapi.action.SECURE_ELEMENT_STATE_CHANGED"/>
+  <protected-broadcast name="android.nfc.action.ADAPTER_STATE_CHANGED"/>
+  <protected-broadcast name="android.nfc.action.PREFERRED_PAYMENT_CHANGED"/>
+  <protected-broadcast name="android.nfc.action.TRANSACTION_DETECTED"/>
+  <protected-broadcast name="android.nfc.action.REQUIRE_UNLOCK_FOR_NFC"/>
+  <protected-broadcast name="com.android.nfc.action.LLCP_UP"/>
+  <protected-broadcast name="com.android.nfc.action.LLCP_DOWN"/>
+  <protected-broadcast name="com.android.nfc.cardemulation.action.CLOSE_TAP_DIALOG"/>
+  <protected-broadcast name="com.android.nfc.handover.action.ALLOW_CONNECT"/>
+  <protected-broadcast name="com.android.nfc.handover.action.DENY_CONNECT"/>
+  <protected-broadcast name="com.android.nfc.handover.action.TIMEOUT_CONNECT"/>
+  <protected-broadcast name="com.android.nfc_extras.action.RF_FIELD_ON_DETECTED"/>
+  <protected-broadcast name="com.android.nfc_extras.action.RF_FIELD_OFF_DETECTED"/>
+  <protected-broadcast name="com.android.nfc_extras.action.AID_SELECTED"/>
+  <protected-broadcast name="android.btopp.intent.action.WHITELIST_DEVICE"/>
+  <protected-broadcast name="android.btopp.intent.action.STOP_HANDOVER_TRANSFER"/>
+  <protected-broadcast name="android.nfc.handover.intent.action.HANDOVER_SEND"/>
+  <protected-broadcast name="android.nfc.handover.intent.action.HANDOVER_SEND_MULTIPLE"/>
+  <protected-broadcast name="com.android.nfc.handover.action.CANCEL_HANDOVER_TRANSFER"/>
+  <protected-broadcast name="android.net.action.CLEAR_DNS_CACHE"/>
+  <protected-broadcast name="android.intent.action.PROXY_CHANGE"/>
+  <protected-broadcast name="android.os.UpdateLock.UPDATE_LOCK_CHANGED"/>
+  <protected-broadcast name="android.intent.action.DREAMING_STARTED"/>
+  <protected-broadcast name="android.intent.action.DREAMING_STOPPED"/>
+  <protected-broadcast name="android.intent.action.ANY_DATA_STATE"/>
+  <protected-broadcast name="com.android.server.stats.action.TRIGGER_COLLECTION"/>
+  <protected-broadcast name="com.android.server.WifiManager.action.START_SCAN"/>
+  <protected-broadcast name="com.android.server.WifiManager.action.START_PNO"/>
+  <protected-broadcast name="com.android.server.WifiManager.action.DELAYED_DRIVER_STOP"/>
+  <protected-broadcast name="com.android.server.WifiManager.action.DEVICE_IDLE"/>
+  <protected-broadcast name="com.android.server.action.REMOTE_BUGREPORT_SHARING_ACCEPTED"/>
+  <protected-broadcast name="com.android.server.action.REMOTE_BUGREPORT_SHARING_DECLINED"/>
+  <protected-broadcast name="com.android.internal.action.EUICC_FACTORY_RESET"/>
+  <protected-broadcast name="com.android.internal.action.EUICC_REMOVE_INVISIBLE_SUBSCRIPTIONS"/>
+  <protected-broadcast name="com.android.server.usb.ACTION_OPEN_IN_APPS"/>
+  <protected-broadcast name="com.android.server.am.DELETE_DUMPHEAP"/>
+  <protected-broadcast name="com.android.server.net.action.SNOOZE_WARNING"/>
+  <protected-broadcast name="com.android.server.net.action.SNOOZE_RAPID"/>
+  <protected-broadcast name="com.android.server.wifi.ACTION_SHOW_SET_RANDOMIZATION_DETAILS"/>
+  <protected-broadcast name="com.android.server.wifi.action.NetworkSuggestion.USER_ALLOWED_APP"/>
+  <protected-broadcast name="com.android.server.wifi.action.NetworkSuggestion.USER_DISALLOWED_APP"/>
+  <protected-broadcast name="com.android.server.wifi.action.NetworkSuggestion.USER_DISMISSED"/>
+  <protected-broadcast name="com.android.server.wifi.action.CarrierNetwork.USER_ALLOWED_CARRIER"/>
+  <protected-broadcast name="com.android.server.wifi.action.CarrierNetwork.USER_DISALLOWED_CARRIER"/>
+  <protected-broadcast name="com.android.server.wifi.action.CarrierNetwork.USER_DISMISSED"/>
+  <protected-broadcast name="com.android.server.wifi.ConnectToNetworkNotification.USER_DISMISSED_NOTIFICATION"/>
+  <protected-broadcast name="com.android.server.wifi.ConnectToNetworkNotification.CONNECT_TO_NETWORK"/>
+  <protected-broadcast name="com.android.server.wifi.ConnectToNetworkNotification.PICK_WIFI_NETWORK"/>
+  <protected-broadcast name="com.android.server.wifi.ConnectToNetworkNotification.PICK_NETWORK_AFTER_FAILURE"/>
+  <protected-broadcast name="com.android.server.wifi.wakeup.DISMISS_NOTIFICATION"/>
+  <protected-broadcast name="com.android.server.wifi.wakeup.OPEN_WIFI_PREFERENCES"/>
+  <protected-broadcast name="com.android.server.wifi.wakeup.OPEN_WIFI_SETTINGS"/>
+  <protected-broadcast name="com.android.server.wifi.wakeup.TURN_OFF_WIFI_WAKE"/>
+  <protected-broadcast name="android.net.wifi.WIFI_STATE_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.WIFI_AP_STATE_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.WIFI_CREDENTIAL_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.aware.action.WIFI_AWARE_STATE_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.aware.action.WIFI_AWARE_RESOURCE_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.rtt.action.WIFI_RTT_STATE_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.SCAN_RESULTS"/>
+  <protected-broadcast name="android.net.wifi.RSSI_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.STATE_CHANGE"/>
+  <protected-broadcast name="android.net.wifi.LINK_CONFIGURATION_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.CONFIGURED_NETWORKS_CHANGE"/>
+  <protected-broadcast name="android.net.wifi.action.NETWORK_SETTINGS_RESET"/>
+  <protected-broadcast name="android.net.wifi.action.PASSPOINT_DEAUTH_IMMINENT"/>
+  <protected-broadcast name="android.net.wifi.action.PASSPOINT_ICON"/>
+  <protected-broadcast name="android.net.wifi.action.PASSPOINT_OSU_PROVIDERS_LIST"/>
+  <protected-broadcast name="android.net.wifi.action.PASSPOINT_SUBSCRIPTION_REMEDIATION"/>
+  <protected-broadcast name="android.net.wifi.action.PASSPOINT_LAUNCH_OSU_VIEW"/>
+  <protected-broadcast name="android.net.wifi.action.REFRESH_USER_PROVISIONING"/>
+  <protected-broadcast name="android.net.wifi.action.WIFI_NETWORK_SUGGESTION_POST_CONNECTION"/>
+  <protected-broadcast name="android.net.wifi.action.WIFI_SCAN_AVAILABILITY_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.supplicant.CONNECTION_CHANGE"/>
+  <protected-broadcast name="android.net.wifi.supplicant.STATE_CHANGE"/>
+  <protected-broadcast name="android.net.wifi.p2p.STATE_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.p2p.DISCOVERY_STATE_CHANGE"/>
+  <protected-broadcast name="android.net.wifi.p2p.THIS_DEVICE_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.p2p.PEERS_CHANGED"/>
+  <protected-broadcast name="android.net.wifi.p2p.CONNECTION_STATE_CHANGE"/>
+  <protected-broadcast name="android.net.wifi.p2p.action.WIFI_P2P_PERSISTENT_GROUPS_CHANGED"/>
+  <protected-broadcast name="android.net.conn.TETHER_STATE_CHANGED"/>
+  <protected-broadcast name="android.net.conn.INET_CONDITION_ACTION"/>
+  <protected-broadcast name="android.net.conn.NETWORK_CONDITIONS_MEASURED"/>
+  <protected-broadcast name="android.net.ConnectivityService.action.PKT_CNT_SAMPLE_INTERVAL_ELAPSED"/>
+  <protected-broadcast name="android.net.scoring.SCORE_NETWORKS"/>
+  <protected-broadcast name="android.net.scoring.SCORER_CHANGED"/>
+  <protected-broadcast name="android.intent.action.EXTERNAL_APPLICATIONS_AVAILABLE"/>
+  <protected-broadcast name="android.intent.action.EXTERNAL_APPLICATIONS_UNAVAILABLE"/>
+  <protected-broadcast name="android.intent.action.AIRPLANE_MODE"/>
+  <protected-broadcast name="android.intent.action.ADVANCED_SETTINGS"/>
+  <protected-broadcast name="android.intent.action.APPLICATION_RESTRICTIONS_CHANGED"/>
+  <protected-broadcast name="com.android.server.adb.WIRELESS_DEBUG_PAIRED_DEVICES"/>
+  <protected-broadcast name="com.android.server.adb.WIRELESS_DEBUG_PAIRING_RESULT"/>
+  <protected-broadcast name="com.android.server.adb.WIRELESS_DEBUG_STATUS"/>
+  <protected-broadcast name="android.intent.action.ACTION_IDLE_MAINTENANCE_START"/>
+  <protected-broadcast name="android.intent.action.ACTION_IDLE_MAINTENANCE_END"/>
+  <protected-broadcast name="com.android.server.ACTION_TRIGGER_IDLE"/>
+  <protected-broadcast name="android.intent.action.HDMI_PLUGGED"/>
+  <protected-broadcast name="android.intent.action.PHONE_STATE"/>
+  <protected-broadcast name="android.intent.action.SUB_DEFAULT_CHANGED"/>
+  <protected-broadcast name="android.location.PROVIDERS_CHANGED"/>
+  <protected-broadcast name="android.location.MODE_CHANGED"/>
+  <protected-broadcast name="android.location.action.GNSS_CAPABILITIES_CHANGED"/>
+  <protected-broadcast name="android.net.proxy.PAC_REFRESH"/>
+  <protected-broadcast name="android.telecom.action.DEFAULT_DIALER_CHANGED"/>
+  <protected-broadcast name="android.provider.action.DEFAULT_SMS_PACKAGE_CHANGED"/>
+  <protected-broadcast name="android.provider.action.SMS_MMS_DB_CREATED"/>
+  <protected-broadcast name="android.provider.action.SMS_MMS_DB_LOST"/>
+  <protected-broadcast name="android.intent.action.CONTENT_CHANGED"/>
+  <protected-broadcast name="android.provider.Telephony.MMS_DOWNLOADED"/>
+  <protected-broadcast name="com.android.server.connectivityservice.CONNECTED_TO_PROVISIONING_NETWORK_ACTION"/>
+  <protected-broadcast name="android.content.action.PERMISSION_RESPONSE_RECEIVED"/>
+  <protected-broadcast name="android.content.action.REQUEST_PERMISSION"/>
+  <protected-broadcast name="android.nfc.handover.intent.action.HANDOVER_STARTED"/>
+  <protected-broadcast name="android.nfc.handover.intent.action.TRANSFER_DONE"/>
+  <protected-broadcast name="android.nfc.handover.intent.action.TRANSFER_PROGRESS"/>
+  <protected-broadcast name="android.nfc.handover.intent.action.TRANSFER_DONE"/>
+  <protected-broadcast name="android.intent.action.ACTION_DEFAULT_DATA_SUBSCRIPTION_CHANGED"/>
+  <protected-broadcast name="android.intent.action.ACTION_DEFAULT_VOICE_SUBSCRIPTION_CHANGED"/>
+  <protected-broadcast name="android.intent.action.ACTION_SUBINFO_CONTENT_CHANGE"/>
+  <protected-broadcast name="android.intent.action.ACTION_SUBINFO_RECORD_UPDATED"/>
+  <protected-broadcast name="android.intent.action.ACTION_SET_RADIO_CAPABILITY_DONE"/>
+  <protected-broadcast name="android.intent.action.ACTION_SET_RADIO_CAPABILITY_FAILED"/>
+  <protected-broadcast name="android.internal.policy.action.BURN_IN_PROTECTION"/>
+  <protected-broadcast name="android.app.action.SYSTEM_UPDATE_POLICY_CHANGED"/>
+  <protected-broadcast name="android.app.action.RESET_PROTECTION_POLICY_CHANGED"/>
+  <protected-broadcast name="android.app.action.DEVICE_OWNER_CHANGED"/>
+  <protected-broadcast name="android.app.action.MANAGED_USER_CREATED"/>
+  <protected-broadcast name="android.intent.action.ANR"/>
+  <protected-broadcast name="android.intent.action.CALL"/>
+  <protected-broadcast name="android.intent.action.CALL_PRIVILEGED"/>
+  <protected-broadcast name="android.intent.action.DROPBOX_ENTRY_ADDED"/>
+  <protected-broadcast name="android.intent.action.INPUT_METHOD_CHANGED"/>
+  <protected-broadcast name="android.intent.action.internal_sim_state_changed"/>
+  <protected-broadcast name="android.intent.action.LOCKED_BOOT_COMPLETED"/>
+  <protected-broadcast name="android.intent.action.PRECISE_CALL_STATE"/>
+  <protected-broadcast name="android.intent.action.SUBSCRIPTION_PHONE_STATE"/>
+  <protected-broadcast name="android.intent.action.USER_INFO_CHANGED"/>
+  <protected-broadcast name="android.intent.action.USER_UNLOCKED"/>
+  <protected-broadcast name="android.intent.action.WALLPAPER_CHANGED"/>
+  <protected-broadcast name="android.app.action.DEVICE_POLICY_MANAGER_STATE_CHANGED"/>
+  <protected-broadcast name="android.app.action.CHOOSE_PRIVATE_KEY_ALIAS"/>
+  <protected-broadcast name="android.app.action.DEVICE_ADMIN_DISABLED"/>
+  <protected-broadcast name="android.app.action.DEVICE_ADMIN_DISABLE_REQUESTED"/>
+  <protected-broadcast name="android.app.action.DEVICE_ADMIN_ENABLED"/>
+  <protected-broadcast name="android.app.action.LOCK_TASK_ENTERING"/>
+  <protected-broadcast name="android.app.action.LOCK_TASK_EXITING"/>
+  <protected-broadcast name="android.app.action.NOTIFY_PENDING_SYSTEM_UPDATE"/>
+  <protected-broadcast name="android.app.action.ACTION_PASSWORD_CHANGED"/>
+  <protected-broadcast name="android.app.action.ACTION_PASSWORD_EXPIRING"/>
+  <protected-broadcast name="android.app.action.ACTION_PASSWORD_FAILED"/>
+  <protected-broadcast name="android.app.action.ACTION_PASSWORD_SUCCEEDED"/>
+  <protected-broadcast name="com.android.server.ACTION_EXPIRED_PASSWORD_NOTIFICATION"/>
+  <protected-broadcast name="com.android.server.ACTION_PROFILE_OFF_DEADLINE"/>
+  <protected-broadcast name="com.android.server.ACTION_TURN_PROFILE_ON_NOTIFICATION"/>
+  <protected-broadcast name="android.intent.action.MANAGED_PROFILE_ADDED"/>
+  <protected-broadcast name="android.intent.action.MANAGED_PROFILE_UNLOCKED"/>
+  <protected-broadcast name="android.intent.action.MANAGED_PROFILE_REMOVED"/>
+  <protected-broadcast name="android.app.action.MANAGED_PROFILE_PROVISIONED"/>
+  <protected-broadcast name="android.bluetooth.adapter.action.BLE_STATE_CHANGED"/>
+  <protected-broadcast name="com.android.bluetooth.map.USER_CONFIRM_TIMEOUT"/>
+  <protected-broadcast name="com.android.bluetooth.BluetoothMapContentObserver.action.MESSAGE_SENT"/>
+  <protected-broadcast name="com.android.bluetooth.BluetoothMapContentObserver.action.MESSAGE_DELIVERY"/>
+  <protected-broadcast name="android.content.jobscheduler.JOB_DELAY_EXPIRED"/>
+  <protected-broadcast name="android.content.syncmanager.SYNC_ALARM"/>
+  <protected-broadcast name="android.media.INTERNAL_RINGER_MODE_CHANGED_ACTION"/>
+  <protected-broadcast name="android.media.STREAM_DEVICES_CHANGED_ACTION"/>
+  <protected-broadcast name="android.media.STREAM_MUTE_CHANGED_ACTION"/>
+  <protected-broadcast name="android.net.sip.SIP_SERVICE_UP"/>
+  <protected-broadcast name="android.nfc.action.ADAPTER_STATE_CHANGED"/>
+  <protected-broadcast name="android.os.action.CHARGING"/>
+  <protected-broadcast name="android.os.action.DISCHARGING"/>
+  <protected-broadcast name="android.search.action.SEARCHABLES_CHANGED"/>
+  <protected-broadcast name="android.security.STORAGE_CHANGED"/>
+  <protected-broadcast name="android.security.action.TRUST_STORE_CHANGED"/>
+  <protected-broadcast name="android.security.action.KEYCHAIN_CHANGED"/>
+  <protected-broadcast name="android.security.action.KEY_ACCESS_CHANGED"/>
+  <protected-broadcast name="android.telecom.action.NUISANCE_CALL_STATUS_CHANGED"/>
+  <protected-broadcast name="android.telecom.action.PHONE_ACCOUNT_REGISTERED"/>
+  <protected-broadcast name="android.telecom.action.PHONE_ACCOUNT_UNREGISTERED"/>
+  <protected-broadcast name="android.telecom.action.POST_CALL"/>
+  <protected-broadcast name="android.telecom.action.SHOW_MISSED_CALLS_NOTIFICATION"/>
+  <protected-broadcast name="android.telephony.action.CARRIER_CONFIG_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.DEFAULT_SUBSCRIPTION_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.DEFAULT_SMS_SUBSCRIPTION_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.SECRET_CODE"/>
+  <protected-broadcast name="android.telephony.action.SHOW_VOICEMAIL_NOTIFICATION"/>
+  <protected-broadcast name="android.telephony.action.SUBSCRIPTION_PLANS_CHANGED"/>
+  <protected-broadcast name="com.android.bluetooth.btservice.action.ALARM_WAKEUP"/>
+  <protected-broadcast name="com.android.server.action.NETWORK_STATS_POLL"/>
+  <protected-broadcast name="com.android.server.action.NETWORK_STATS_UPDATED"/>
+  <protected-broadcast name="com.android.server.NetworkTimeUpdateService.action.POLL"/>
+  <protected-broadcast name="com.android.server.telecom.intent.action.CALLS_ADD_ENTRY"/>
+  <protected-broadcast name="com.android.settings.location.MODE_CHANGING"/>
+  <protected-broadcast name="com.android.settings.bluetooth.ACTION_DISMISS_PAIRING"/>
+  <protected-broadcast name="com.android.settings.network.DELETE_SUBSCRIPTION"/>
+  <protected-broadcast name="com.android.settings.network.SWITCH_TO_SUBSCRIPTION"/>
+  <protected-broadcast name="com.android.settings.wifi.action.NETWORK_REQUEST"/>
+  <protected-broadcast name="NotificationManagerService.TIMEOUT"/>
+  <protected-broadcast name="NotificationHistoryDatabase.CLEANUP"/>
+  <protected-broadcast name="ScheduleConditionProvider.EVALUATE"/>
+  <protected-broadcast name="EventConditionProvider.EVALUATE"/>
+  <protected-broadcast name="SnoozeHelper.EVALUATE"/>
+  <protected-broadcast name="wifi_scan_available"/>
+  <protected-broadcast name="action.cne.started"/>
+  <protected-broadcast name="android.content.jobscheduler.JOB_DEADLINE_EXPIRED"/>
+  <protected-broadcast name="android.intent.action.ACTION_UNSOL_RESPONSE_OEM_HOOK_RAW"/>
+  <protected-broadcast name="android.net.conn.CONNECTIVITY_CHANGE_SUPL"/>
+  <protected-broadcast name="android.os.action.LIGHT_DEVICE_IDLE_MODE_CHANGED"/>
+  <protected-broadcast name="android.os.storage.action.VOLUME_STATE_CHANGED"/>
+  <protected-broadcast name="android.os.storage.action.DISK_SCANNED"/>
+  <protected-broadcast name="com.android.server.action.UPDATE_TWILIGHT_STATE"/>
+  <protected-broadcast name="com.android.server.action.RESET_TWILIGHT_AUTO"/>
+  <protected-broadcast name="com.android.server.device_idle.STEP_IDLE_STATE"/>
+  <protected-broadcast name="com.android.server.device_idle.STEP_LIGHT_IDLE_STATE"/>
+  <protected-broadcast name="com.android.server.Wifi.action.TOGGLE_PNO"/>
+  <protected-broadcast name="intent.action.ACTION_RF_BAND_INFO"/>
+  <protected-broadcast name="android.intent.action.MEDIA_RESOURCE_GRANTED"/>
+  <protected-broadcast name="android.app.action.NETWORK_LOGS_AVAILABLE"/>
+  <protected-broadcast name="android.app.action.SECURITY_LOGS_AVAILABLE"/>
+  <protected-broadcast name="android.app.action.COMPLIANCE_ACKNOWLEDGEMENT_REQUIRED"/>
+  <protected-broadcast name="android.app.action.INTERRUPTION_FILTER_CHANGED"/>
+  <protected-broadcast name="android.app.action.INTERRUPTION_FILTER_CHANGED_INTERNAL"/>
+  <protected-broadcast name="android.app.action.NOTIFICATION_POLICY_CHANGED"/>
+  <protected-broadcast name="android.app.action.NOTIFICATION_POLICY_ACCESS_GRANTED_CHANGED"/>
+  <protected-broadcast name="android.app.action.AUTOMATIC_ZEN_RULE_STATUS_CHANGED"/>
+  <protected-broadcast name="android.os.action.ACTION_EFFECTS_SUPPRESSOR_CHANGED"/>
+  <protected-broadcast name="android.app.action.NOTIFICATION_CHANNEL_BLOCK_STATE_CHANGED"/>
+  <protected-broadcast name="android.app.action.NOTIFICATION_CHANNEL_GROUP_BLOCK_STATE_CHANGED"/>
+  <protected-broadcast name="android.app.action.NOTIFICATION_LISTENER_ENABLED_CHANGED"/>
+  <protected-broadcast name="android.app.action.APP_BLOCK_STATE_CHANGED"/>
+  <protected-broadcast name="android.permission.GET_APP_GRANTED_URI_PERMISSIONS"/>
+  <protected-broadcast name="android.permission.CLEAR_APP_GRANTED_URI_PERMISSIONS"/>
+  <protected-broadcast name="android.intent.action.DYNAMIC_SENSOR_CHANGED"/>
+  <protected-broadcast name="android.accounts.LOGIN_ACCOUNTS_CHANGED"/>
+  <protected-broadcast name="android.accounts.action.ACCOUNT_REMOVED"/>
+  <protected-broadcast name="android.accounts.action.VISIBLE_ACCOUNTS_CHANGED"/>
+  <protected-broadcast name="com.android.sync.SYNC_CONN_STATUS_CHANGED"/>
+  <protected-broadcast name="android.net.sip.action.SIP_INCOMING_CALL"/>
+  <protected-broadcast name="com.android.phone.SIP_ADD_PHONE"/>
+  <protected-broadcast name="android.net.sip.action.SIP_REMOVE_PROFILE"/>
+  <protected-broadcast name="android.net.sip.action.SIP_SERVICE_UP"/>
+  <protected-broadcast name="android.net.sip.action.SIP_CALL_OPTION_CHANGED"/>
+  <protected-broadcast name="android.net.sip.action.START_SIP"/>
+  <protected-broadcast name="android.bluetooth.adapter.action.BLE_ACL_CONNECTED"/>
+  <protected-broadcast name="android.bluetooth.adapter.action.BLE_ACL_DISCONNECTED"/>
+  <protected-broadcast name="android.bluetooth.input.profile.action.HANDSHAKE"/>
+  <protected-broadcast name="android.bluetooth.input.profile.action.REPORT"/>
+  <protected-broadcast name="android.intent.action.TWILIGHT_CHANGED"/>
+  <protected-broadcast name="com.android.server.fingerprint.ACTION_LOCKOUT_RESET"/>
+  <protected-broadcast name="android.net.wifi.PASSPOINT_ICON_RECEIVED"/>
+  <protected-broadcast name="com.android.server.notification.CountdownConditionProvider"/>
+  <protected-broadcast name="android.server.notification.action.ENABLE_NAS"/>
+  <protected-broadcast name="android.server.notification.action.DISABLE_NAS"/>
+  <protected-broadcast name="android.server.notification.action.LEARNMORE_NAS"/>
+  <protected-broadcast name="com.android.internal.location.ALARM_WAKEUP"/>
+  <protected-broadcast name="com.android.internal.location.ALARM_TIMEOUT"/>
+  <protected-broadcast name="android.intent.action.GLOBAL_BUTTON"/>
+  <protected-broadcast name="android.intent.action.MANAGED_PROFILE_AVAILABLE"/>
+  <protected-broadcast name="android.intent.action.MANAGED_PROFILE_UNAVAILABLE"/>
+  <protected-broadcast name="com.android.server.pm.DISABLE_QUIET_MODE_AFTER_UNLOCK"/>
+  <protected-broadcast name="android.intent.action.PROFILE_ACCESSIBLE"/>
+  <protected-broadcast name="android.intent.action.PROFILE_INACCESSIBLE"/>
+  <protected-broadcast name="com.android.server.retaildemo.ACTION_RESET_DEMO"/>
+  <protected-broadcast name="android.intent.action.DEVICE_LOCKED_CHANGED"/>
+  <protected-broadcast name="com.android.content.pm.action.CAN_INTERACT_ACROSS_PROFILES_CHANGED"/>
+  <protected-broadcast name="android.app.action.APPLICATION_DELEGATION_SCOPES_CHANGED"/>
+  <protected-broadcast name="com.android.server.wm.ACTION_REVOKE_SYSTEM_ALERT_WINDOW_PERMISSION"/>
+  <protected-broadcast name="android.media.tv.action.PARENTAL_CONTROLS_ENABLED_CHANGED"/>
+  <protected-broadcast name="android.content.pm.action.SESSION_COMMITTED"/>
+  <protected-broadcast name="android.os.action.USER_RESTRICTIONS_CHANGED"/>
+  <protected-broadcast name="android.media.tv.action.PREVIEW_PROGRAM_ADDED_TO_WATCH_NEXT"/>
+  <protected-broadcast name="android.media.tv.action.PREVIEW_PROGRAM_BROWSABLE_DISABLED"/>
+  <protected-broadcast name="android.media.tv.action.WATCH_NEXT_PROGRAM_BROWSABLE_DISABLED"/>
+  <protected-broadcast name="android.media.tv.action.CHANNEL_BROWSABLE_REQUESTED"/>
+  <protected-broadcast name="com.android.server.inputmethod.InputMethodManagerService.SHOW_INPUT_METHOD_PICKER"/>
+  <protected-broadcast name="com.android.intent.action.timezone.RULES_UPDATE_OPERATION"/>
+  <protected-broadcast name="com.android.intent.action.timezone.TRIGGER_RULES_UPDATE_CHECK"/>
+  <protected-broadcast name="android.intent.action.GET_RESTRICTION_ENTRIES"/>
+  <protected-broadcast name="android.telephony.euicc.action.OTA_STATUS_CHANGED"/>
+  <protected-broadcast name="android.app.action.PROFILE_OWNER_CHANGED"/>
+  <protected-broadcast name="android.app.action.TRANSFER_OWNERSHIP_COMPLETE"/>
+  <protected-broadcast name="android.app.action.AFFILIATED_PROFILE_TRANSFER_OWNERSHIP_COMPLETE"/>
+  <protected-broadcast name="android.app.action.STATSD_STARTED"/>
+  <protected-broadcast name="com.android.server.biometrics.fingerprint.ACTION_LOCKOUT_RESET"/>
+  <protected-broadcast name="com.android.server.biometrics.face.ACTION_LOCKOUT_RESET"/>
+  <protected-broadcast name="android.intent.action.DOCK_IDLE"/>
+  <protected-broadcast name="android.intent.action.DOCK_ACTIVE"/>
+  <protected-broadcast name="android.content.pm.action.SESSION_UPDATED"/>
+  <protected-broadcast name="android.settings.action.GRAYSCALE_CHANGED"/>
+  <protected-broadcast name="com.android.server.jobscheduler.GARAGE_MODE_ON"/>
+  <protected-broadcast name="com.android.server.jobscheduler.GARAGE_MODE_OFF"/>
+  <protected-broadcast name="com.android.server.jobscheduler.FORCE_IDLE"/>
+  <protected-broadcast name="com.android.server.jobscheduler.UNFORCE_IDLE"/>
+  <protected-broadcast name="android.provider.action.DEFAULT_SMS_PACKAGE_CHANGED_INTERNAL"/>
+  <protected-broadcast name="android.intent.action.DEVICE_CUSTOMIZATION_READY"/>
+  <protected-broadcast name="android.app.action.RESET_PROTECTION_POLICY_CHANGED"/>
+  <protected-broadcast name="com.android.server.connectivity.tethering.PROVISIONING_RECHECK_ALARM"/>
+  <protected-broadcast name="com.android.internal.intent.action.BUGREPORT_REQUESTED"/>
+  <protected-broadcast name="android.scheduling.action.REBOOT_READY"/>
+  <protected-broadcast name="android.app.action.DEVICE_POLICY_CONSTANTS_CHANGED"/>
+  <protected-broadcast name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED"/>
+  <protected-broadcast name="android.app.action.SHOW_NEW_USER_DISCLAIMER"/>
+  <protected-broadcast name="android.telecom.action.CURRENT_TTY_MODE_CHANGED"/>
+  <protected-broadcast name="android.intent.action.SERVICE_STATE"/>
+  <protected-broadcast name="android.intent.action.RADIO_TECHNOLOGY"/>
+  <protected-broadcast name="android.intent.action.EMERGENCY_CALLBACK_MODE_CHANGED"/>
+  <protected-broadcast name="android.intent.action.EMERGENCY_CALL_STATE_CHANGED"/>
+  <protected-broadcast name="android.intent.action.SIG_STR"/>
+  <protected-broadcast name="android.intent.action.ANY_DATA_STATE"/>
+  <protected-broadcast name="android.intent.action.DATA_STALL_DETECTED"/>
+  <protected-broadcast name="android.intent.action.SIM_STATE_CHANGED"/>
+  <protected-broadcast name="android.intent.action.USER_ACTIVITY_NOTIFICATION"/>
+  <protected-broadcast name="android.telephony.action.SHOW_NOTICE_ECM_BLOCK_OTHERS"/>
+  <protected-broadcast name="android.intent.action.ACTION_MDN_STATE_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.SERVICE_PROVIDERS_UPDATED"/>
+  <protected-broadcast name="android.provider.Telephony.SIM_FULL"/>
+  <protected-broadcast name="com.android.internal.telephony.carrier_key_download_alarm"/>
+  <protected-broadcast name="com.android.internal.telephony.data-restart-trysetup"/>
+  <protected-broadcast name="com.android.internal.telephony.data-stall"/>
+  <protected-broadcast name="com.android.internal.telephony.provisioning_apn_alarm"/>
+  <protected-broadcast name="android.intent.action.DATA_SMS_RECEIVED"/>
+  <protected-broadcast name="android.provider.Telephony.SMS_RECEIVED"/>
+  <protected-broadcast name="android.provider.Telephony.SMS_DELIVER"/>
+  <protected-broadcast name="android.provider.Telephony.SMS_REJECTED"/>
+  <protected-broadcast name="android.provider.Telephony.WAP_PUSH_DELIVER"/>
+  <protected-broadcast name="android.provider.Telephony.WAP_PUSH_RECEIVED"/>
+  <protected-broadcast name="android.provider.Telephony.SMS_CB_RECEIVED"/>
+  <protected-broadcast name="android.provider.action.SMS_EMERGENCY_CB_RECEIVED"/>
+  <protected-broadcast name="android.provider.Telephony.SMS_SERVICE_CATEGORY_PROGRAM_DATA_RECEIVED"/>
+  <protected-broadcast name="android.provider.Telephony.SECRET_CODE"/>
+  <protected-broadcast name="com.android.internal.stk.command"/>
+  <protected-broadcast name="com.android.internal.stk.session_end"/>
+  <protected-broadcast name="com.android.internal.stk.icc_status_change"/>
+  <protected-broadcast name="com.android.internal.stk.alpha_notify"/>
+  <protected-broadcast name="com.android.internal.telephony.CARRIER_SIGNAL_REDIRECTED"/>
+  <protected-broadcast name="com.android.internal.telephony.CARRIER_SIGNAL_REQUEST_NETWORK_FAILED"/>
+  <protected-broadcast name="com.android.internal.telephony.CARRIER_SIGNAL_PCO_VALUE"/>
+  <protected-broadcast name="com.android.internal.telephony.CARRIER_SIGNAL_RESET"/>
+  <protected-broadcast name="com.android.internal.telephony.CARRIER_SIGNAL_DEFAULT_NETWORK_AVAILABLE"/>
+  <protected-broadcast name="com.android.internal.telephony.PROVISION"/>
+  <protected-broadcast name="com.android.internal.telephony.ACTION_LINE1_NUMBER_ERROR_DETECTED"/>
+  <protected-broadcast name="com.android.internal.provider.action.VOICEMAIL_SMS_RECEIVED"/>
+  <protected-broadcast name="com.android.intent.isim_refresh"/>
+  <protected-broadcast name="com.android.ims.ACTION_RCS_SERVICE_AVAILABLE"/>
+  <protected-broadcast name="com.android.ims.ACTION_RCS_SERVICE_UNAVAILABLE"/>
+  <protected-broadcast name="com.android.ims.ACTION_RCS_SERVICE_DIED"/>
+  <protected-broadcast name="com.android.ims.ACTION_PRESENCE_CHANGED"/>
+  <protected-broadcast name="com.android.ims.ACTION_PUBLISH_STATUS_CHANGED"/>
+  <protected-broadcast name="com.android.ims.IMS_SERVICE_UP"/>
+  <protected-broadcast name="com.android.ims.IMS_SERVICE_DOWN"/>
+  <protected-broadcast name="com.android.ims.IMS_INCOMING_CALL"/>
+  <protected-broadcast name="com.android.ims.internal.uce.UCE_SERVICE_UP"/>
+  <protected-broadcast name="com.android.ims.internal.uce.UCE_SERVICE_DOWN"/>
+  <protected-broadcast name="com.android.imsconnection.DISCONNECTED"/>
+  <protected-broadcast name="com.android.intent.action.IMS_FEATURE_CHANGED"/>
+  <protected-broadcast name="com.android.intent.action.IMS_CONFIG_CHANGED"/>
+  <protected-broadcast name="android.telephony.ims.action.WFC_IMS_REGISTRATION_ERROR"/>
+  <protected-broadcast name="com.android.phone.vvm.omtp.sms.REQUEST_SENT"/>
+  <protected-broadcast name="com.android.phone.vvm.ACTION_VISUAL_VOICEMAIL_SERVICE_EVENT"/>
+  <protected-broadcast name="com.android.internal.telephony.CARRIER_VVM_PACKAGE_INSTALLED"/>
+  <protected-broadcast name="com.android.cellbroadcastreceiver.GET_LATEST_CB_AREA_INFO"/>
+  <protected-broadcast name="com.android.internal.telephony.ACTION_CARRIER_CERTIFICATE_DOWNLOAD"/>
+  <protected-broadcast name="com.android.internal.telephony.action.COUNTRY_OVERRIDE"/>
+  <protected-broadcast name="com.android.internal.telephony.OPEN_DEFAULT_SMS_APP"/>
+  <protected-broadcast name="com.android.internal.telephony.ACTION_TEST_OVERRIDE_CARRIER_ID"/>
+  <protected-broadcast name="android.telephony.action.SIM_CARD_STATE_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.SIM_APPLICATION_STATE_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.SIM_SLOT_STATUS_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.SUBSCRIPTION_CARRIER_IDENTITY_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.SUBSCRIPTION_SPECIFIC_CARRIER_IDENTITY_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.TOGGLE_PROVISION"/>
+  <protected-broadcast name="android.telephony.action.NETWORK_COUNTRY_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.PRIMARY_SUBSCRIPTION_LIST_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.MULTI_SIM_CONFIG_CHANGED"/>
+  <protected-broadcast name="android.telephony.action.CARRIER_SIGNAL_RESET"/>
+  <protected-broadcast name="android.telephony.action.CARRIER_SIGNAL_PCO_VALUE"/>
+  <protected-broadcast name="android.telephony.action.CARRIER_SIGNAL_DEFAULT_NETWORK_AVAILABLE"/>
+  <protected-broadcast name="android.telephony.action.CARRIER_SIGNAL_REDIRECTED"/>
+  <protected-broadcast name="android.telephony.action.CARRIER_SIGNAL_REQUEST_NETWORK_FAILED"/>
+  <protected-broadcast name="com.android.phone.settings.CARRIER_PROVISIONING"/>
+  <protected-broadcast name="com.android.phone.settings.TRIGGER_CARRIER_PROVISIONING"/>
+  <protected-broadcast name="com.android.internal.telephony.ACTION_VOWIFI_ENABLED"/>
+  <protected-broadcast name="android.telephony.action.ANOMALY_REPORTED"/>
+  <protected-broadcast name="android.intent.action.SUBSCRIPTION_INFO_RECORD_ADDED"/>
+  <protected-broadcast name="android.intent.action.ACTION_MANAGED_ROAMING_IND"/>
+  <protected-broadcast name="android.telephony.ims.action.RCS_SINGLE_REGISTRATION_CAPABILITY_UPDATE"/>
+  <protected-broadcast name="android.safetycenter.action.REFRESH_SAFETY_SOURCES"/>
+  <protected-broadcast name="android.safetycenter.action.SAFETY_CENTER_ENABLED_CHANGED"/>
+  <protected-broadcast name="android.app.action.DEVICE_POLICY_RESOURCE_UPDATED"/>
+  <protected-broadcast name="android.intent.action.SHOW_FOREGROUND_SERVICE_MANAGER"/>
+  <protected-broadcast name="android.service.autofill.action.DELAYED_FILL"/>
+  <protected-broadcast name="android.app.action.PROVISIONING_COMPLETED"/>
+  <protected-broadcast name="android.app.action.LOST_MODE_LOCATION_UPDATE"/>
+  <eat-comment/>
+  <permission-group name="android.permission-group.UNDEFINED" priority="100"/>
+  <eat-comment/>
+  <permission-group label="Contacts" icon="res/drawable/perm_group_contacts.xml" name="android.permission-group.CONTACTS" priority="100" description="access your contacts"/>
+  <permission label="read your contacts" name="android.permission.READ_CONTACTS" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to read data about your contacts stored on your tablet. Apps will also have access to the accounts on your tablet that have created contacts. This may include accounts created by apps you have installed. This permission allows apps to save your contact data, and malicious apps may share contact data without your knowledge."/>
+  <permission label="modify your contacts" name="android.permission.WRITE_CONTACTS" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to modify the data about your contacts stored on your tablet. This permission allows apps to delete contact data."/>
+  <permission name="android.permission.SET_DEFAULT_ACCOUNT_FOR_CONTACTS" protectionLevel="0x4000004"/>
+  <eat-comment/>
+  <permission-group label="Calendar" icon="res/drawable/perm_group_calendar.xml" name="android.permission-group.CALENDAR" priority="200" description="access your calendar"/>
+  <permission label="Read calendar events and details" name="android.permission.READ_CALENDAR" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="This app can read all calendar events stored on your tablet and share or save your calendar data."/>
+  <permission label="add or modify calendar events and send email to guests without owners' knowledge" name="android.permission.WRITE_CALENDAR" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="This app can add, remove, or change calendar events on your tablet. This app can send messages that may appear to come from calendar owners, or change events without notifying their owners."/>
+  <eat-comment/>
+  <permission name="android.permission.ACCESS_MESSAGES_ON_ICC" protectionLevel="0x2"/>
+  <permission-group label="SMS" icon="res/drawable/perm_group_sms.xml" name="android.permission-group.SMS" priority="300" description="send and view SMS messages"/>
+  <permission label="send and view SMS messages" name="android.permission.SEND_SMS" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to send SMS messages. This may result in unexpected charges. Malicious apps may cost you money by sending messages without your confirmation." permissionFlags="0x5"/>
+  <permission label="receive text messages (SMS)" name="android.permission.RECEIVE_SMS" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to receive and process SMS messages. This means the app could monitor or delete messages sent to your device without showing them to you." permissionFlags="0x4"/>
+  <permission label="read your text messages (SMS or MMS)" name="android.permission.READ_SMS" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="This app can read all SMS (text) messages stored on your tablet." permissionFlags="0x4"/>
+  <permission label="receive text messages (WAP)" name="android.permission.RECEIVE_WAP_PUSH" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to receive and process WAP messages. This permission includes the ability to monitor or delete messages sent to you without showing them to you." permissionFlags="0x4"/>
+  <permission label="receive text messages (MMS)" name="android.permission.RECEIVE_MMS" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to receive and process MMS messages. This means the app could monitor or delete messages sent to your device without showing them to you." permissionFlags="0x4"/>
+  <permission label="Forward cell broadcast messages" name="android.permission.BIND_CELL_BROADCAST_SERVICE" protectionLevel="0x2" description="Allows the app to bind to the cell broadcast module in order to forward cell broadcast messages as they are received. Cell broadcast alerts are delivered in some locations to warn you of emergency situations. Malicious apps may interfere with the performance or operation of your device when an emergency cell broadcast is received."/>
+  <permission label="read cell broadcast messages" name="android.permission.READ_CELL_BROADCASTS" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to read cell broadcast messages received by your device. Cell broadcast alerts are delivered in some locations to warn you of emergency situations. Malicious apps may interfere with the performance or operation of your device when an emergency cell broadcast is received." permissionFlags="0x4"/>
+  <eat-comment/>
+  <permission-group label="Files" icon="res/drawable/perm_group_storage.xml" name="android.permission-group.STORAGE" priority="900" description="access files on your device"/>
+  <permission label="read the contents of your shared storage" name="android.permission.READ_EXTERNAL_STORAGE" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to read the contents of your shared storage." permissionFlags="0x18"/>
+  <permission-group label="Music and audio" icon="res/drawable/perm_group_read_media_aural.xml" name="android.permission-group.READ_MEDIA_AURAL" priority="950" description="access music and audio on your device"/>
+  <permission label="read audio files from shared storage" name="android.permission.READ_MEDIA_AUDIO" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to read audio files from your shared storage."/>
+  <permission-group label="Photos and videos" icon="res/drawable/perm_group_read_media_visual.xml" name="android.permission-group.READ_MEDIA_VISUAL" priority="1000" description="access photos and videos on your device"/>
+  <permission label="read video files from shared storage" name="android.permission.READ_MEDIA_VIDEO" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to read video files from your shared storage."/>
+  <permission label="read image files from shared storage" name="android.permission.READ_MEDIA_IMAGES" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to read image files from your shared storage."/>
+  <permission label="modify or delete the contents of your shared storage" name="android.permission.WRITE_EXTERNAL_STORAGE" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to write the contents of your shared storage." permissionFlags="0x18"/>
+  <permission label="read locations from your media collection" name="android.permission.ACCESS_MEDIA_LOCATION" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to read locations from your media collection."/>
+  <permission name="android.permission.WRITE_OBB" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_EXTERNAL_STORAGE" protectionLevel="0x442" permissionGroup="android.permission-group.UNDEFINED"/>
+  <permission name="android.permission.MANAGE_MEDIA" protectionLevel="0x442"/>
+  <eat-comment/>
+  <permission-group label="Location" icon="res/drawable/perm_group_location.xml" name="android.permission-group.LOCATION" priority="400" description="access this device's location"/>
+  <permission label="access precise location only in the foreground" name="android.permission.ACCESS_FINE_LOCATION" protectionLevel="0x1001" permissionGroup="android.permission-group.UNDEFINED" description="This app can get your precise location from location services while the app is in use. Location services for your device must be turned on for the app to get location. This may increase battery usage." backgroundPermission="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+  <permission label="access approximate location only in the foreground" name="android.permission.ACCESS_COARSE_LOCATION" protectionLevel="0x1001" permissionGroup="android.permission-group.UNDEFINED" description="This app can get your approximate location from location services while the app is in use. Location services for your device must be turned on for the app to get location." backgroundPermission="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+  <permission label="access location in the background" name="android.permission.ACCESS_BACKGROUND_LOCATION" protectionLevel="0x1001" permissionGroup="android.permission-group.UNDEFINED" description="This app can access location at any time, even while the app is not in use." permissionFlags="0x4"/>
+  <permission name="android.permission.LOCATION_BYPASS" protectionLevel="0x12"/>
+  <eat-comment/>
+  <permission-group label="Call logs" icon="res/drawable/perm_group_call_log.xml" name="android.permission-group.CALL_LOG" priority="450" description="read and write phone call log"/>
+  <permission label="access IMS call service" name="android.permission.ACCESS_IMS_CALL_SERVICE" protectionLevel="0x12" description="Allows the app to use the IMS service to make calls without your intervention."/>
+  <permission name="android.permission.PERFORM_IMS_SINGLE_REGISTRATION" protectionLevel="0x4000004"/>
+  <permission label="read call log" name="android.permission.READ_CALL_LOG" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="This app can read your call history." permissionFlags="0x4"/>
+  <permission label="write call log" name="android.permission.WRITE_CALL_LOG" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to modify your tablet's call log, including data about incoming and outgoing calls. Malicious apps may use this to erase or modify your call log." permissionFlags="0x4"/>
+  <permission label="reroute outgoing calls" name="android.permission.PROCESS_OUTGOING_CALLS" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to see the number being dialed during an outgoing call with the option to redirect the call to a different number or abort the call altogether." permissionFlags="0x4"/>
+  <eat-comment/>
+  <permission-group label="Phone" icon="res/drawable/perm_group_phone_calls.xml" name="android.permission-group.PHONE" priority="500" description="make and manage phone calls"/>
+  <permission label="read phone status and identity" name="android.permission.READ_PHONE_STATE" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to access the phone features of the device. This permission allows the app to determine the phone number and device IDs, whether a call is active, and the remote number connected by a call."/>
+  <permission label="read basic telephony status and identity" name="android.permission.READ_BASIC_PHONE_STATE" protectionLevel="0x0" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to access the basic telephony features of the device."/>
+  <permission label="read phone numbers" name="android.permission.READ_PHONE_NUMBERS" protectionLevel="0x1001" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to access the phone numbers of the device."/>
+  <permission label="directly call phone numbers" name="android.permission.CALL_PHONE" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to call phone numbers without your intervention. This may result in unexpected charges or calls. Note that this doesn't allow the app to call emergency numbers. Malicious apps may cost you money by making calls without your confirmation." permissionFlags="0x1"/>
+  <permission label="add voicemail" name="com.android.voicemail.permission.ADD_VOICEMAIL" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to add messages to your voicemail inbox."/>
+  <permission label="make/receive SIP calls" name="android.permission.USE_SIP" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to make and receive SIP calls."/>
+  <permission label="answer phone calls" name="android.permission.ANSWER_PHONE_CALLS" protectionLevel="0x2001" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to answer an incoming phone call."/>
+  <permission label="route calls through the system" name="android.permission.MANAGE_OWN_CALLS" protectionLevel="0x0" description="Allows the app to route its calls through the system in order to improve the calling experience."/>
+  <permission label="see and control calls through the system." name="android.permission.CALL_COMPANION_APP" protectionLevel="0x0" description="Allows the app to see and control ongoing calls on the device. This includes information such as call numbers for calls and the state of the calls."/>
+  <permission label="exempt from audio record restrictions" name="android.permission.EXEMPT_FROM_AUDIO_RECORD_RESTRICTIONS" protectionLevel="0x4000012" description="Exempt the app from restrictions to record audio."/>
+  <permission name="android.permission.ACCEPT_HANDOVER" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to continue a call which was started in another app." android.label="continue a call from another app"/>
+  <eat-comment/>
+  <permission-group label="Microphone" icon="res/drawable/perm_group_microphone.xml" name="android.permission-group.MICROPHONE" priority="600" description="record audio"/>
+  <permission label="record audio" name="android.permission.RECORD_AUDIO" protectionLevel="0x1001" permissionGroup="android.permission-group.UNDEFINED" description="This app can record audio using the microphone while the app is in use." backgroundPermission="android.permission.RECORD_BACKGROUND_AUDIO"/>
+  <permission label="record audio in the background" name="android.permission.RECORD_BACKGROUND_AUDIO" protectionLevel="0x4000004" permissionGroup="android.permission-group.UNDEFINED" description="This app can record audio using the microphone at any time."/>
+  <eat-comment/>
+  <permission-group label="Physical activity" icon="res/drawable/perm_group_activity_recognition.xml" name="android.permission-group.ACTIVITY_RECOGNITION" priority="1000" description="access your physical activity"/>
+  <permission label="recognize physical activity" name="android.permission.ACTIVITY_RECOGNITION" protectionLevel="0x1001" permissionGroup="android.permission-group.UNDEFINED" description="This app can recognize your physical activity."/>
+  <permission name="android.permission.ACCESS_UCE_PRESENCE_SERVICE" protectionLevel="0x12" permissionGroup="android.permission-group.PHONE"/>
+  <permission name="android.permission.ACCESS_UCE_OPTIONS_SERVICE" protectionLevel="0x12" permissionGroup="android.permission-group.PHONE"/>
+  <eat-comment/>
+  <permission-group label="Camera" icon="res/drawable/perm_group_camera.xml" name="android.permission-group.CAMERA" priority="700" description="take pictures and record video"/>
+  <permission label="take pictures and videos" name="android.permission.CAMERA" protectionLevel="0x1001" permissionGroup="android.permission-group.UNDEFINED" description="This app can take pictures and record videos using the camera while the app is in use." backgroundPermission="android.permission.BACKGROUND_CAMERA"/>
+  <permission-group label="Nearby devices" icon="res/drawable/perm_group_nearby_devices.xml" name="android.permission-group.NEARBY_DEVICES" priority="750" description="discover and connect to nearby devices"/>
+  <permission label="take pictures and videos in the background" name="android.permission.BACKGROUND_CAMERA" protectionLevel="0x4000004" permissionGroup="android.permission-group.UNDEFINED" description="This app can take pictures and record videos using the camera at any time."/>
+  <permission label="Allow an application or service access to system cameras to take pictures and videos" name="android.permission.SYSTEM_CAMERA" protectionLevel="0x4000012" permissionGroup="android.permission-group.UNDEFINED" description="This privileged or system app can take pictures and record videos using a system camera at any time. Requires the android.permission.CAMERA permission to be held by the app as well"/>
+  <permission label="Allow an application or service to receive callbacks about camera devices being opened or closed." name="android.permission.CAMERA_OPEN_CLOSE_LISTENER" protectionLevel="0x2" permissionGroup="android.permission-group.UNDEFINED" description="This app can receive callbacks when any camera device is being opened (by what application) or closed."/>
+  <eat-comment/>
+  <permission-group label="Body sensors" icon="res/drawable/perm_group_sensors.xml" name="android.permission-group.SENSORS" priority="800" description="access sensor data about your vital signs"/>
+  <permission label="access sensor data at a high sampling rate" name="android.permission.HIGH_SAMPLING_RATE_SENSORS" protectionLevel="0x0" permissionGroup="android.permission-group.SENSORS" description="Allows the app to sample sensor data at a rate greater than 200 Hz"/>
+  <permission label="Access body sensor data, like heart rate, while in use" name="android.permission.BODY_SENSORS" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to access body sensor data, such as heart rate, temperature, and blood oxygen percentage, while the app is in use." backgroundPermission="android.permission.BODY_SENSORS_BACKGROUND"/>
+  <permission label="Access body sensor data, like heart rate, while in the background" name="android.permission.BODY_SENSORS_BACKGROUND" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to access body sensor data, such as heart rate, temperature, and blood oxygen percentage, while the app is in the background." permissionFlags="0x4"/>
+  <permission label="use fingerprint hardware" name="android.permission.USE_FINGERPRINT" protectionLevel="0x0" permissionGroup="android.permission-group.SENSORS" description="Allows the app to use fingerprint hardware for authentication"/>
+  <permission label="use biometric hardware" name="android.permission.USE_BIOMETRIC" protectionLevel="0x0" permissionGroup="android.permission-group.SENSORS" description="Allows the app to use biometric hardware for authentication"/>
+  <eat-comment/>
+  <permission-group label="Notifications" icon="res/drawable/ic_notifications_alerted.xml" name="android.permission-group.NOTIFICATIONS" priority="850" description="show notifications"/>
+  <permission label="show notifications" name="android.permission.POST_NOTIFICATIONS" protectionLevel="0x1001" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to show notifications"/>
+  <uses-permission name="android.permission.POST_NOTIFICATIONS"/>
+  <permission name="android.permission.READ_PROFILE" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.WRITE_PROFILE" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.READ_SOCIAL_STREAM" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.WRITE_SOCIAL_STREAM" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.READ_USER_DICTIONARY" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.WRITE_USER_DICTIONARY" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.WRITE_SMS" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="com.android.browser.permission.WRITE_HISTORY_BOOKMARKS" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.AUTHENTICATE_ACCOUNTS" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.MANAGE_ACCOUNTS" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.USE_CREDENTIALS" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.SUBSCRIBED_FEEDS_READ" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.SUBSCRIBED_FEEDS_WRITE" protectionLevel="0x0" permissionFlags="0x2"/>
+  <permission name="android.permission.FLASHLIGHT" protectionLevel="0x0" permissionFlags="0x2"/>
+  <eat-comment/>
+  <permission name="android.permission.SEND_RESPOND_VIA_MESSAGE" protectionLevel="0x12"/>
+  <permission name="android.permission.SEND_SMS_NO_CONFIRMATION" protectionLevel="0x12"/>
+  <permission name="android.permission.CARRIER_FILTER_SMS" protectionLevel="0x12"/>
+  <permission name="android.permission.RECEIVE_EMERGENCY_BROADCAST" protectionLevel="0x12"/>
+  <permission name="android.permission.RECEIVE_BLUETOOTH_MAP" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_DIRECTORY_SEARCH" protectionLevel="0x12"/>
+  <permission name="android.permission.MODIFY_CELL_BROADCASTS" protectionLevel="0x12"/>
+  <eat-comment/>
+  <permission label="set an alarm" name="com.android.alarm.permission.SET_ALARM" protectionLevel="0x0" description="Allows the app to set an alarm in an installed alarm clock app. Some alarm clock apps may not implement this feature."/>
+  <eat-comment/>
+  <permission name="com.android.voicemail.permission.WRITE_VOICEMAIL" protectionLevel="0x4000012"/>
+  <permission name="com.android.voicemail.permission.READ_VOICEMAIL" protectionLevel="0x4000012"/>
+  <eat-comment/>
+  <permission label="access extra location provider commands" name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" protectionLevel="0x0" description="Allows the app to access extra location provider commands. This may allow the app to interfere with the operation of the GPS or other location sources."/>
+  <permission name="android.permission.INSTALL_LOCATION_PROVIDER" protectionLevel="0x12"/>
+  <permission name="android.permission.INSTALL_LOCATION_TIME_ZONE_PROVIDER_SERVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_TIME_ZONE_PROVIDER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.HDMI_CEC" protectionLevel="0x8012"/>
+  <permission name="android.permission.LOCATION_HARDWARE" protectionLevel="0x4000012"/>
+  <uses-permission name="android.permission.LOCATION_HARDWARE"/>
+  <permission name="android.permission.ACCESS_CONTEXT_HUB" protectionLevel="0x12"/>
+  <uses-permission name="android.permission.ACCESS_CONTEXT_HUB"/>
+  <permission name="android.permission.ACCESS_MOCK_LOCATION" protectionLevel="0x2"/>
+  <permission name="android.permission.CONTROL_AUTOMOTIVE_GNSS" protectionLevel="0x12"/>
+  <eat-comment/>
+  <permission label="have full network access" name="android.permission.INTERNET" protectionLevel="0x1000" description="Allows the app to create network sockets and use custom network protocols. The browser and other applications provide means to send data to the internet, so this permission is not required to send data to the internet."/>
+  <permission label="view network connections" name="android.permission.ACCESS_NETWORK_STATE" protectionLevel="0x1000" description="Allows the app to view information about network connections such as which networks exist and are connected."/>
+  <permission label="view Wi-Fi connections" name="android.permission.ACCESS_WIFI_STATE" protectionLevel="0x0" description="Allows the app to view information about Wi-Fi networking, such as whether Wi-Fi is enabled and name of connected Wi-Fi devices."/>
+  <permission label="connect and disconnect from Wi-Fi" name="android.permission.CHANGE_WIFI_STATE" protectionLevel="0x0" description="Allows the app to connect to and disconnect from Wi-Fi access points and to make changes to device configuration for Wi-Fi networks."/>
+  <permission name="android.permission.MANAGE_WIFI_NETWORK_SELECTION" protectionLevel="0x8000012" knownCerts="@17236199"/>
+  <permission name="android.permission.MANAGE_WIFI_INTERFACES" protectionLevel="0x8000012" knownCerts="@17236199"/>
+  <permission name="android.permission.MANAGE_IPSEC_TUNNELS" protectionLevel="0x42"/>
+  <permission name="android.permission.MANAGE_TEST_NETWORKS" protectionLevel="0x2"/>
+  <permission name="android.permission.READ_WIFI_CREDENTIAL" protectionLevel="0x12"/>
+  <permission name="android.permission.TETHER_PRIVILEGED" protectionLevel="0x12"/>
+  <permission name="android.permission.RECEIVE_WIFI_CREDENTIAL_CHANGE" protectionLevel="0x12"/>
+  <permission name="android.permission.OVERRIDE_WIFI_CONFIG" protectionLevel="0x8000012" knownCerts="@17236199"/>
+  <permission name="android.permission.SCORE_NETWORKS" protectionLevel="0x12"/>
+  <permission name="android.permission.REQUEST_NETWORK_SCORES" protectionLevel="0x802"/>
+  <permission name="android.permission.RESTART_WIFI_SUBSYSTEM" protectionLevel="0x12"/>
+  <permission name="android.permission.NETWORK_AIRPLANE_MODE" protectionLevel="0x2"/>
+  <permission name="android.permission.NETWORK_STACK" protectionLevel="0x2"/>
+  <permission name="android.permission.OBSERVE_NETWORK_POLICY" protectionLevel="0x2"/>
+  <permission name="android.permission.NETWORK_FACTORY" protectionLevel="0x4000002"/>
+  <permission name="android.permission.NETWORK_STATS_PROVIDER" protectionLevel="0x2"/>
+  <permission name="android.permission.NETWORK_SETTINGS" protectionLevel="0x2"/>
+  <permission name="android.permission.RADIO_SCAN_WITHOUT_LOCATION" protectionLevel="0x800002"/>
+  <permission name="android.permission.NETWORK_SETUP_WIZARD" protectionLevel="0x802"/>
+  <permission name="android.permission.NETWORK_MANAGED_PROVISIONING" protectionLevel="0x4000002"/>
+  <permission name="android.permission.NETWORK_CARRIER_PROVISIONING" protectionLevel="0x12"/>
+  <permission name="android.permission.ACCESS_LOWPAN_STATE" protectionLevel="0x12"/>
+  <permission name="android.permission.CHANGE_LOWPAN_STATE" protectionLevel="0x12"/>
+  <permission name="android.permission.READ_LOWPAN_CREDENTIAL" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_LOWPAN_INTERFACES" protectionLevel="0x12"/>
+  <permission name="android.permission.NETWORK_BYPASS_PRIVATE_DNS" protectionLevel="0x2"/>
+  <permission name="android.permission.WIFI_SET_DEVICE_MOBILITY_STATE" protectionLevel="0x12"/>
+  <permission name="android.permission.WIFI_UPDATE_USABILITY_STATS_SCORE" protectionLevel="0x12"/>
+  <permission name="android.permission.WIFI_UPDATE_COEX_UNSAFE_CHANNELS" protectionLevel="0x4000002"/>
+  <permission name="android.permission.WIFI_ACCESS_COEX_UNSAFE_CHANNELS" protectionLevel="0x4000002"/>
+  <permission name="android.permission.MANAGE_WIFI_COUNTRY_CODE" protectionLevel="0x2"/>
+  <permission name="android.permission.CONTROL_OEM_PAID_NETWORK_PREFERENCE" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_ETHERNET_NETWORKS" protectionLevel="0x2"/>
+  <eat-comment/>
+  <permission label="pair with Bluetooth devices" name="android.permission.BLUETOOTH" protectionLevel="0x0" description="Allows the app to view the configuration of Bluetooth on the tablet, and to make and accept connections with paired devices."/>
+  <permission label="discover and pair nearby Bluetooth devices" name="android.permission.BLUETOOTH_SCAN" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to discover and pair nearby Bluetooth devices"/>
+  <permission label="connect to paired Bluetooth devices" name="android.permission.BLUETOOTH_CONNECT" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to connect to paired Bluetooth devices"/>
+  <permission label="advertise to nearby Bluetooth devices" name="android.permission.BLUETOOTH_ADVERTISE" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to advertise to nearby Bluetooth devices"/>
+  <permission label="determine relative position between nearby Ultra-Wideband devices" name="android.permission.UWB_RANGING" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allow the app to determine relative position between nearby Ultra-Wideband devices"/>
+  <permission label="interact with nearby Wi‑Fi devices" name="android.permission.NEARBY_WIFI_DEVICES" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to advertise, connect, and determine the relative position of nearby Wi‑Fi devices"/>
+  <permission name="android.permission.SUSPEND_APPS" protectionLevel="0x4000002"/>
+  <permission label="access Bluetooth settings" name="android.permission.BLUETOOTH_ADMIN" protectionLevel="0x0" description="Allows the app to configure the local Bluetooth tablet, and to discover and pair with remote devices."/>
+  <permission name="android.permission.BLUETOOTH_PRIVILEGED" protectionLevel="0x12"/>
+  <permission name="android.permission.BLUETOOTH_MAP" protectionLevel="0x4000002"/>
+  <permission name="android.permission.BLUETOOTH_STACK" protectionLevel="0x4000002"/>
+  <permission name="android.permission.VIRTUAL_INPUT_DEVICE" protectionLevel="0x2"/>
+  <permission label="control Near Field Communication" name="android.permission.NFC" protectionLevel="0x0" description="Allows the app to communicate with Near Field Communication (NFC) tags, cards, and readers."/>
+  <permission name="android.permission.NFC_TRANSACTION_EVENT" protectionLevel="0x0"/>
+  <permission label="Preferred NFC Payment Service Information" name="android.permission.NFC_PREFERRED_PAYMENT_INFO" protectionLevel="0x0" description="Allows the app to get preferred nfc payment service information like registered aids and route destination."/>
+  <permission name="android.permission.NFC_SET_CONTROLLER_ALWAYS_ON" protectionLevel="0x12"/>
+  <permission name="android.permission.SECURE_ELEMENT_PRIVILEGED_OPERATION" protectionLevel="0x12"/>
+  <permission name="android.permission.CONNECTIVITY_INTERNAL" protectionLevel="0x12"/>
+  <permission name="android.permission.CONNECTIVITY_USE_RESTRICTED_NETWORKS" protectionLevel="0x12"/>
+  <uses-permission name="android.permission.CONNECTIVITY_USE_RESTRICTED_NETWORKS"/>
+  <permission name="android.permission.NETWORK_SIGNAL_STRENGTH_WAKEUP" protectionLevel="0x12"/>
+  <permission name="android.permission.PACKET_KEEPALIVE_OFFLOAD" protectionLevel="0x12"/>
+  <permission name="android.permission.RECEIVE_DATA_ACTIVITY_CHANGE" protectionLevel="0x12"/>
+  <permission name="android.permission.LOOP_RADIO" protectionLevel="0x12"/>
+  <permission name="android.permission.NFC_HANDOVER_STATUS" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_BLUETOOTH_WHEN_WIRELESS_CONSENT_REQUIRED" protectionLevel="0x2"/>
+  <permission name="android.permission.ENABLE_TEST_HARNESS_MODE" protectionLevel="0x2"/>
+  <permission name="android.permission.UWB_PRIVILEGED" protectionLevel="0x12"/>
+  <eat-comment/>
+  <permission label="find accounts on the device" name="android.permission.GET_ACCOUNTS" protectionLevel="0x1" permissionGroup="android.permission-group.UNDEFINED" description="Allows the app to get the list of accounts known by the tablet. This may include any accounts created by applications you have installed."/>
+  <uses-permission name="android.permission.GET_ACCOUNTS"/>
+  <permission name="android.permission.ACCOUNT_MANAGER" protectionLevel="0x2"/>
+  <eat-comment/>
+  <permission label="allow Wi-Fi Multicast reception" name="android.permission.CHANGE_WIFI_MULTICAST_STATE" protectionLevel="0x0" description="Allows the app to receive packets sent to all devices on a Wi-Fi network using multicast addresses, not just your tablet. It uses more power than the non-multicast mode."/>
+  <permission label="control vibration" name="android.permission.VIBRATE" protectionLevel="0x1000" description="Allows the app to control the vibrator."/>
+  <permission name="android.permission.VIBRATE_ALWAYS_ON" protectionLevel="0x2"/>
+  <permission label="Allows the app to access the vibrator state." name="android.permission.ACCESS_VIBRATOR_STATE" protectionLevel="0x12" description="Allows the app to access the vibrator state."/>
+  <permission label="prevent tablet from sleeping" name="android.permission.WAKE_LOCK" protectionLevel="0x1000" description="Allows the app to prevent the tablet from going to sleep."/>
+  <permission label="transmit infrared" name="android.permission.TRANSMIT_IR" protectionLevel="0x0" description="Allows the app to use the tablet's infrared transmitter."/>
+  <eat-comment/>
+  <permission label="change your audio settings" name="android.permission.MODIFY_AUDIO_SETTINGS" protectionLevel="0x0" description="Allows the app to modify global audio settings such as volume and which speaker is used for output."/>
+  <eat-comment/>
+  <permission name="android.permission.MANAGE_FACTORY_RESET_PROTECTION" protectionLevel="0x12"/>
+  <eat-comment/>
+  <permission name="android.permission.TRIGGER_LOST_MODE" protectionLevel="0x4000002"/>
+  <eat-comment/>
+  <permission name="android.permission.MANAGE_USB" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_DEBUGGING" protectionLevel="0x12"/>
+  <permission name="android.permission.ACCESS_MTP" protectionLevel="0x12"/>
+  <permission name="android.permission.HARDWARE_TEST" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_DYNAMIC_SYSTEM" protectionLevel="0x2"/>
+  <permission name="android.permission.INSTALL_DYNAMIC_SYSTEM" protectionLevel="0x12"/>
+  <permission name="android.permission.ACCESS_BROADCAST_RADIO" protectionLevel="0x12"/>
+  <permission name="android.permission.ACCESS_FM_RADIO" protectionLevel="0x12"/>
+  <permission name="android.permission.NET_ADMIN" protectionLevel="0x4000002"/>
+  <permission name="android.permission.REMOTE_AUDIO_PLAYBACK" protectionLevel="0x2"/>
+  <permission name="android.permission.TV_INPUT_HARDWARE" protectionLevel="0x8012"/>
+  <permission name="android.permission.CAPTURE_TV_INPUT" protectionLevel="0x12"/>
+  <permission name="android.permission.DVB_DEVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_CARRIER_OEM_UNLOCK_STATE" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_USER_OEM_UNLOCK_STATE" protectionLevel="0x12"/>
+  <permission name="android.permission.READ_OEM_UNLOCK_STATE" protectionLevel="0x12"/>
+  <permission name="android.permission.OEM_UNLOCK_STATE" protectionLevel="0x2"/>
+  <permission name="android.permission.ACCESS_PDB_STATE" protectionLevel="0x4000002"/>
+  <permission name="android.permission.TEST_BLACKLISTED_PASSWORD" protectionLevel="0x2"/>
+  <permission name="android.permission.NOTIFY_PENDING_SYSTEM_UPDATE" protectionLevel="0x12"/>
+  <eat-comment/>
+  <permission name="android.permission.CAMERA_DISABLE_TRANSMIT_LED" protectionLevel="0x12"/>
+  <permission name="android.permission.CAMERA_SEND_SYSTEM_EVENTS" protectionLevel="0x12"/>
+  <permission name="android.permission.CAMERA_INJECT_EXTERNAL_CAMERA" protectionLevel="0x2"/>
+  <eat-comment/>
+  <permission name="android.permission.GRANT_RUNTIME_PERMISSIONS_TO_TELEPHONY_DEFAULTS" protectionLevel="0x2"/>
+  <permission name="android.permission.MODIFY_PHONE_STATE" protectionLevel="0x4000012"/>
+  <permission name="android.permission.READ_PRECISE_PHONE_STATE" protectionLevel="0x12"/>
+  <permission name="android.permission.READ_PRIVILEGED_PHONE_STATE" protectionLevel="0x4000012"/>
+  <permission name="android.permission.USE_ICC_AUTH_WITH_DEVICE_IDENTIFIER" protectionLevel="0x42"/>
+  <permission name="android.permission.READ_ACTIVE_EMERGENCY_SESSION" protectionLevel="0x2"/>
+  <permission name="android.permission.LISTEN_ALWAYS_REPORTED_SIGNAL_STRENGTH" protectionLevel="0x4000002"/>
+  <permission name="android.permission.REGISTER_SIM_SUBSCRIPTION" protectionLevel="0x12"/>
+  <permission name="android.permission.REGISTER_CALL_PROVIDER" protectionLevel="0x12"/>
+  <permission name="android.permission.REGISTER_CONNECTION_MANAGER" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_INCALL_SERVICE" protectionLevel="0x12"/>
+  <permission label="Manage ongoing calls" name="android.permission.MANAGE_ONGOING_CALLS" protectionLevel="0x42" description="Allows an app to see details about ongoing calls on your device and to control these calls."/>
+  <permission name="android.permission.NETWORK_SCAN" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_VISUAL_VOICEMAIL_SERVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_SCREENING_SERVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_PHONE_ACCOUNT_SUGGESTION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_CALL_DIAGNOSTIC_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_CALL_REDIRECTION_SERVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_CONNECTION_SERVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_TELECOM_CONNECTION_SERVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.CONTROL_INCALL_EXPERIENCE" protectionLevel="0x4000012"/>
+  <permission name="android.permission.RECEIVE_STK_COMMANDS" protectionLevel="0x12"/>
+  <permission name="android.permission.SEND_EMBMS_INTENTS" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_SENSORS" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_IMS_SERVICE" protectionLevel="0x8012"/>
+  <permission name="android.permission.BIND_TELEPHONY_DATA_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_TELEPHONY_NETWORK_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.WRITE_EMBEDDED_SUBSCRIPTIONS" protectionLevel="0x32"/>
+  <permission name="android.permission.BIND_EUICC_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.READ_CARRIER_APP_INFO" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_GBA_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.ACCESS_RCS_USER_CAPABILITY_EXCHANGE" protectionLevel="0x4000004"/>
+  <eat-comment/>
+  <permission name="android.permission.WRITE_MEDIA_STORAGE" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_DOCUMENTS" protectionLevel="0x4000002"/>
+  <permission name="android.permission.MANAGE_CRATES" protectionLevel="0x2"/>
+  <permission name="android.permission.CACHE_CONTENT" protectionLevel="0x4000002"/>
+  <permission name="android.permission.ALLOCATE_AGGRESSIVE" protectionLevel="0x12"/>
+  <permission name="android.permission.USE_RESERVED_DISK" protectionLevel="0x12"/>
+  <eat-comment/>
+  <permission label="disable your screen lock" name="android.permission.DISABLE_KEYGUARD" protectionLevel="0x0" description="Allows the app to disable the keylock and any associated password security. For example, the phone disables the keylock when receiving an incoming phone call, then re-enables the keylock when the call is finished."/>
+  <permission label="request screen lock complexity" name="android.permission.REQUEST_PASSWORD_COMPLEXITY" protectionLevel="0x0" description="Allows the app to learn the screen lock complexity level (high, medium, low or none), which indicates the possible range of length and type of the screen lock. The app can also suggest to users that they update the screen lock to a certain level but users can freely ignore and navigate away. Note that the screen lock is not stored in plaintext so the app does not know the exact password."/>
+  <eat-comment/>
+  <permission label="retrieve running apps" name="android.permission.GET_TASKS" protectionLevel="0x0" description="Allows the app to retrieve information about currently and recently running tasks. This may allow the app to discover information about which applications are used on the device."/>
+  <permission name="android.permission.REAL_GET_TASKS" protectionLevel="0x12"/>
+  <permission name="android.permission.START_TASKS_FROM_RECENTS" protectionLevel="0x2000012"/>
+  <permission name="android.permission.INTERACT_ACROSS_USERS" protectionLevel="0x4000032"/>
+  <permission name="android.permission.INTERACT_ACROSS_USERS_FULL" protectionLevel="0x4000102"/>
+  <uses-permission name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
+  <permission name="android.permission.INTERACT_ACROSS_PROFILES" protectionLevel="0x42"/>
+  <permission name="android.permission.START_CROSS_PROFILE_ACTIVITIES" protectionLevel="0x4000002"/>
+  <permission name="android.permission.CONFIGURE_INTERACT_ACROSS_PROFILES" protectionLevel="0x4000002"/>
+  <permission name="android.permission.MANAGE_USERS" protectionLevel="0x12"/>
+  <permission name="android.permission.CREATE_USERS" protectionLevel="0x2"/>
+  <permission name="android.permission.QUERY_USERS" protectionLevel="0x4000002"/>
+  <permission name="android.permission.ACCESS_BLOBS_ACROSS_USERS" protectionLevel="0x4000032"/>
+  <permission label="manage profile and device owners" name="android.permission.MANAGE_PROFILE_AND_DEVICE_OWNERS" protectionLevel="0x4000002" description="Allows apps to set the profile owners and the device owner."/>
+  <permission name="android.permission.QUERY_ADMIN_POLICY" protectionLevel="0x4000002"/>
+  <permission name="android.permission.PROVISION_DEMO_DEVICE" protectionLevel="0x802"/>
+  <permission name="android.permission.CLEAR_FREEZE_PERIOD" protectionLevel="0x2"/>
+  <permission name="android.permission.FORCE_DEVICE_POLICY_MANAGER_LOGS" protectionLevel="0x2"/>
+  <permission name="android.permission.GET_DETAILED_TASKS" protectionLevel="0x2"/>
+  <permission label="reorder running apps" name="android.permission.REORDER_TASKS" protectionLevel="0x0" description="Allows the app to move tasks to the foreground and background. The app may do this without your input."/>
+  <permission name="android.permission.REMOVE_TASKS" protectionLevel="0x6000002"/>
+  <permission name="android.permission.MANAGE_ACTIVITY_STACKS" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_ACTIVITY_TASKS" protectionLevel="0x2000002"/>
+  <permission name="android.permission.ACTIVITY_EMBEDDING" protectionLevel="0x12"/>
+  <permission name="android.permission.START_ANY_ACTIVITY" protectionLevel="0x2"/>
+  <permission name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" protectionLevel="0x400c212"/>
+  <permission name="android.permission.START_FOREGROUND_SERVICES_FROM_BACKGROUND" protectionLevel="0x400c212"/>
+  <permission name="android.permission.SEND_SHOW_SUSPENDED_APP_DETAILS" protectionLevel="0x2"/>
+  <uses-permission name="android.permission.SEND_SHOW_SUSPENDED_APP_DETAILS"/>
+  <permission name="android.permission.START_ACTIVITY_AS_CALLER" protectionLevel="0x2"/>
+  <permission label="close other apps" name="android.permission.RESTART_PACKAGES" protectionLevel="0x0" description="Allows the app to end background processes of other apps. This may cause other apps to stop running."/>
+  <permission label="close other apps" name="android.permission.KILL_BACKGROUND_PROCESSES" protectionLevel="0x0" description="Allows the app to end background processes of other apps. This may cause other apps to stop running."/>
+  <permission name="android.permission.GET_PROCESS_STATE_AND_OOM_SCORE" protectionLevel="0x32"/>
+  <permission name="android.permission.GET_INTENT_SENDER_INTENT" protectionLevel="0x2"/>
+  <eat-comment/>
+  <permission label="This app can appear on top of other apps" name="android.permission.SYSTEM_ALERT_WINDOW" protectionLevel="0x9e2" description="This app can appear on top of other apps or other parts of the screen. This may interfere with normal app usage and change the way that other apps appear."/>
+  <permission name="android.permission.SYSTEM_APPLICATION_OVERLAY" protectionLevel="0x6000102"/>
+  <permission label="run in the background" name="android.permission.RUN_IN_BACKGROUND" protectionLevel="0x2" description="This app can run in the background. This may drain battery faster."/>
+  <permission label="use data in the background" name="android.permission.USE_DATA_IN_BACKGROUND" protectionLevel="0x2" description="This app can use data in the background. This may increase data usage."/>
+  <permission name="android.permission.SET_DISPLAY_OFFSET" protectionLevel="0x12"/>
+  <permission label="run in the background" name="android.permission.REQUEST_COMPANION_RUN_IN_BACKGROUND" protectionLevel="0x0" description="This app can run in the background. This may drain battery faster."/>
+  <permission name="android.permission.REQUEST_COMPANION_START_FOREGROUND_SERVICES_FROM_BACKGROUND" protectionLevel="0x0"/>
+  <permission label="use data in the background" name="android.permission.REQUEST_COMPANION_USE_DATA_IN_BACKGROUND" protectionLevel="0x0" description="This app can use data in the background. This may increase data usage."/>
+  <permission name="android.permission.REQUEST_COMPANION_PROFILE_WATCH" protectionLevel="0x0"/>
+  <permission name="android.permission.REQUEST_COMPANION_PROFILE_APP_STREAMING" protectionLevel="0x12"/>
+  <permission name="android.permission.REQUEST_COMPANION_PROFILE_AUTOMOTIVE_PROJECTION" protectionLevel="0x4000004"/>
+  <permission name="android.permission.REQUEST_COMPANION_PROFILE_COMPUTER" protectionLevel="0x12"/>
+  <permission name="android.permission.REQUEST_COMPANION_SELF_MANAGED" protectionLevel="0x12"/>
+  <permission name="android.permission.COMPANION_APPROVE_WIFI_CONNECTIONS" protectionLevel="0x12"/>
+  <permission name="android.permission.READ_PROJECTION_STATE" protectionLevel="0x2"/>
+  <permission name="android.permission.TOGGLE_AUTOMOTIVE_PROJECTION" protectionLevel="0x4000004"/>
+  <permission name="android.permission.HIDE_OVERLAY_WINDOWS" protectionLevel="0x0"/>
+  <eat-comment/>
+  <permission label="set wallpaper" name="android.permission.SET_WALLPAPER" protectionLevel="0x0" description="Allows the app to set the system wallpaper."/>
+  <permission label="adjust your wallpaper size" name="android.permission.SET_WALLPAPER_HINTS" protectionLevel="0x0" description="Allows the app to set the system wallpaper size hints."/>
+  <permission name="android.permission.READ_WALLPAPER_INTERNAL" protectionLevel="0x12"/>
+  <eat-comment/>
+  <permission name="android.permission.SET_TIME" protectionLevel="0x4000012"/>
+  <permission label="set time zone" name="android.permission.SET_TIME_ZONE" protectionLevel="0x4000012" description="Allows the app to change the tablet's time zone."/>
+  <permission name="android.permission.SUGGEST_TELEPHONY_TIME_AND_ZONE" protectionLevel="0x2"/>
+  <permission name="android.permission.SUGGEST_MANUAL_TIME_AND_ZONE" protectionLevel="0x2"/>
+  <permission name="android.permission.SUGGEST_EXTERNAL_TIME" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_TIME_AND_ZONE_DETECTION" protectionLevel="0x12"/>
+  <eat-comment/>
+  <permission label="expand/collapse status bar" name="android.permission.EXPAND_STATUS_BAR" protectionLevel="0x0" description="Allows the app to expand or collapse the status bar."/>
+  <eat-comment/>
+  <permission label="install shortcuts" name="com.android.launcher.permission.INSTALL_SHORTCUT" protectionLevel="0x0" description="Allows an application to add Homescreen shortcuts without user intervention."/>
+  <permission label="uninstall shortcuts" name="com.android.launcher.permission.UNINSTALL_SHORTCUT" protectionLevel="0x0" description="Allows the application to remove Homescreen shortcuts without user intervention."/>
+  <eat-comment/>
+  <permission label="read sync settings" name="android.permission.READ_SYNC_SETTINGS" protectionLevel="0x0" description="Allows the app to read the sync settings for an account. For example, this can determine whether the People app is synced with an account."/>
+  <permission label="toggle sync on and off" name="android.permission.WRITE_SYNC_SETTINGS" protectionLevel="0x0" description="Allows an app to modify the sync settings for an account. For example, this can be used to enable sync of the People app with an account."/>
+  <permission label="read sync statistics" name="android.permission.READ_SYNC_STATS" protectionLevel="0x0" description="Allows an app to read the sync stats for an account, including the history of sync events and how much data is synced."/>
+  <eat-comment/>
+  <permission name="android.permission.SET_SCREEN_COMPATIBILITY" protectionLevel="0x2"/>
+  <permission name="android.permission.CHANGE_CONFIGURATION" protectionLevel="0x4000032"/>
+  <permission label="modify system settings" name="android.permission.WRITE_SETTINGS" protectionLevel="0x40004c2" description="Allows the app to modify the system's settings data. Malicious apps may corrupt your system's configuration."/>
+  <permission name="android.permission.WRITE_GSERVICES" protectionLevel="0x12"/>
+  <permission name="android.permission.WRITE_DEVICE_CONFIG" protectionLevel="0x80202"/>
+  <permission name="android.permission.READ_DEVICE_CONFIG" protectionLevel="0x402"/>
+  <permission name="android.permission.READ_APP_SPECIFIC_LOCALES" protectionLevel="0x2"/>
+  <permission name="android.permission.MONITOR_DEVICE_CONFIG_ACCESS" protectionLevel="0x2"/>
+  <permission name="android.permission.FORCE_STOP_PACKAGES" protectionLevel="0x12"/>
+  <permission name="android.permission.RETRIEVE_WINDOW_CONTENT" protectionLevel="0x12"/>
+  <permission name="android.permission.SET_ANIMATION_SCALE" protectionLevel="0x32"/>
+  <permission label="make app always run" name="android.permission.PERSISTENT_ACTIVITY" protectionLevel="0x0" description="Allows the app to make parts of itself persistent in memory. This can limit memory available to other apps slowing down the tablet."/>
+  <permission label="measure app storage space" name="android.permission.GET_PACKAGE_SIZE" protectionLevel="0x0" description="Allows the app to retrieve its code, data, and cache sizes"/>
+  <permission name="android.permission.SET_PREFERRED_APPLICATIONS" protectionLevel="0x302"/>
+  <permission label="run at startup" name="android.permission.RECEIVE_BOOT_COMPLETED" protectionLevel="0x0" description="Allows the app to have itself started as soon as the system has finished booting. This can make it take longer to start the tablet and allow the app to slow down the overall tablet by always running."/>
+  <permission label="send sticky broadcast" name="android.permission.BROADCAST_STICKY" protectionLevel="0x0" description="Allows the app to send sticky broadcasts, which remain after the broadcast ends. Excessive use may make the tablet slow or unstable by causing it to use too much memory."/>
+  <permission name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" protectionLevel="0x12"/>
+  <permission name="android.permission.MOUNT_FORMAT_FILESYSTEMS" protectionLevel="0x12"/>
+  <permission name="android.permission.STORAGE_INTERNAL" protectionLevel="0x2"/>
+  <permission name="android.permission.ASEC_ACCESS" protectionLevel="0x2"/>
+  <permission name="android.permission.ASEC_CREATE" protectionLevel="0x2"/>
+  <permission name="android.permission.ASEC_DESTROY" protectionLevel="0x2"/>
+  <permission name="android.permission.ASEC_MOUNT_UNMOUNT" protectionLevel="0x2"/>
+  <permission name="android.permission.ASEC_RENAME" protectionLevel="0x2"/>
+  <permission name="android.permission.WRITE_APN_SETTINGS" protectionLevel="0x12"/>
+  <permission label="change network connectivity" name="android.permission.CHANGE_NETWORK_STATE" protectionLevel="0x0" description="Allows the app to change the state of network connectivity."/>
+  <permission name="android.permission.CLEAR_APP_CACHE" protectionLevel="0x12"/>
+  <permission name="android.permission.ALLOW_ANY_CODEC_FOR_PLAYBACK" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_CA_CERTIFICATES" protectionLevel="0x12"/>
+  <permission name="android.permission.RECOVERY" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_RESUME_ON_REBOOT_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.READ_SYSTEM_UPDATE_INFO" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_JOB_SERVICE" protectionLevel="0x2"/>
+  <uses-permission name="android.permission.BIND_JOB_SERVICE"/>
+  <permission name="android.permission.UPDATE_CONFIG" protectionLevel="0x12"/>
+  <permission name="android.permission.QUERY_TIME_ZONE_RULES" protectionLevel="0x12"/>
+  <permission name="android.permission.UPDATE_TIME_ZONE_RULES" protectionLevel="0x12"/>
+  <permission name="android.permission.TRIGGER_TIME_ZONE_RULES_CHECK" protectionLevel="0x2"/>
+  <uses-permission name="android.permission.TRIGGER_TIME_ZONE_RULES_CHECK"/>
+  <permission name="android.permission.RESET_SHORTCUT_MANAGER_THROTTLING" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_NETWORK_RECOMMENDATION_SERVICE" protectionLevel="0x2"/>
+  <uses-permission name="android.permission.BIND_NETWORK_RECOMMENDATION_SERVICE"/>
+  <permission name="android.permission.CHANGE_OVERLAY_PACKAGES" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_CREDENTIAL_MANAGEMENT_APP" protectionLevel="0x2"/>
+  <permission name="android.permission.UPDATE_FONTS" protectionLevel="0x12"/>
+  <permission name="android.permission.USE_ATTESTATION_VERIFICATION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.VERIFY_ATTESTATION" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_ATTESTATION_VERIFICATION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.REQUEST_UNIQUE_ID_ATTESTATION" protectionLevel="0x2"/>
+  <eat-comment/>
+  <permission name="android.permission.WRITE_SECURE_SETTINGS" protectionLevel="0x4000132"/>
+  <permission name="android.permission.DUMP" protectionLevel="0x32"/>
+  <permission name="android.permission.CONTROL_UI_TRACING" protectionLevel="0x32"/>
+  <permission name="android.permission.READ_LOGS" protectionLevel="0x32"/>
+  <permission name="android.permission.SET_DEBUG_APP" protectionLevel="0x32"/>
+  <permission name="android.permission.SET_PROCESS_LIMIT" protectionLevel="0x32"/>
+  <permission name="android.permission.SET_ALWAYS_FINISH" protectionLevel="0x32"/>
+  <permission name="android.permission.SIGNAL_PERSISTENT_PROCESSES" protectionLevel="0x32"/>
+  <permission name="android.permission.BIND_TRACE_REPORT_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.APPROVE_INCIDENT_REPORTS" protectionLevel="0x100002"/>
+  <permission name="android.permission.REQUEST_INCIDENT_REPORT_APPROVAL" protectionLevel="0x12"/>
+  <eat-comment/>
+  <permission name="android.permission.GET_ACCOUNTS_PRIVILEGED" protectionLevel="0x12"/>
+  <permission name="android.permission.GET_PASSWORD" protectionLevel="0x2"/>
+  <permission name="android.permission.DIAGNOSTIC" protectionLevel="0x2"/>
+  <permission name="android.permission.STATUS_BAR" protectionLevel="0x2000012"/>
+  <permission name="android.permission.TRIGGER_SHELL_BUGREPORT" protectionLevel="0x2"/>
+  <permission name="android.permission.TRIGGER_SHELL_PROFCOLLECT_UPLOAD" protectionLevel="0x2"/>
+  <permission name="android.permission.STATUS_BAR_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_QUICK_SETTINGS_TILE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_CONTROLS" protectionLevel="0x2"/>
+  <permission name="android.permission.FORCE_BACK" protectionLevel="0x2"/>
+  <permission name="android.permission.UPDATE_DEVICE_STATS" protectionLevel="0x4000012"/>
+  <permission name="android.permission.GET_APP_OPS_STATS" protectionLevel="0x32"/>
+  <permission name="android.permission.GET_HISTORICAL_APP_OPS_STATS" protectionLevel="0x4000004"/>
+  <permission name="android.permission.UPDATE_APP_OPS_STATS" protectionLevel="0x4000112"/>
+  <permission name="android.permission.MANAGE_APP_OPS_RESTRICTIONS" protectionLevel="0x102"/>
+  <permission name="android.permission.MANAGE_APP_OPS_MODES" protectionLevel="0x4000302"/>
+  <permission name="android.permission.INTERNAL_SYSTEM_WINDOW" protectionLevel="0x2"/>
+  <permission name="android.permission.UNLIMITED_TOASTS" protectionLevel="0x2"/>
+  <uses-permission name="android.permission.UNLIMITED_TOASTS"/>
+  <permission name="android.permission.HIDE_NON_SYSTEM_OVERLAY_WINDOWS" protectionLevel="0x402"/>
+  <permission name="android.permission.MANAGE_APP_TOKENS" protectionLevel="0x2"/>
+  <permission name="android.permission.REGISTER_WINDOW_MANAGER_LISTENERS" protectionLevel="0x2"/>
+  <permission name="android.permission.FREEZE_SCREEN" protectionLevel="0x2"/>
+  <permission name="android.permission.INJECT_EVENTS" protectionLevel="0x2"/>
+  <permission name="android.permission.FILTER_EVENTS" protectionLevel="0x2"/>
+  <permission name="android.permission.RETRIEVE_WINDOW_TOKEN" protectionLevel="0x2"/>
+  <permission name="android.permission.MODIFY_ACCESSIBILITY_DATA" protectionLevel="0x2"/>
+  <permission name="android.permission.ACT_AS_PACKAGE_FOR_ACCESSIBILITY" protectionLevel="0x2"/>
+  <permission name="android.permission.CHANGE_ACCESSIBILITY_VOLUME" protectionLevel="0x2"/>
+  <permission name="android.permission.FRAME_STATS" protectionLevel="0x2"/>
+  <permission name="android.permission.TEMPORARY_ENABLE_ACCESSIBILITY" protectionLevel="0x2"/>
+  <permission name="android.permission.OPEN_ACCESSIBILITY_DETAILS_SETTINGS" protectionLevel="0x102"/>
+  <permission name="android.permission.SET_ACTIVITY_WATCHER" protectionLevel="0x2"/>
+  <permission name="android.permission.SHUTDOWN" protectionLevel="0x4000012"/>
+  <permission name="android.permission.STOP_APP_SWITCHES" protectionLevel="0x2000012"/>
+  <permission name="android.permission.GET_TOP_ACTIVITY_INFO" protectionLevel="0x2000002"/>
+  <permission name="android.permission.SET_SYSTEM_AUDIO_CAPTION" protectionLevel="0x4000002"/>
+  <permission name="android.permission.READ_INPUT_STATE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_INPUT_METHOD" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_MIDI_DEVICE_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_ACCESSIBILITY_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_PRINT_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_PRINT_RECOMMENDATION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.READ_PRINT_SERVICES" protectionLevel="0x402"/>
+  <permission name="android.permission.READ_PRINT_SERVICE_RECOMMENDATIONS" protectionLevel="0x402"/>
+  <permission name="android.permission.BIND_NFC_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_QUICK_ACCESS_WALLET_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_PRINT_SPOOLER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_COMPANION_DEVICE_MANAGER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_COMPANION_DEVICE_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_RUNTIME_PERMISSION_PRESENTER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_TEXT_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_ATTENTION_SERVICE" protectionLevel="0x2"/>
+  <uses-permission name="android.permission.BIND_ATTENTION_SERVICE"/>
+  <permission name="android.permission.BIND_ROTATION_RESOLVER_SERVICE" protectionLevel="0x2"/>
+  <uses-permission name="android.permission.BIND_ROTATION_RESOLVER_SERVICE"/>
+  <permission name="android.permission.BIND_VPN_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_WALLPAPER" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_GAME_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_VOICE_INTERACTION" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_HOTWORD_DETECTION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_HOTWORD_DETECTION" protectionLevel="0x404"/>
+  <permission name="android.permission.SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE" protectionLevel="0x4000004"/>
+  <permission name="android.permission.BIND_AUTOFILL_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_AUTOFILL" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_AUTOFILL_FIELD_CLASSIFICATION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_INLINE_SUGGESTION_RENDER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_TEXTCLASSIFIER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_SELECTION_TOOLBAR_RENDER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_CONTENT_CAPTURE_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_TRANSLATION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_UI_TRANSLATION" protectionLevel="0x4000012"/>
+  <permission name="android.permission.BIND_CONTENT_SUGGESTIONS_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_WALLPAPER_EFFECTS_GENERATION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_MUSIC_RECOGNITION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_AUGMENTED_AUTOFILL_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_VOICE_KEYPHRASES" protectionLevel="0x12"/>
+  <permission name="android.permission.KEYPHRASE_ENROLLMENT_APPLICATION" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_REMOTE_DISPLAY" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_TV_INPUT" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_TV_INTERACTIVE_APP" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_TV_REMOTE_SERVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.TV_VIRTUAL_REMOTE_CONTROLLER" protectionLevel="0x12"/>
+  <permission name="android.permission.CHANGE_HDMI_CEC_ACTIVE_SOURCE" protectionLevel="0x12"/>
+  <permission name="android.permission.MODIFY_PARENTAL_CONTROLS" protectionLevel="0x12"/>
+  <permission name="android.permission.READ_CONTENT_RATING_SYSTEMS" protectionLevel="0x12"/>
+  <permission name="android.permission.NOTIFY_TV_INPUTS" protectionLevel="0x12"/>
+  <permission name="android.permission.TUNER_RESOURCE_ACCESS" protectionLevel="0x8012"/>
+  <permission name="android.permission.MEDIA_RESOURCE_OVERRIDE_PID" protectionLevel="0x2"/>
+  <uses-permission name="android.permission.MEDIA_RESOURCE_OVERRIDE_PID"/>
+  <permission name="android.permission.REGISTER_MEDIA_RESOURCE_OBSERVER" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_ROUTE_PROVIDER" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_DEVICE_ADMIN" protectionLevel="0x4000002"/>
+  <permission name="android.permission.MANAGE_DEVICE_ADMINS" protectionLevel="0x4000002"/>
+  <permission name="android.permission.RESET_PASSWORD" protectionLevel="0x12"/>
+  <permission name="android.permission.LOCK_DEVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.SET_ORIENTATION" protectionLevel="0x2000002"/>
+  <permission name="android.permission.SET_POINTER_SPEED" protectionLevel="0x2"/>
+  <permission name="android.permission.SET_INPUT_CALIBRATION" protectionLevel="0x2"/>
+  <permission name="android.permission.SET_KEYBOARD_LAYOUT" protectionLevel="0x2"/>
+  <permission name="android.permission.SCHEDULE_PRIORITIZED_ALARM" protectionLevel="0x12"/>
+  <permission name="android.permission.SCHEDULE_EXACT_ALARM" protectionLevel="0x40"/>
+  <permission name="android.permission.USE_EXACT_ALARM" protectionLevel="0x0"/>
+  <permission name="android.permission.TABLET_MODE" protectionLevel="0x2"/>
+  <permission label="request install packages" name="android.permission.REQUEST_INSTALL_PACKAGES" protectionLevel="0x42" description="Allows an application to request installation of packages."/>
+  <permission label="request delete packages" name="android.permission.REQUEST_DELETE_PACKAGES" protectionLevel="0x0" description="Allows an application to request deletion of packages."/>
+  <permission name="android.permission.INSTALL_PACKAGES" protectionLevel="0x12"/>
+  <permission name="android.permission.INSTALL_SELF_UPDATES" protectionLevel="0x12"/>
+  <permission name="android.permission.INSTALL_PACKAGE_UPDATES" protectionLevel="0x12"/>
+  <permission name="com.android.permission.INSTALL_EXISTING_PACKAGES" protectionLevel="0x4000012"/>
+  <permission name="com.android.permission.USE_INSTALLER_V2" protectionLevel="0x12"/>
+  <permission name="android.permission.INSTALL_TEST_ONLY_PACKAGE" protectionLevel="0x2"/>
+  <permission name="android.permission.INSTALL_DPC_PACKAGES" protectionLevel="0x4000002"/>
+  <permission name="com.android.permission.USE_SYSTEM_DATA_LOADERS" protectionLevel="0x2"/>
+  <permission name="android.permission.CLEAR_APP_USER_DATA" protectionLevel="0x102"/>
+  <permission name="android.permission.GET_APP_GRANTED_URI_PERMISSIONS" protectionLevel="0x2"/>
+  <permission name="android.permission.CLEAR_APP_GRANTED_URI_PERMISSIONS" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_SCOPED_ACCESS_DIRECTORY_PERMISSIONS" protectionLevel="0x2"/>
+  <permission name="android.permission.FORCE_PERSISTABLE_URI_PERMISSIONS" protectionLevel="0x2"/>
+  <permission name="android.permission.DELETE_CACHE_FILES" protectionLevel="0x12"/>
+  <permission name="android.permission.INTERNAL_DELETE_CACHE_FILES" protectionLevel="0x2"/>
+  <permission name="android.permission.DELETE_PACKAGES" protectionLevel="0x4000012"/>
+  <permission name="android.permission.MOVE_PACKAGE" protectionLevel="0x12"/>
+  <permission name="android.permission.KEEP_UNINSTALLED_PACKAGES" protectionLevel="0x2"/>
+  <permission name="android.permission.CHANGE_COMPONENT_ENABLED_STATE" protectionLevel="0x4000012"/>
+  <permission name="android.permission.GRANT_RUNTIME_PERMISSIONS" protectionLevel="0x302"/>
+  <permission name="android.permission.INSTALL_GRANT_RUNTIME_PERMISSIONS" protectionLevel="0x302"/>
+  <permission name="android.permission.REVOKE_RUNTIME_PERMISSIONS" protectionLevel="0x302"/>
+  <permission name="android.permission.REVOKE_POST_NOTIFICATIONS_WITHOUT_KILL" protectionLevel="0x2"/>
+  <permission name="android.permission.GET_RUNTIME_PERMISSIONS" protectionLevel="0x2"/>
+  <permission name="android.permission.RESTORE_RUNTIME_PERMISSIONS" protectionLevel="0x2"/>
+  <permission name="android.permission.ADJUST_RUNTIME_PERMISSIONS_POLICY" protectionLevel="0x102"/>
+  <permission name="android.permission.UPGRADE_RUNTIME_PERMISSIONS" protectionLevel="0x2"/>
+  <permission name="android.permission.WHITELIST_RESTRICTED_PERMISSIONS" protectionLevel="0x102"/>
+  <permission name="android.permission.WHITELIST_AUTO_REVOKE_PERMISSIONS" protectionLevel="0x102"/>
+  <permission name="android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_ONE_TIME_PERMISSION_SESSIONS" protectionLevel="0x102"/>
+  <permission name="android.permission.MANAGE_ROLE_HOLDERS" protectionLevel="0x102"/>
+  <permission name="android.permission.BYPASS_ROLE_QUALIFICATION" protectionLevel="0x4000004"/>
+  <permission name="android.permission.OBSERVE_ROLE_HOLDERS" protectionLevel="0x102"/>
+  <permission name="android.permission.MANAGE_COMPANION_DEVICES" protectionLevel="0x4000002"/>
+  <permission name="android.permission.REQUEST_OBSERVE_COMPANION_DEVICE_PRESENCE" protectionLevel="0x0"/>
+  <permission name="android.permission.DELIVER_COMPANION_MESSAGES" protectionLevel="0x0"/>
+  <permission name="android.permission.ASSOCIATE_COMPANION_DEVICES" protectionLevel="0x4000004"/>
+  <permission name="android.permission.ACCESS_SURFACE_FLINGER" protectionLevel="0x2"/>
+  <permission name="android.permission.ROTATE_SURFACE_FLINGER" protectionLevel="0x2000002"/>
+  <permission name="android.permission.READ_FRAME_BUFFER" protectionLevel="0x2000002"/>
+  <permission name="android.permission.MODIFY_TOUCH_MODE_STATE" protectionLevel="0x2"/>
+  <permission name="android.permission.ACCESS_INPUT_FLINGER" protectionLevel="0x2"/>
+  <permission name="android.permission.DISABLE_INPUT_DEVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.CONFIGURE_WIFI_DISPLAY" protectionLevel="0x2"/>
+  <permission name="android.permission.CONTROL_WIFI_DISPLAY" protectionLevel="0x2"/>
+  <permission name="android.permission.CONFIGURE_DISPLAY_COLOR_MODE" protectionLevel="0x2"/>
+  <permission name="android.permission.CONTROL_DEVICE_LIGHTS" protectionLevel="0x12"/>
+  <permission name="android.permission.CONTROL_DISPLAY_SATURATION" protectionLevel="0x12"/>
+  <permission name="android.permission.CONTROL_DISPLAY_COLOR_TRANSFORMS" protectionLevel="0x12"/>
+  <permission name="android.permission.BRIGHTNESS_SLIDER_USAGE" protectionLevel="0x32"/>
+  <permission name="android.permission.ACCESS_AMBIENT_LIGHT_STATS" protectionLevel="0x32"/>
+  <permission name="android.permission.CONFIGURE_DISPLAY_BRIGHTNESS" protectionLevel="0x32"/>
+  <permission name="android.permission.CONTROL_DISPLAY_BRIGHTNESS" protectionLevel="0x2"/>
+  <permission name="android.permission.OVERRIDE_DISPLAY_MODE_REQUESTS" protectionLevel="0x2"/>
+  <permission name="android.permission.MODIFY_REFRESH_RATE_SWITCHING_TYPE" protectionLevel="0x2"/>
+  <permission name="android.permission.MODIFY_USER_PREFERRED_DISPLAY_MODE" protectionLevel="0x2"/>
+  <permission name="android.permission.CONTROL_VPN" protectionLevel="0x12"/>
+  <uses-permission name="android.permission.CONTROL_VPN"/>
+  <permission name="android.permission.CONTROL_ALWAYS_ON_VPN" protectionLevel="0x2"/>
+  <permission name="android.permission.CAPTURE_TUNER_AUDIO_INPUT" protectionLevel="0x12"/>
+  <permission name="android.permission.CAPTURE_AUDIO_OUTPUT" protectionLevel="0x4000012"/>
+  <permission name="android.permission.CAPTURE_MEDIA_OUTPUT" protectionLevel="0x4000012"/>
+  <permission name="android.permission.CAPTURE_VOICE_COMMUNICATION_OUTPUT" protectionLevel="0x4000012"/>
+  <permission name="android.permission.CAPTURE_AUDIO_HOTWORD" protectionLevel="0x4000012"/>
+  <permission name="android.permission.ACCESS_ULTRASOUND" protectionLevel="0x12"/>
+  <permission name="android.permission.SOUNDTRIGGER_DELEGATE_IDENTITY" protectionLevel="0x12"/>
+  <permission name="android.permission.MODIFY_AUDIO_ROUTING" protectionLevel="0x4000012"/>
+  <permission name="android.permission.CALL_AUDIO_INTERCEPTION" protectionLevel="0x12"/>
+  <permission name="android.permission.QUERY_AUDIO_STATE" protectionLevel="0x4000002"/>
+  <permission name="android.permission.MODIFY_DEFAULT_AUDIO_EFFECTS" protectionLevel="0x12"/>
+  <permission name="android.permission.DISABLE_SYSTEM_SOUND_EFFECTS" protectionLevel="0x12"/>
+  <permission name="android.permission.REMOTE_DISPLAY_PROVIDER" protectionLevel="0x12"/>
+  <permission name="android.permission.CAPTURE_VIDEO_OUTPUT" protectionLevel="0x2"/>
+  <permission name="android.permission.CAPTURE_SECURE_VIDEO_OUTPUT" protectionLevel="0x2"/>
+  <permission name="android.permission.MEDIA_CONTENT_CONTROL" protectionLevel="0x12"/>
+  <permission name="android.permission.SET_VOLUME_KEY_LONG_PRESS_LISTENER" protectionLevel="0x32"/>
+  <permission name="android.permission.SET_MEDIA_KEY_LISTENER" protectionLevel="0x32"/>
+  <permission name="android.permission.BRICK" protectionLevel="0x2"/>
+  <permission name="android.permission.REBOOT" protectionLevel="0x12"/>
+  <permission name="android.permission.DEVICE_POWER" protectionLevel="0x4000002"/>
+  <permission name="android.permission.POWER_SAVER" protectionLevel="0x12"/>
+  <permission name="android.permission.BATTERY_PREDICTION" protectionLevel="0x12"/>
+  <permission name="android.permission.USER_ACTIVITY" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_LOW_POWER_STANDBY" protectionLevel="0x12"/>
+  <permission name="android.permission.NET_TUNNELING" protectionLevel="0x4000002"/>
+  <permission name="android.permission.FACTORY_TEST" protectionLevel="0x2"/>
+  <permission name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS" protectionLevel="0x2000012"/>
+  <uses-permission name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS"/>
+  <permission name="android.permission.BROADCAST_PACKAGE_REMOVED" protectionLevel="0x2"/>
+  <permission name="android.permission.BROADCAST_SMS" protectionLevel="0x2"/>
+  <permission name="android.permission.BROADCAST_WAP_PUSH" protectionLevel="0x2"/>
+  <permission name="android.permission.BROADCAST_NETWORK_PRIVILEGED" protectionLevel="0x12"/>
+  <permission name="android.permission.MASTER_CLEAR" protectionLevel="0x4000012"/>
+  <permission name="android.permission.CALL_PRIVILEGED" protectionLevel="0x12"/>
+  <permission name="android.permission.PERFORM_CDMA_PROVISIONING" protectionLevel="0x4000012"/>
+  <permission name="android.permission.PERFORM_SIM_ACTIVATION" protectionLevel="0x12"/>
+  <permission name="android.permission.CONTROL_LOCATION_UPDATES" protectionLevel="0x12"/>
+  <permission name="android.permission.ACCESS_CHECKIN_PROPERTIES" protectionLevel="0x12"/>
+  <permission name="android.permission.PACKAGE_USAGE_STATS" protectionLevel="0x1000072"/>
+  <uses-permission name="android.permission.PACKAGE_USAGE_STATS"/>
+  <permission name="android.permission.ACCESS_BROADCAST_RESPONSE_STATS" protectionLevel="0x32"/>
+  <permission name="android.permission.LOADER_USAGE_STATS" protectionLevel="0x52"/>
+  <uses-permission name="android.permission.LOADER_USAGE_STATS"/>
+  <permission name="android.permission.OBSERVE_APP_USAGE" protectionLevel="0x12"/>
+  <permission name="android.permission.CHANGE_APP_IDLE_STATE" protectionLevel="0x12"/>
+  <permission name="android.permission.CHANGE_APP_LAUNCH_TIME_ESTIMATE" protectionLevel="0x12"/>
+  <permission name="android.permission.CHANGE_DEVICE_IDLE_TEMP_WHITELIST" protectionLevel="0x12"/>
+  <permission label="ask to ignore battery optimizations" name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" protectionLevel="0x0" description="Allows an app to ask for permission to ignore battery optimizations for that app."/>
+  <permission name="android.permission.BATTERY_STATS" protectionLevel="0x32"/>
+  <permission name="android.permission.STATSCOMPANION" protectionLevel="0x2"/>
+  <permission name="android.permission.REGISTER_STATS_PULL_ATOM" protectionLevel="0x12"/>
+  <permission name="android.permission.BACKUP" protectionLevel="0x12"/>
+  <permission name="android.permission.MODIFY_SETTINGS_OVERRIDEABLE_BY_RESTORE" protectionLevel="0x802"/>
+  <permission name="android.permission.RECOVER_KEYSTORE" protectionLevel="0x12"/>
+  <permission name="android.permission.CONFIRM_FULL_BACKUP" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_REMOTEVIEWS" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_APPWIDGET" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_SLICE_PERMISSIONS" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_KEYGUARD_APPWIDGET" protectionLevel="0x12"/>
+  <permission name="android.permission.MODIFY_APPWIDGET_BIND_PERMISSIONS" protectionLevel="0x12"/>
+  <permission name="android.permission.CHANGE_BACKGROUND_DATA_SETTING" protectionLevel="0x2"/>
+  <permission name="android.permission.GLOBAL_SEARCH" protectionLevel="0x12"/>
+  <permission name="android.permission.GLOBAL_SEARCH_CONTROL" protectionLevel="0x2"/>
+  <permission name="android.permission.READ_SEARCH_INDEXABLES" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_SETTINGS_SUGGESTIONS_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.WRITE_SETTINGS_HOMEPAGE_DATA" protectionLevel="0x12"/>
+  <permission name="android.permission.LAUNCH_MULTI_PANE_SETTINGS_DEEP_LINK" protectionLevel="0x402"/>
+  <permission name="android.permission.ALLOW_PLACE_IN_MULTI_PANE_SETTINGS" protectionLevel="0x2"/>
+  <permission name="android.permission.SET_WALLPAPER_COMPONENT" protectionLevel="0x12"/>
+  <permission name="android.permission.SET_WALLPAPER_DIM_AMOUNT" protectionLevel="0x12"/>
+  <permission name="android.permission.READ_DREAM_STATE" protectionLevel="0x12"/>
+  <permission name="android.permission.WRITE_DREAM_STATE" protectionLevel="0x12"/>
+  <permission name="android.permission.READ_DREAM_SUPPRESSION" protectionLevel="0x2"/>
+  <permission name="android.permission.ACCESS_CACHE_FILESYSTEM" protectionLevel="0x12"/>
+  <permission name="android.permission.COPY_PROTECTED_DATA" protectionLevel="0x2"/>
+  <permission name="android.permission.CRYPT_KEEPER" protectionLevel="0x4000012"/>
+  <permission name="android.permission.READ_NETWORK_USAGE_HISTORY" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_NETWORK_POLICY" protectionLevel="0x2"/>
+  <permission name="android.permission.MODIFY_NETWORK_ACCOUNTING" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_SUBSCRIPTION_PLANS" protectionLevel="0x12"/>
+  <permission name="android.intent.category.MASTER_CLEAR.permission.C2D_MESSAGE" protectionLevel="0x2"/>
+  <uses-permission name="android.intent.category.MASTER_CLEAR.permission.C2D_MESSAGE"/>
+  <permission name="android.permission.PACKAGE_VERIFICATION_AGENT" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_PACKAGE_VERIFIER" protectionLevel="0x2"/>
+  <permission name="android.permission.PACKAGE_ROLLBACK_AGENT" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_ROLLBACKS" protectionLevel="0x12"/>
+  <permission name="android.permission.TEST_MANAGE_ROLLBACKS" protectionLevel="0x2"/>
+  <permission name="android.permission.SET_HARMFUL_APP_WARNINGS" protectionLevel="0x202"/>
+  <permission name="android.permission.INTENT_FILTER_VERIFICATION_AGENT" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_INTENT_FILTER_VERIFIER" protectionLevel="0x2"/>
+  <permission name="android.permission.DOMAIN_VERIFICATION_AGENT" protectionLevel="0x14"/>
+  <permission name="android.permission.BIND_DOMAIN_VERIFICATION_AGENT" protectionLevel="0x2"/>
+  <permission name="android.permission.UPDATE_DOMAIN_VERIFICATION_USER_SELECTION" protectionLevel="0x2"/>
+  <permission name="android.permission.SERIAL_PORT" protectionLevel="0x12"/>
+  <permission name="android.permission.ACCESS_CONTENT_PROVIDERS_EXTERNALLY" protectionLevel="0x2"/>
+  <permission name="android.permission.UPDATE_LOCK" protectionLevel="0x12"/>
+  <permission name="android.permission.REQUEST_NOTIFICATION_ASSISTANT_SERVICE" protectionLevel="0x4000012"/>
+  <permission name="android.permission.ACCESS_NOTIFICATIONS" protectionLevel="0x52"/>
+  <permission label="access Do Not Disturb" name="android.permission.ACCESS_NOTIFICATION_POLICY" protectionLevel="0x0" description="Allows the app to read and write Do Not Disturb configuration."/>
+  <permission name="android.permission.MANAGE_NOTIFICATIONS" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_NOTIFICATION_LISTENERS" protectionLevel="0x102"/>
+  <uses-permission name="android.permission.MANAGE_NOTIFICATION_LISTENERS"/>
+  <permission name="android.permission.USE_COLORIZED_NOTIFICATIONS" protectionLevel="0x4000802"/>
+  <permission name="android.permission.ACCESS_KEYGUARD_SECURE_STORAGE" protectionLevel="0x802"/>
+  <permission name="android.permission.SET_INITIAL_LOCK" protectionLevel="0x802"/>
+  <permission name="android.permission.SET_AND_VERIFY_LOCKSCREEN_CREDENTIALS" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_FINGERPRINT" protectionLevel="0x12"/>
+  <permission name="android.permission.RESET_FINGERPRINT_LOCKOUT" protectionLevel="0x2"/>
+  <permission name="android.permission.TEST_BIOMETRIC" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_BIOMETRIC" protectionLevel="0x2"/>
+  <permission name="android.permission.USE_BIOMETRIC_INTERNAL" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_BIOMETRIC_DIALOG" protectionLevel="0x2"/>
+  <permission name="android.permission.CONTROL_KEYGUARD" protectionLevel="0x2"/>
+  <permission name="android.permission.CONTROL_KEYGUARD_SECURE_NOTIFICATIONS" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_WEAK_ESCROW_TOKEN" protectionLevel="0x12"/>
+  <permission name="android.permission.TRUST_LISTENER" protectionLevel="0x2"/>
+  <permission name="android.permission.PROVIDE_TRUST_AGENT" protectionLevel="0x12"/>
+  <permission name="android.permission.SHOW_KEYGUARD_MESSAGE" protectionLevel="0x12"/>
+  <permission name="android.permission.LAUNCH_TRUST_AGENT_SETTINGS" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_TRUST_AGENT" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_NOTIFICATION_ASSISTANT_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_CHOOSER_TARGET_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.PROVIDE_RESOLVER_RANKER_SERVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_RESOLVER_RANKER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_CONDITION_PROVIDER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_DREAM_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_CACHE_QUOTA_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.INVOKE_CARRIER_SETUP" protectionLevel="0x12"/>
+  <permission name="android.permission.ACCESS_NETWORK_CONDITIONS" protectionLevel="0x12"/>
+  <permission name="android.permission.ACCESS_DRM_CERTIFICATES" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_MEDIA_PROJECTION" protectionLevel="0x2"/>
+  <permission label="read install sessions" name="android.permission.READ_INSTALL_SESSIONS" protectionLevel="0x0" description="Allows an application to read install sessions. This allows it to see details about active package installations."/>
+  <permission name="android.permission.REMOVE_DRM_CERTIFICATES" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_CARRIER_MESSAGING_SERVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.ACCESS_VOICE_INTERACTION_SERVICE" protectionLevel="0x2"/>
+  <permission label="bind to carrier services" name="android.permission.BIND_CARRIER_SERVICES" protectionLevel="0x12" description="Allows the holder to bind to carrier services. Should never be needed for normal apps."/>
+  <permission label="start view permission usage" name="android.permission.START_VIEW_PERMISSION_USAGE" protectionLevel="0x102" description="Allows the holder to start the permission usage for an app. Should never be needed for normal apps."/>
+  <permission label="start view permission decisions" name="android.permission.START_REVIEW_PERMISSION_DECISIONS" protectionLevel="0x102" description="Allows the holder to start screen to review permission decisions. Should never be needed for normal apps."/>
+  <permission label="start view app features" name="android.permission.START_VIEW_APP_FEATURES" protectionLevel="0x102" description="Allows the holder to start viewing the features info for an app."/>
+  <permission name="android.permission.QUERY_DO_NOT_ASK_CREDENTIALS_ON_BOOT" protectionLevel="0x2"/>
+  <permission name="android.permission.KILL_UID" protectionLevel="0x102"/>
+  <permission name="android.permission.LOCAL_MAC_ADDRESS" protectionLevel="0x12"/>
+  <uses-permission name="android.permission.LOCAL_MAC_ADDRESS"/>
+  <permission name="android.permission.PEERS_MAC_ADDRESS" protectionLevel="0x4000802"/>
+  <permission name="android.permission.DISPATCH_NFC_MESSAGE" protectionLevel="0x12"/>
+  <permission name="android.permission.MODIFY_DAY_NIGHT_MODE" protectionLevel="0x12"/>
+  <permission name="android.permission.ENTER_CAR_MODE_PRIORITIZED" protectionLevel="0x12"/>
+  <permission name="android.permission.HANDLE_CAR_MODE_CHANGES" protectionLevel="0x12"/>
+  <permission name="android.permission.SEND_CATEGORY_CAR_NOTIFICATIONS" protectionLevel="0x12"/>
+  <uses-permission name="android.permission.CONFIRM_FULL_BACKUP"/>
+  <permission name="android.permission.ACCESS_INSTANT_APPS" protectionLevel="0x4000302"/>
+  <uses-permission name="android.permission.ACCESS_INSTANT_APPS"/>
+  <permission name="android.permission.VIEW_INSTANT_APPS" protectionLevel="0x402"/>
+  <permission name="android.permission.MANAGE_BIND_INSTANT_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.RECEIVE_MEDIA_RESOURCE_USAGE" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_SOUND_TRIGGER" protectionLevel="0x4000012"/>
+  <permission name="android.permission.SOUND_TRIGGER_RUN_IN_BATTERY_SAVER" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_SOUND_TRIGGER_DETECTION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.DISPATCH_PROVISIONING_MESSAGE" protectionLevel="0x12"/>
+  <permission name="android.permission.READ_BLOCKED_NUMBERS" protectionLevel="0x2"/>
+  <permission name="android.permission.WRITE_BLOCKED_NUMBERS" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_VR_LISTENER_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.RESTRICTED_VR_ACCESS" protectionLevel="0x402"/>
+  <permission name="android.permission.ACCESS_VR_MANAGER" protectionLevel="0x2"/>
+  <permission name="android.permission.ACCESS_VR_STATE" protectionLevel="0x402"/>
+  <permission name="android.permission.UPDATE_LOCK_TASK_PACKAGES" protectionLevel="0x802"/>
+  <permission name="android.permission.SUBSTITUTE_NOTIFICATION_APP_NAME" protectionLevel="0x12"/>
+  <permission name="android.permission.NOTIFICATION_DURING_SETUP" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_AUTO_FILL" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_CONTENT_CAPTURE" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_ROTATION_RESOLVER" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_CLOUDSEARCH" protectionLevel="0x4000012"/>
+  <permission name="android.permission.MANAGE_MUSIC_RECOGNITION" protectionLevel="0x4000012"/>
+  <permission name="android.permission.MANAGE_SPEECH_RECOGNITION" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_CONTENT_SUGGESTIONS" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_APP_PREDICTIONS" protectionLevel="0x4000002"/>
+  <permission name="android.permission.MANAGE_SEARCH_UI" protectionLevel="0x4000002"/>
+  <permission name="android.permission.MANAGE_SMARTSPACE" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_WALLPAPER_EFFECTS_GENERATION" protectionLevel="0x12"/>
+  <permission name="android.permission.MODIFY_THEME_OVERLAY" protectionLevel="0x2"/>
+  <permission name="android.permission.INSTANT_APP_FOREGROUND_SERVICE" protectionLevel="0x1062"/>
+  <permission label="run foreground service" name="android.permission.FOREGROUND_SERVICE" protectionLevel="0x1000" description="Allows the app to make use of foreground services."/>
+  <permission name="android.permission.ACCESS_SHORTCUTS" protectionLevel="0x4000002"/>
+  <permission name="android.permission.UNLIMITED_SHORTCUTS_API_CALLS" protectionLevel="0x4000002"/>
+  <permission name="android.permission.READ_RUNTIME_PROFILES" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_AUDIO_POLICY" protectionLevel="0x2"/>
+  <permission name="android.permission.MODIFY_QUIET_MODE" protectionLevel="0x4000032"/>
+  <permission name="android.permission.MANAGE_CAMERA" protectionLevel="0x2"/>
+  <permission name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" protectionLevel="0x12"/>
+  <permission name="android.permission.WATCH_APPOPS" protectionLevel="0x12"/>
+  <permission name="android.permission.DISABLE_HIDDEN_API_CHECKS" protectionLevel="0x2"/>
+  <permission name="android.permission.MONITOR_DEFAULT_SMS_PACKAGE" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_CARRIER_MESSAGING_CLIENT_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_EXPLICIT_HEALTH_CHECK_SERVICE" protectionLevel="0x12"/>
+  <permission name="android.permission.BIND_EXTERNAL_STORAGE_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_APPOPS" protectionLevel="0x2"/>
+  <permission name="android.permission.READ_CLIPBOARD_IN_BACKGROUND" protectionLevel="0x4000002"/>
+  <permission name="android.permission.SUPPRESS_CLIPBOARD_ACCESS_NOTIFICATION" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_ACCESSIBILITY" protectionLevel="0x2000802"/>
+  <permission name="android.permission.GRANT_PROFILE_OWNER_DEVICE_IDS_ACCESS" protectionLevel="0x2"/>
+  <permission name="android.permission.MARK_DEVICE_ORGANIZATION_OWNED" protectionLevel="0x4000002"/>
+  <permission name="android.permission.SMS_FINANCIAL_TRANSACTIONS" protectionLevel="0x42"/>
+  <permission label="display notifications as full screen activities on a locked device" name="android.permission.USE_FULL_SCREEN_INTENT" protectionLevel="0x0" description="Allows the app to display notifications as full screen activities on a locked device"/>
+  <permission name="android.permission.SEND_DEVICE_CUSTOMIZATION_READY" protectionLevel="0x12"/>
+  <permission name="android.permission.RECEIVE_DEVICE_CUSTOMIZATION_READY" protectionLevel="0x402"/>
+  <permission name="android.permission.AMBIENT_WALLPAPER" protectionLevel="0x402"/>
+  <permission name="android.permission.MANAGE_SENSOR_PRIVACY" protectionLevel="0x4000104"/>
+  <permission name="android.permission.OBSERVE_SENSOR_PRIVACY" protectionLevel="0x4000104"/>
+  <permission name="android.permission.REVIEW_ACCESSIBILITY_SERVICES" protectionLevel="0x2"/>
+  <permission name="android.permission.SUBSTITUTE_SHARE_TARGET_APP_NAME_AND_ICON" protectionLevel="0x12"/>
+  <permission name="android.permission.ACCESS_SHARED_LIBRARIES" protectionLevel="0x102"/>
+  <permission name="android.permission.LOG_COMPAT_CHANGE" protectionLevel="0x12"/>
+  <permission name="android.permission.READ_COMPAT_CHANGE_CONFIG" protectionLevel="0x12"/>
+  <permission name="android.permission.OVERRIDE_COMPAT_CHANGE_CONFIG" protectionLevel="0x12"/>
+  <permission name="android.permission.OVERRIDE_COMPAT_CHANGE_CONFIG_ON_RELEASE_BUILD" protectionLevel="0x12"/>
+  <permission name="android.permission.MONITOR_INPUT" protectionLevel="0x2000002"/>
+  <permission name="android.permission.ALLOW_SLIPPERY_TOUCHES" protectionLevel="0x6000012"/>
+  <permission name="android.permission.ASSOCIATE_INPUT_DEVICE_TO_DISPLAY" protectionLevel="0x2"/>
+  <permission label="query all packages" name="android.permission.QUERY_ALL_PACKAGES" protectionLevel="0x0" description="Allows an app to see all installed packages."/>
+  <uses-permission name="android.permission.QUERY_ALL_PACKAGES"/>
+  <permission name="android.permission.PEEK_DROPBOX_DATA" protectionLevel="0x2"/>
+  <permission name="android.permission.ACCESS_TV_TUNER" protectionLevel="0x8012"/>
+  <permission name="android.permission.ACCESS_TV_DESCRAMBLER" protectionLevel="0x8012"/>
+  <permission name="android.permission.ACCESS_TV_SHARED_FILTER" protectionLevel="0x8012"/>
+  <permission name="android.permission.ADD_TRUSTED_DISPLAY" protectionLevel="0x4000002"/>
+  <permission name="android.permission.ADD_ALWAYS_UNLOCKED_DISPLAY" protectionLevel="0x4000002"/>
+  <permission name="android.permission.ACCESS_LOCUS_ID_USAGE_STATS" protectionLevel="0x4000002"/>
+  <permission name="android.permission.MANAGE_APP_HIBERNATION" protectionLevel="0x102"/>
+  <permission name="android.permission.RESET_APP_ERRORS" protectionLevel="0x2"/>
+  <permission name="android.permission.INPUT_CONSUMER" protectionLevel="0x2"/>
+  <permission name="android.permission.CONTROL_DEVICE_STATE" protectionLevel="0x2"/>
+  <permission name="android.permission.BIND_DISPLAY_HASHING_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_TOAST_RATE_LIMITING" protectionLevel="0x2"/>
+  <permission name="android.permission.MANAGE_GAME_MODE" protectionLevel="0x12"/>
+  <permission name="android.permission.SET_GAME_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.ACCESS_FPS_COUNTER" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_GAME_ACTIVITY" protectionLevel="0x12"/>
+  <permission name="android.permission.SIGNAL_REBOOT_READINESS" protectionLevel="0x12"/>
+  <permission name="android.permission.GET_PEOPLE_TILE_PREVIEW" protectionLevel="0x2000002"/>
+  <permission name="android.permission.READ_PEOPLE_DATA" protectionLevel="0x6000002"/>
+  <permission name="android.permission.RENOUNCE_PERMISSIONS" protectionLevel="0x12"/>
+  <permission name="android.permission.READ_NEARBY_STREAMING_POLICY" protectionLevel="0x0"/>
+  <permission name="android.permission.SET_CLIP_SOURCE" protectionLevel="0x2000002"/>
+  <permission name="android.permission.ACCESS_TUNED_INFO" protectionLevel="0x8012"/>
+  <permission name="android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION" protectionLevel="0x0"/>
+  <uses-permission name="android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION"/>
+  <permission name="android.permission.CAPTURE_BLACKOUT_CONTENT" protectionLevel="0x2"/>
+  <permission name="android.permission.READ_GLOBAL_APP_SEARCH_DATA" protectionLevel="0x4000004"/>
+  <permission name="android.permission.READ_ASSISTANT_APP_SEARCH_DATA" protectionLevel="0x4000004"/>
+  <permission name="android.permission.READ_HOME_APP_SEARCH_DATA" protectionLevel="0x4000004"/>
+  <permission name="android.permission.CREATE_VIRTUAL_DEVICE" protectionLevel="0x4000004"/>
+  <permission name="android.permission.SEND_SAFETY_CENTER_UPDATE" protectionLevel="0x14"/>
+  <permission name="android.permission.LAUNCH_DEVICE_MANAGER_SETUP" protectionLevel="0x4000002"/>
+  <permission name="android.permission.UPDATE_DEVICE_MANAGEMENT_RESOURCES" protectionLevel="0x4000002"/>
+  <permission name="android.permission.READ_SAFETY_CENTER_STATUS" protectionLevel="0x12"/>
+  <permission name="android.permission.MANAGE_SAFETY_CENTER" protectionLevel="0x4000104"/>
+  <permission name="android.permission.ACCESS_AMBIENT_CONTEXT_EVENT" protectionLevel="0x4000004"/>
+  <permission name="android.permission.BIND_AMBIENT_CONTEXT_DETECTION_SERVICE" protectionLevel="0x2"/>
+  <permission name="android.permission.SET_UNRESTRICTED_KEEP_CLEAR_AREAS" protectionLevel="0x12"/>
+  <permission name="android.permission.TIS_EXTENSION_INTERFACE" protectionLevel="0x8012"/>
+  <permission name="android.permission.WRITE_SECURITY_LOG" protectionLevel="0x12"/>
+  <permission name="android.permission.MAKE_UID_VISIBLE" protectionLevel="0x2"/>
+  <attribution label="Geofencing Service" tag="GeofencingService"/>
+  <attribution label="Country Detector" tag="CountryDetector"/>
+  <attribution label="Location Service" tag="LocationService"/>
+  <attribution label="GNSS Service" tag="GnssService"/>
+  <attribution label="Sensor Notification Service" tag="SensorNotificationService"/>
+  <attribution label="Twilight Service" tag="TwilightService"/>
+  <attribution label="GNSS Time Update Service" tag="GnssTimeUpdateService"/>
+  <attribution label="Music Recognition Manager Service" tag="MusicRecognitionManagerService"/>
+  <attribution label="Device Policy Manager Service" tag="DevicePolicyManagerService"/>
+  <application theme="Theme.DeviceDefault.Light.DarkActionBar" label="Android System" icon="res/drawable-mdpi-v4/ic_launcher_android.png" allowClearUserData="false" hasCode="false" persistent="true" process="system" backupAgent="com.android.server.backup.SystemBackupAgent" killAfterRestore="false" supportsRtl="true" extractNativeLibs="true" defaultToDeviceProtectedStorage="true" directBootAware="true" forceQueryable="true">
+    <activity theme="Theme.DeviceDefault.Chooser" name="com.android.internal.app.ChooserActivity" exported="true" process=":ui" excludeFromRecents="true" configChanges="0xdb0" finishOnCloseSystemDialogs="true" documentLaunchMode="3" relinquishTaskIdentity="true" visibleToInstantApps="true">
+      <intent-filter priority="100">
+        <action name="android.intent.action.CHOOSER"/>
+        <category name="android.intent.category.DEFAULT"/>
+        <category name="android.intent.category.VOICE"/>
+      </intent-filter>
+    </activity>
+    <activity theme="Theme.DeviceDefault.Dialog.Alert.DayNight" name="com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity" exported="false" process=":ui" excludeFromRecents="true" finishOnCloseSystemDialogs="true" documentLaunchMode="3" relinquishTaskIdentity="true" visibleToInstantApps="true">
+      <intent-filter>
+        <action name="com.android.internal.intent.action.CHOOSE_ACCESSIBILITY_BUTTON"/>
+        <category name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
+    <activity theme="Theme.DeviceDefault.Resolver" name="com.android.internal.accessibility.dialog.AccessibilityButtonChooserActivity" exported="false" process=":ui" excludeFromRecents="true" configChanges="0xdb0" finishOnCloseSystemDialogs="true" documentLaunchMode="3" relinquishTaskIdentity="true" visibleToInstantApps="true">
+      <intent-filter>
+        <action name="com.android.internal.intent.action.CHOOSE_ACCESSIBILITY_BUTTON"/>
+        <category name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
+    <activity theme="Theme.Translucent.NoTitleBar" label="Switch to personal profile" name="com.android.internal.app.IntentForwarderActivity" exported="true" excludeFromRecents="true" finishOnCloseSystemDialogs="true" visibleToInstantApps="true"/>
+    <activity-alias label="Switch to personal profile" name="com.android.internal.app.ForwardIntentToParent" exported="true" targetActivity="com.android.internal.app.IntentForwarderActivity"/>
+    <activity-alias label="Switch to work profile" icon="res/drawable/ic_corp_badge.xml" name="com.android.internal.app.ForwardIntentToManagedProfile" exported="true" targetActivity="com.android.internal.app.IntentForwarderActivity"/>
+    <activity theme="Theme.DeviceDefault.System.Dialog.Alert" label="Choose game" name="com.android.internal.app.HeavyWeightSwitcherActivity" process=":ui" excludeFromRecents="true" finishOnCloseSystemDialogs="true"/>
+    <activity theme="Theme.Wallpaper.NoTitleBar.Fullscreen" icon="res/drawable-nodpi-v4/platlogo.xml" name="com.android.internal.app.PlatLogoActivity" process=":ui" configChanges="0x5a0"/>
+    <activity theme="Theme.NoDisplay" name="com.android.internal.app.DisableCarModeActivity" process=":ui" excludeFromRecents="true"/>
+    <activity theme="Theme.DeviceDefault.Light.Dialog" label="Choose an account" name="android.accounts.ChooseAccountActivity" exported="true" process=":ui" excludeFromRecents="true" visibleToInstantApps="true"/>
+    <activity theme="Theme.DeviceDefault.Light.Dialog" label="Choose an account" name="android.accounts.ChooseTypeAndAccountActivity" exported="true" process=":ui" excludeFromRecents="true" visibleToInstantApps="true"/>
+    <activity theme="Theme.DeviceDefault.Light.Dialog" label="Choose an account" name="android.accounts.ChooseAccountTypeActivity" process=":ui" excludeFromRecents="true" visibleToInstantApps="true"/>
+    <activity theme="Theme.DeviceDefault.Light.Dialog.NoActionBar" name="android.accounts.CantAddAccountActivity" exported="true" process=":ui" excludeFromRecents="true"/>
+    <activity theme="Theme.DeviceDefault.Light.DialogWhenLarge" name="android.accounts.GrantCredentialsPermissionActivity" exported="true" process=":ui" excludeFromRecents="true" visibleToInstantApps="true"/>
+    <activity theme="Theme.DeviceDefault.Light.Dialog" label="Delete limit exceeded" name="android.content.SyncActivityTooManyDeletes" process=":ui"/>
+    <activity theme="Theme.NoDisplay" name="com.android.internal.app.ShutdownActivity" permission="android.permission.SHUTDOWN" exported="true" excludeFromRecents="true">
+      <intent-filter>
+        <action name="com.android.internal.intent.action.REQUEST_SHUTDOWN"/>
+        <category name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+      <intent-filter>
+        <action name="android.intent.action.REBOOT"/>
+        <category name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
+    <activity theme="Theme.Dialog.Confirmation" name="com.android.internal.app.NetInitiatedActivity" process=":ui" excludeFromRecents="true"/>
+    <activity theme="Theme.Translucent.NoTitleBar" name="com.android.internal.app.SystemUserHomeActivity" enabled="false" exported="true" process=":ui" systemUserOnly="true">
+      <intent-filter priority="-100">
+        <action name="android.intent.action.MAIN"/>
+        <category name="android.intent.category.HOME"/>
+      </intent-filter>
+    </activity>
+    <activity theme="Theme.Dialog.Confirmation" name="com.android.internal.app.ConfirmUserCreationActivity" exported="true" process=":ui" excludeFromRecents="true">
+      <intent-filter priority="1000">
+        <action name="android.os.action.CREATE_USER"/>
+        <category name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
+    <activity theme="Theme.Dialog.Confirmation" name="com.android.internal.app.SuspendedAppActivity" process=":ui" excludeFromRecents="true"/>
+    <activity theme="Theme.Dialog.Confirmation" name="com.android.internal.app.UnlaunchableAppActivity" process=":ui" excludeFromRecents="true"/>
+    <activity theme="Theme.Dialog.Confirmation" name="com.android.internal.app.BlockedAppActivity" process=":ui" excludeFromRecents="true" lockTaskMode="2"/>
+    <activity theme="Theme.Dialog.Confirmation" name="com.android.internal.app.BlockedAppStreamingActivity" process=":ui" excludeFromRecents="true"/>
+    <activity theme="Theme.Translucent.NoTitleBar" name="com.android.internal.app.LaunchAfterAuthenticationActivity" process=":ui" excludeFromRecents="true"/>
+    <activity theme="Theme.Dialog.Confirmation" name="com.android.settings.notification.NotificationAccessConfirmationActivity" excludeFromRecents="true"/>
+    <activity theme="Theme.Dialog.Confirmation" label="Play Protect warning" name="com.android.internal.app.HarmfulAppWarningActivity" exported="false" process=":ui" excludeFromRecents="true"/>
+    <activity theme="Theme.Translucent.NoTitleBar" name="com.android.server.logcat.LogAccessDialogActivity" exported="false" excludeFromRecents="true"/>
+    <activity theme="Theme.Dialog.Confirmation" name="com.android.server.notification.NASLearnMoreActivity" exported="false" excludeFromRecents="true"/>
+    <activity theme="Theme.GameSessionTrampoline" name="android.service.games.GameSessionTrampolineActivity" permission="android.permission.MANAGE_GAME_ACTIVITY" exported="true" excludeFromRecents="true"/>
+    <receiver name="com.android.server.BootReceiver" exported="true" systemUserOnly="true">
+      <intent-filter priority="1000">
+        <action name="android.intent.action.BOOT_COMPLETED"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.CertPinInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.UPDATE_PINS"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.IntentFirewallInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.UPDATE_INTENT_FIREWALL"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.SmsShortCodesInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.UPDATE_SMS_SHORT_CODES"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.NetworkWatchlistInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.UPDATE_NETWORK_WATCHLIST"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.ApnDbInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="com.android.internal.intent.action.UPDATE_APN_DB"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.CarrierProvisioningUrlsInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.UPDATE_CARRIER_PROVISIONING_URLS"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.CertificateTransparencyLogInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.UPDATE_CT_LOGS"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.LangIdInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.UPDATE_LANG_ID"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.SmartSelectionInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.UPDATE_SMART_SELECTION"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.ConversationActionsInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.UPDATE_CONVERSATION_ACTIONS"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.CarrierIdInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.os.action.UPDATE_CARRIER_ID_DB"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.updates.EmergencyNumberDbInstallReceiver" permission="android.permission.UPDATE_CONFIG" exported="true">
+      <intent-filter>
+        <action name="android.os.action.UPDATE_EMERGENCY_NUMBER_DB"/>
+        <data mimeType="*/*" scheme="content" host="*"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.MasterClearReceiver" permission="android.permission.MASTER_CLEAR" exported="true">
+      <intent-filter priority="100">
+        <action name="android.intent.action.FACTORY_RESET"/>
+        <action name="android.intent.action.MASTER_CLEAR"/>
+        <action name="com.google.android.c2dm.intent.RECEIVE"/>
+        <category name="android.intent.category.MASTER_CLEAR"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.WallpaperUpdateReceiver" permission="android.permission.RECEIVE_DEVICE_CUSTOMIZATION_READY" exported="true">
+      <intent-filter>
+        <action name="android.intent.action.DEVICE_CUSTOMIZATION_READY"/>
+      </intent-filter>
+    </receiver>
+    <receiver name="com.android.server.sdksandbox.SdkSandboxVerifierReceiver" exported="false">
+      <intent-filter>
+        <action name="android.intent.action.PACKAGE_NEEDS_VERIFICATION"/>
+      </intent-filter>
+    </receiver>
+    <service name="android.hardware.location.GeofenceHardwareService" permission="android.permission.LOCATION_HARDWARE" exported="false"/>
+    <service name="com.android.server.MountServiceIdler" permission="android.permission.BIND_JOB_SERVICE" exported="true"/>
+    <service name="com.android.server.SmartStorageMaintIdler" permission="android.permission.BIND_JOB_SERVICE" exported="true"/>
+    <service name="com.android.server.ZramWriteback" permission="android.permission.BIND_JOB_SERVICE" exported="false"/>
+    <service name="com.android.server.backup.FullBackupJob" permission="android.permission.BIND_JOB_SERVICE" exported="true"/>
+    <service name="com.android.server.backup.KeyValueBackupJob" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.content.SyncJobService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.pm.BackgroundDexOptJobService" permission="android.permission.BIND_JOB_SERVICE" exported="true"/>
+    <service name="com.android.server.pm.DynamicCodeLoggingService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.compos.IsolatedCompilationJobService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.PruneInstantAppsJobService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.storage.DiskStatsLoggingService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.PreloadsFileCacheExpirationJobService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.camera.CameraStatsJobService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.timezone.TimeZoneUpdateIdler" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.usage.UsageStatsIdleService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.net.watchlist.ReportWatchlistJobService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.display.BrightnessIdleJob" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.people.data.DataMaintenanceService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.profcollect.ProfcollectForwardingService$ProfcollectBGJobService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.autofill.AutofillCompatAccessibilityService" permission="android.permission.BIND_ACCESSIBILITY_SERVICE" exported="true" visibleToInstantApps="true">
+      <meta-data name="android.accessibilityservice" resource="autofill_compat_accessibility_service"/>
+    </service>
+    <service name="com.google.android.startop.iorap.IorapForwardingService$IorapdJobServiceProxy" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.blob.BlobStoreIdleJobService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.companion.InactiveAssociationsRemovalService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.appsearch.contactsindexer.ContactsIndexerMaintenanceService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.BinaryTransparencyService$UpdateMeasurementsJobService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.notification.ReviewNotificationPermissionsJobService" permission="android.permission.BIND_JOB_SERVICE"/>
+    <service name="com.android.server.pm.PackageManagerShellCommandDataLoader" exported="false">
+      <intent-filter>
+        <action name="android.intent.action.LOAD_DATA"/>
+      </intent-filter>
+    </service>
+    <service name="android.service.selectiontoolbar.DefaultSelectionToolbarRenderService" permission="android.permission.BIND_SELECTION_TOOLBAR_RENDER_SERVICE" exported="false" process=":ui">
+      <intent-filter>
+        <action name="android.service.selectiontoolbar.SelectionToolbarRenderService"/>
+      </intent-filter>
+    </service>
+    <provider name="com.android.server.textclassifier.IconsContentProvider" enabled="true" exported="true" authorities="com.android.textclassifier.icons" singleUser="true"/>
+  </application>
+</manifest>
+
