@@ -1,0 +1,6 @@
+html, body { background: #111827; color: #e5e7eb; font-family: 'Inter', sans-serif; }
+a { color: #5eead4; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 4px; }
+.btn { background: #6366f1; color: #fff; border-radius: 0.5em; padding: 0.6em 1.3em; font-weight: 500; }
+.btn:hover { background: #7c3aed; }
