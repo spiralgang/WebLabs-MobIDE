@@ -84,12 +84,20 @@ jobs:
           cp "${{steps.sign_app.outputs.signedReleaseFile}}" dist/WebLabs-MobIDE-${{ steps.version.outputs.VERSION }}-release-signed.apk
         fi
         
+    - name: List build outputs for diagnostics
+      run: |
+        echo "=== Build output directory structure ==="
+        find app/build -type f -name "*.apk" 2>/dev/null || echo "No APK files found"
+        ls -la app/build/outputs/apk/debug/ 2>/dev/null || echo "Debug APK directory not found"
+        ls -la app/build/outputs/apk/release/ 2>/dev/null || echo "Release APK directory not found"
+        
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
         name: WebLabs-MobIDE-Debug-APK
         path: dist/*debug.apk
         retention-days: 30
+        if-no-files-found: warn
         
     - name: Upload Release APK
       if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
@@ -98,6 +106,7 @@ jobs:
         name: WebLabs-MobIDE-Release-APK
         path: dist/*release*.apk
         retention-days: 90
+        if-no-files-found: warn
         
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/')
