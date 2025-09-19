@@ -1,6 +1,9 @@
 // import { files } from './files.js'; // Removed: file does not exist
-// Stub for files object; replace with actual implementation as needed
-const files = {};
+// Minimal implementation for files object; replace with actual file loading as needed
+const files = {
+  "README.md": "Welcome to QuantumWebIDE!\nThis is a sample file.",
+  "main.js": "// Main JS file\nconsole.log('Hello, world!');"
+};
 
 let aiKey = "";
 
