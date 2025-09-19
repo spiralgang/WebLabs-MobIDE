@@ -56,23 +56,6 @@ android {
         viewBinding = true
         dataBinding = true
     }
-
-    packaging {
-        resources {
-            // Include native libraries for Alpine Linux
-            pickFirsts += listOf(
-                "**/libc++_shared.so",
-                "**/libssl.so", 
-                "**/libcrypto.so"
-            )
-            
-            // Alpine Linux dependencies - keep these resources
-            pickFirsts += listOf(
-                "**/busybox",
-                "**/alpine-minirootfs-*"
-            )
-        }
-    }
 }
 
 dependencies {
