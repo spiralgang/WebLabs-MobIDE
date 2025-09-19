@@ -44,6 +44,31 @@
     .chat-ai { color: #fbbf24; font-weight: bold;}
     .chat-text { color: #e0e7ff;}
     .chat-input { width: 100%; padding: 0.6em; border-radius: 0.5em; background: #23243d; color: #fff; border: none; font-family: 'Fira Code', monospace; margin-right: 1em;}
+    /* Copilot Cookbook Styles */
+    .cookbook-container { background: #181f2a; border-radius: 1em; padding: 1em; max-height: 80vh; overflow-y: auto;}
+    .cookbook-header { margin-bottom: 1.5em;}
+    .cookbook-header h3 { color: #5eead4; margin-bottom: 0.5em; font-size: 1.3em;}
+    .cookbook-header p { color: #a7f3d0; margin-bottom: 1em; font-size: 0.9em;}
+    .cookbook-search { display: flex; gap: 0.5em; flex-wrap: wrap;}
+    .cookbook-example-list { display: grid; gap: 1em;}
+    .cookbook-example { background: #23243d; border-radius: 0.5em; padding: 1em; border-left: 4px solid #6366f1; cursor: pointer; transition: all 0.2s;}
+    .cookbook-example:hover { background: #2d2e4d; border-left-color: #fbbf24;}
+    .cookbook-example.android { border-left-color: #10b981;}
+    .cookbook-example-title { color: #5eead4; font-weight: bold; margin-bottom: 0.5em; display: flex; align-items: center; gap: 0.5em;}
+    .cookbook-example-difficulty { background: #6366f1; color: #fff; padding: 0.2em 0.6em; border-radius: 1em; font-size: 0.8em;}
+    .cookbook-example-difficulty.Simple { background: #10b981;}
+    .cookbook-example-difficulty.Intermediate { background: #f59e0b;}
+    .cookbook-example-difficulty.Advanced { background: #ef4444;}
+    .cookbook-example-description { color: #e0e7ff; font-size: 0.9em; margin-bottom: 0.5em;}
+    .cookbook-example-tags { display: flex; gap: 0.3em; flex-wrap: wrap;}
+    .cookbook-tag { background: #374151; color: #d1d5db; padding: 0.2em 0.5em; border-radius: 0.3em; font-size: 0.75em;}
+    .cookbook-tag.android { background: #065f46; color: #d1fae5;}
+    .cookbook-detail { background: #23243d; border-radius: 0.5em; padding: 1.5em;}
+    .cookbook-detail h4 { color: #5eead4; margin-bottom: 1em;}
+    .cookbook-prompt { background: #1f2937; border-radius: 0.5em; padding: 1em; margin: 1em 0; border-left: 4px solid #10b981;}
+    .cookbook-prompt pre { color: #e0e7ff; font-family: 'Fira Code', monospace; white-space: pre-wrap; margin: 0;}
+    .cookbook-use-case { background: #374151; border-radius: 0.5em; padding: 1em; margin: 1em 0;}
+    .cookbook-use-case h5 { color: #fbbf24; margin-bottom: 0.5em;}
     /* Scrollbar styling */
     ::-webkit-scrollbar { width: 8px;}
     ::-webkit-scrollbar-track { background: #222;}
@@ -63,6 +88,7 @@
         <button class="menu-btn" id="nav-editor">Editor</button>
         <button class="menu-btn" id="nav-proxy">Proxy</button>
         <button class="menu-btn" id="nav-ai">AI Chat</button>
+        <button class="menu-btn" id="nav-cookbook">📚 Copilot Cookbook</button>
         <button class="menu-btn" id="nav-settings">Settings</button>
         <h2>Files</h2>
         <div class="file-list" id="file-list"></div>
@@ -100,6 +126,38 @@
             <button class="btn" id="chat-send-btn">Send</button>
           </div>
         </div>
+        <!-- Copilot Cookbook -->
+        <div class="cookbook-container" id="panel-cookbook" style="display:none;">
+          <div class="cookbook-header">
+            <h3>🤖 GitHub Copilot Chat Cookbook</h3>
+            <p>Mobile-First AI Development Prompts & Examples</p>
+            <div class="cookbook-search">
+              <input id="cookbook-search" class="chat-input" placeholder="Search prompts... (e.g., 'android', 'debugging', 'performance')">
+              <select id="cookbook-filter" class="chat-input" style="width:150px;">
+                <option value="">All Categories</option>
+                <option value="communicate">💬 Communication</option>
+                <option value="debugging">🐛 Debugging</option>
+                <option value="refactoring">🔧 Refactoring</option>
+                <option value="testing">🧪 Testing</option>
+                <option value="security">🔒 Security</option>
+                <option value="mobile-development">📱 Mobile Dev</option>
+              </select>
+              <select id="cookbook-difficulty" class="chat-input" style="width:120px;">
+                <option value="">All Levels</option>
+                <option value="Simple">Simple</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+          </div>
+          <div class="cookbook-content" id="cookbook-content">
+            <div class="cookbook-example-list" id="cookbook-examples"></div>
+          </div>
+          <div class="cookbook-detail" id="cookbook-detail" style="display:none;">
+            <button class="btn" id="cookbook-back">← Back to Examples</button>
+            <div id="cookbook-detail-content"></div>
+          </div>
+        </div>
         <!-- Settings -->
         <div class="output" id="panel-settings" style="display:none;">
           <h3>System Settings</h3>
@@ -113,6 +171,7 @@
       </div>
     </div>
   </div>
+  <script src="copilot-cookbook.js"></script>
   <script>
     /* ==================== State & Filesystem ==================== */
     let files = {
@@ -180,8 +239,203 @@
     document.getElementById('nav-editor').onclick = () => showPanel("panel-editor");
     document.getElementById('nav-proxy').onclick = () => showPanel("panel-proxy");
     document.getElementById('nav-ai').onclick = () => showPanel("panel-ai");
+    document.getElementById('nav-cookbook').onclick = () => {
+      showPanel("panel-cookbook");
+      initializeCookbook();
+    };
     document.getElementById('nav-settings').onclick = () => showPanel("panel-settings");
     showPanel("panel-terminal");
+
+    /* ==================== Copilot Cookbook ==================== */
+    let currentCookbookView = 'list';
+    let filteredExamples = [];
+
+    function initializeCookbook() {
+      if (typeof copilotCookbook === 'undefined') {
+        document.getElementById('cookbook-examples').innerHTML = '<p style="color: #ef4444;">Cookbook not loaded. Please ensure copilot-cookbook.js is available.</p>';
+        return;
+      }
+      
+      setupCookbookEventListeners();
+      displayCookbookExamples();
+    }
+
+    function setupCookbookEventListeners() {
+      // Search functionality
+      document.getElementById('cookbook-search').addEventListener('input', (e) => {
+        filterAndDisplayExamples();
+      });
+
+      // Category filter
+      document.getElementById('cookbook-filter').addEventListener('change', (e) => {
+        filterAndDisplayExamples();
+      });
+
+      // Difficulty filter
+      document.getElementById('cookbook-difficulty').addEventListener('change', (e) => {
+        filterAndDisplayExamples();
+      });
+
+      // Back button
+      document.getElementById('cookbook-back').addEventListener('click', () => {
+        document.getElementById('cookbook-content').style.display = 'block';
+        document.getElementById('cookbook-detail').style.display = 'none';
+        currentCookbookView = 'list';
+      });
+    }
+
+    function filterAndDisplayExamples() {
+      const searchTerm = document.getElementById('cookbook-search').value.toLowerCase();
+      const categoryFilter = document.getElementById('cookbook-filter').value;
+      const difficultyFilter = document.getElementById('cookbook-difficulty').value;
+
+      let examples = [];
+
+      if (searchTerm) {
+        examples = copilotCookbook.search(searchTerm);
+      } else if (categoryFilter) {
+        examples = copilotCookbook.getByCategory(categoryFilter);
+      } else {
+        // Get all examples
+        for (const [categoryKey, category] of Object.entries(copilotCookbook.categories)) {
+          for (const example of category.examples) {
+            examples.push({
+              ...example,
+              category: category.name,
+              categoryKey: categoryKey,
+              categoryIcon: category.icon
+            });
+          }
+        }
+      }
+
+      if (difficultyFilter) {
+        examples = examples.filter(ex => ex.difficulty === difficultyFilter);
+      }
+
+      filteredExamples = examples;
+      displayExamples(examples);
+    }
+
+    function displayCookbookExamples() {
+      filterAndDisplayExamples();
+    }
+
+    function displayExamples(examples) {
+      const container = document.getElementById('cookbook-examples');
+      
+      if (examples.length === 0) {
+        container.innerHTML = '<p style="color: #a7f3d0;">No examples found. Try different search terms or filters.</p>';
+        return;
+      }
+
+      container.innerHTML = examples.map(example => `
+        <div class="cookbook-example ${example.androidSpecific ? 'android' : ''}" data-id="${example.id}">
+          <div class="cookbook-example-title">
+            ${example.categoryIcon || '📝'} ${example.title}
+            <span class="cookbook-example-difficulty ${example.difficulty}">${example.difficulty}</span>
+          </div>
+          <div class="cookbook-example-description">${example.description}</div>
+          <div class="cookbook-example-tags">
+            ${example.tags.map(tag => 
+              `<span class="cookbook-tag ${tag === 'android' || tag === 'mobile' || tag === 'arm64' ? 'android' : ''}">${tag}</span>`
+            ).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      // Add click handlers
+      container.querySelectorAll('.cookbook-example').forEach(el => {
+        el.addEventListener('click', () => {
+          const exampleId = el.dataset.id;
+          const example = copilotCookbook.getById(exampleId);
+          if (example) {
+            showCookbookDetail(example);
+          }
+        });
+      });
+    }
+
+    function showCookbookDetail(example) {
+      document.getElementById('cookbook-content').style.display = 'none';
+      document.getElementById('cookbook-detail').style.display = 'block';
+      currentCookbookView = 'detail';
+
+      const detailContent = document.getElementById('cookbook-detail-content');
+      detailContent.innerHTML = `
+        <div class="cookbook-detail">
+          <h4>${example.categoryIcon || '📝'} ${example.title}</h4>
+          <div style="margin-bottom: 1em;">
+            <span class="cookbook-example-difficulty ${example.difficulty}">${example.difficulty}</span>
+            <span style="color: #a7f3d0; margin-left: 1em;">${example.category}</span>
+            ${example.androidSpecific ? '<span style="color: #10b981; margin-left: 1em;">🤖 Android/ARM64 Optimized</span>' : ''}
+          </div>
+          
+          <p style="color: #e0e7ff; margin-bottom: 1.5em;">${example.description}</p>
+          
+          <div class="cookbook-prompt">
+            <h5 style="color: #fbbf24; margin-bottom: 0.5em;">📋 Copilot Chat Prompt:</h5>
+            <pre>${example.prompt}</pre>
+          </div>
+          
+          <div class="cookbook-use-case">
+            <h5>💡 When to use this prompt:</h5>
+            <p style="color: #d1d5db;">${example.useCase}</p>
+          </div>
+          
+          <div style="margin-top: 1.5em;">
+            <button class="btn" onclick="copyCookbookPrompt('${example.id}')">📋 Copy Prompt</button>
+            <button class="btn" onclick="useCookbookPromptInChat('${example.id}')">💬 Use in AI Chat</button>
+            ${example.androidSpecific ? '<button class="btn" onclick="showAndroidTips()" style="background: #10b981;">🤖 Android Tips</button>' : ''}
+          </div>
+          
+          <div class="cookbook-example-tags" style="margin-top: 1em;">
+            ${example.tags.map(tag => 
+              `<span class="cookbook-tag ${tag === 'android' || tag === 'mobile' || tag === 'arm64' ? 'android' : ''}">${tag}</span>`
+            ).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function copyCookbookPrompt(exampleId) {
+      const example = copilotCookbook.getById(exampleId);
+      if (example && navigator.clipboard) {
+        navigator.clipboard.writeText(example.prompt).then(() => {
+          // Show success feedback
+          const btn = event.target;
+          const originalText = btn.textContent;
+          btn.textContent = '✅ Copied!';
+          btn.style.background = '#10b981';
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '#6366f1';
+          }, 2000);
+        });
+      }
+    }
+
+    function useCookbookPromptInChat(exampleId) {
+      const example = copilotCookbook.getById(exampleId);
+      if (example) {
+        // Switch to AI chat panel
+        showPanel("panel-ai");
+        // Fill the chat input with the prompt
+        document.getElementById('chat-input').value = example.prompt;
+        // Focus the input
+        document.getElementById('chat-input').focus();
+      }
+    }
+
+    function showAndroidTips() {
+      alert('🤖 Android/ARM64 Development Tips:\\n\\n' +
+            '• Use ARM64-specific optimizations when available\\n' +
+            '• Consider battery and memory constraints on mobile\\n' +
+            '• Test on actual ARM64 devices when possible\\n' +
+            '• Use Android-specific APIs and patterns\\n' +
+            '• Follow Material Design guidelines\\n' +
+            '• Optimize for different screen sizes and orientations');
+    }
 
     /* ==================== Terminal (xterm.js) ==================== */
     const term = new Terminal({ theme: { background: '#181f2a', foreground: '#5eead4' }, fontFamily: 'Fira Code, monospace', fontSize: 15 });
