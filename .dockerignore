@@ -1,0 +1,66 @@
+# WebLabs-MobIDE Docker Build Exclusions
+
+# Build artifacts
+build/
+.gradle/
+app/build/
+*.apk
+*.aab
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Git
+.git/
+.gitignore
+
+# Documentation (included selectively)
+docs/
+*.md
+!README.md
+
+# Logs
+*.log
+logs/
+
+# Cache
+cache/
+.cache/
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+.venv/
+venv/
+
+# Android
+local.properties
+*.jks
+*.keystore
+
+# Alpine Linux (obsolete)
+app_data/alpine/
+app/src/main/assets/alpine/
+
+# Large files that should be downloaded during build
+*.tar.gz
+*.zip
+*.deb
+*.rpm

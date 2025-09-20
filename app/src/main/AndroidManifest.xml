@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permissions for Alpine Linux environment and Shell-IDE -->
+    <!-- Permissions for Docker Ubuntu environment and WebIDE -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -18,7 +18,7 @@
         android:name="android.hardware.cpu.arm64"
         android:required="true" />
     
-    <!-- Minimum RAM requirement for Alpine Linux -->
+    <!-- Minimum RAM requirement for Docker Ubuntu -->
     <uses-feature
         android:name="android.hardware.ram.normal"
         android:required="true" />
@@ -35,7 +35,7 @@
         android:preserveLegacyExternalStorage="true"
         tools:targetApi="31">
 
-        <!-- Main Activity - Alpine Linux Shell-IDE -->
+        <!-- Main Activity - Docker Ubuntu WebIDE -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -57,6 +57,15 @@
                       android:host="mobide" />
             </intent-filter>
         </activity>
+
+        <!-- WebIDE Activity - Docker Ubuntu Interface -->
+        <activity
+            android:name=".WebIDEActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:theme="@style/Theme.WeblabsMobIDE.NoActionBar" />
 
         <!-- Alpine Linux Background Service -->
         <service

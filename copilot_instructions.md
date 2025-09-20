@@ -11,7 +11,7 @@ root/
 │   │   ├── main/
 │   │   │   ├── java/com/spiralgang/weblabs/
 │   │   │   │   ├── MainActivity.java / .kt
-│   │   │   │   ├── AlpineInstaller.java / .kt
+│   │   │   │   ├── DockerManager.java / .kt
 │   │   │   │   ├── WebIDEActivity.java / .kt
 │   │   │   │   ├── AiManager.java / .kt
 │   │   │   ├── res/
@@ -19,9 +19,8 @@ root/
 │   │   │   │   ├── values/strings.xml, colors.xml, styles.xml
 │   │   │   │   ├── drawable/
 │   │   │   ├── assets/
-│   │   │   │   ├── alpine/bootstrap.sh, rootfs.tar.gz
+│   │   │   │   ├── scripts/start-ide.sh
 │   │   │   │   ├── webide/index.html, main.js, style.css, ai.js
-│   │   │   │   ├── scripts/proot-launch.sh, configure-ide.sh
 │   │   │   │   ├── models/ai-config.json
 │   │   │   ├── AndroidManifest.xml
 │   │   ├── test/java/com/spiralgang/weblabs/
@@ -35,41 +34,54 @@ root/
 ├── gradlew.bat
 ├── build.gradle.kts
 ├── settings.gradle.kts
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
 ├── local.properties
 ├── .gitignore
 ├── README.md
 ├── LICENSE
 ├── docs/
 ├── scripts/
-└── app_data/
-    ├── alpine/rootfs/
-    ├── webide/
+│   ├── docker/
+│   │   ├── docker-manager.sh
+│   │   ├── new-project.sh
+└── workspace/
+    ├── projects/
     ├── ai/models/
-    ├── ai/keys/
+    ├── ai/cache/
     ├── logs/
-    ├── cache/
 ```
 
 ## 2. Coding & Documentation Standards
 
 - **Android 10+ Compliance:** All code must target ARM64, minSdkVersion 29+, and use only APIs compatible with Android 10+.
-- **Alpine Linux Integration:** Bundle or download Alpine ARM64 rootfs; scripts must set up, mount, and expose the full shell environment.
-- **Web-Based IDE:** All front-end code (HTML/CSS/JS) must enable browser-based code editing, file management, and terminal emulation.
+- **Docker Integration:** Bundle Ubuntu 24.04 ARM64 Docker environment; scripts must set up, manage, and expose the full development environment.
+- **Web-Based IDE:** All front-end code (HTML/CSS/JS) must enable browser-based code editing, file management, and terminal emulation via Code-Server.
 - **AI Embedded:** JavaScript/Python interfaces must connect to AI models via HuggingFace or local inference; provide secure key management and error handling.
 - **Security:** Use privileged permissions, enforce proper Android manifest declarations, and follow OWASP mobile security best practices.
-- **Build System:** All Gradle configs must support reproducible, CI/CD-ready builds and APK signing.
+- **Build System:** All Gradle configs must support reproducible, CI/CD-ready builds, APK signing, and GitHub Copilot compatibility.
 
-## 3. Copilot Behavior
+## 3. Docker Environment Standards
+
+- **Base Image:** Ubuntu 24.04 ARM64 with glibc (NO Alpine Linux or musl)
+- **Containerization:** Docker-based (NO proot virtualization)
+- **Performance:** Native performance without proot overhead
+- **IDE:** Code-Server web-based VS Code environment
+- **Tools:** Android SDK, NDK, Python 3, Node.js, build tools
+- **GitHub Copilot:** Full compatibility with standard Ubuntu environment
+
+## 4. Copilot Behavior
 
 - **Format all new code, refactors, and docs to match above repo structure.**
-- **Autogenerate missing folders/files and properly nest code.**
+- **Use Docker and Ubuntu 24.04 ARM64 instead of Alpine Linux or proot.**
 - **Validate and lint code for Android, Linux, and AI integration.**
-- **Never create “example” or stub code: always generate production-ready, runnable code only.**
+- **Never create "example" or stub code: always generate production-ready, runnable code only.**
 - **Document every module and script with concise, context-relevant rationale.**
 - **Reference all foundational standards in /reference/vault, never duplicate.**
 - **Audit every change for directory and permission correctness.**
 
-## 4. Reference Vault
+## 5. Reference Vault
 
 - All foundational standards, external docs, and best practices are summarized and linked in `/reference/vault`.
 - All audit, compliance, and rationale must be traceable to the vault.
@@ -78,7 +90,7 @@ root/
 
 ## Example Commit Message
 
-> Format: “Refactor [component] for [Android 10+/Alpine/AI integration]: [brief rationale]. Structure validated.”
+> Format: "Refactor [component] for [Android 10+/Docker/AI integration]: [brief rationale]. Structure validated."
 
 ---
 
@@ -88,6 +100,7 @@ root/
 - [Android Studio Project Structure](https://developer.android.com/studio/projects)
 - [Android Manifest Permissions](https://developer.android.com/guide/topics/manifest/permission-element)
 - [OWASP Mobile Security](https://owasp.org/www-project-mobile-security/)
-- [Alpine Linux ARM64 Installation](https://wiki.alpinelinux.org/wiki/Installation)
+- [Docker Documentation](https://docs.docker.com/)
+- [Ubuntu 24.04 ARM64](https://ubuntu.com/download/server/arm)
 - [HuggingFace API](https://huggingface.co/docs/api-inference/index)
 - [CI/CD Gradle Best Practices](https://docs.gradle.org/current/userguide/ci.html)
