@@ -18,15 +18,34 @@ A complete Docker-based Ubuntu 24.04 ARM64 development environment that runs on 
 
 ## 📱 Download Production APK
 
-**🚀 READY FOR DOWNLOAD - Docker Ubuntu Environment APK**
+**🔧 BUILD STATUS: Network Access Required**
 
-[![Download Latest Release APK](https://img.shields.io/badge/📱_Download_Production_APK-2EA043?style=for-the-badge&logo=android&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases/latest/download/WebLabs-MobIDE-release-signed.apk)
+The WebLabs-MobIDE Docker Ubuntu environment is fully implemented and ready to build. However, APK generation currently requires network access to download Android build dependencies.
 
-[![Download Debug APK](https://img.shields.io/badge/🔧_Download_Debug_APK-FF6B35?style=for-the-badge&logo=android&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases/latest/download/WebLabs-MobIDE-debug.apk)
+### 🚀 **Current Status:**
+- ✅ **Docker Ubuntu 24.04 Environment**: Complete implementation
+- ✅ **Code-Server Integration**: Web IDE ready
+- ✅ **Android App Architecture**: All Kotlin source files ready
+- ✅ **Build Configuration**: Android Gradle Plugin 8.2.0 + Kotlin 1.9.22
+- ⏳ **Network Access**: Requires domains to be added to allowlist
 
-[![View All Releases](https://img.shields.io/badge/📦_All_Releases-1F2328?style=for-the-badge&logo=github&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases)
+### 🌐 **Required Domains for APK Build:**
+The following domains need to be added to the repository allowlist for successful APK builds:
+- `dl.google.com` (Android SDK/tools)
+- `maven.google.com` (Android dependencies)
+- `repo1.maven.org` (Maven Central)
+- `services.gradle.org` (Gradle)
 
-[![Build Status](https://img.shields.io/badge/🚀_Build_Status-SUCCESS-00FF41?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/actions)
+### 📦 **How to Get APK Once Network Access is Resolved:**
+
+[![Build APK via GitHub Actions](https://img.shields.io/badge/🔧_Build_APK_-_GitHub_Actions-2EA043?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/actions)
+
+[![Download Latest Release APK](https://img.shields.io/badge/📱_Download_APK_-_After_Build-FF6B35?style=for-the-badge&logo=android&logoColor=white)](https://github.com/spiralgang/WebLabs-MobIDE/releases)
+
+**Once network access is configured:**
+1. GitHub Actions will automatically build APK on push
+2. APK will be available in GitHub Releases
+3. Direct download links will be active
 
 ### 🎯 **PRODUCTION READY - Virtual Linux Development Environment**
 
