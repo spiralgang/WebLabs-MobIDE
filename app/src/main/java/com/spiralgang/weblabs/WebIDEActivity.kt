@@ -337,6 +337,7 @@ console.log("Hello from WebLabs-MobIDE!");
     }
     
     override fun onDestroy() {
+        webView.destroy()
         super.onDestroy()
         dockerManager.cleanup()
     }
