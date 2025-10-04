@@ -87,27 +87,34 @@
                         'android_security_overview.html': `... (Content from your Android security document) ...`
                     },
                     'build_scripts': {
-                        'APKBUILD': `# This file is used by abuild(1) to build a package.
-pkgname=my-app
-pkgver=1.0.0
-pkgrel=0
-pkgdesc="A sample application"
-url="https://example.com"
-arch="all"
+                        'APKBUILD': `# WebLabs-MobIDE - Mobile-First Quantum WebIDE with AI Development
+pkgname=weblabs-mobide
+pkgver=2.1.0
+pkgrel=1
+pkgdesc="Mobile-First Quantum WebIDE with AI-Assisted Development and ARM64 Android Support"
+url="https://github.com/spiralgang/WebLabs-MobIDE"
+arch="aarch64"
 license="MIT"
-makedepends="bash"
-source="http://example.com/my-app-1.0.0.tar.gz"
+makedepends="bash nodejs npm docker android-tools"
+source="https://github.com/spiralgang/WebLabs-MobIDE/archive/v$pkgver.tar.gz"
 
 build() {
     cd "$builddir"
-    echo "Building the application..."
-    touch my-app
+    echo "Building WebLabs-MobIDE Docker Ubuntu Environment..."
+    npm install
+    npm run build
+    ./gradlew assembleRelease
 }
 
 package() {
     cd "$builddir"
     mkdir -p "$pkgdir"/usr/bin
-    cp my-app "$pkgdir"/usr/bin/my-app
+    mkdir -p "$pkgdir"/opt/weblabs-mobide
+    cp -r app/build/outputs/apk/release/*.apk "$pkgdir"/opt/weblabs-mobide/
+    cp -r docs/* "$pkgdir"/opt/weblabs-mobide/webide/
+    echo "#!/bin/sh" > "$pkgdir"/usr/bin/weblabs-mobide
+    echo "cd /opt/weblabs-mobide && node server.js" >> "$pkgdir"/usr/bin/weblabs-mobide
+    chmod +x "$pkgdir"/usr/bin/weblabs-mobide
 }`,
                         'abuild-keygen.in': `#!/bin/sh
 # Simulates key generation for package signing.
@@ -598,27 +605,34 @@ Simulated APK available at: build/outputs/apk/debug/app-debug.apk`);
                         'android_security_overview.html': `... (Content from your Android security document) ...`
                     },
                     'build_scripts': {
-                        'APKBUILD': `# This file is used by abuild(1) to build a package.
-pkgname=my-app
-pkgver=1.0.0
-pkgrel=0
-pkgdesc="A sample application"
-url="https://example.com"
-arch="all"
+                        'APKBUILD': `# WebLabs-MobIDE - Mobile-First Quantum WebIDE with AI Development
+pkgname=weblabs-mobide
+pkgver=2.1.0
+pkgrel=1
+pkgdesc="Mobile-First Quantum WebIDE with AI-Assisted Development and ARM64 Android Support"
+url="https://github.com/spiralgang/WebLabs-MobIDE"
+arch="aarch64"
 license="MIT"
-makedepends="bash"
-source="http://example.com/my-app-1.0.0.tar.gz"
+makedepends="bash nodejs npm docker android-tools"
+source="https://github.com/spiralgang/WebLabs-MobIDE/archive/v$pkgver.tar.gz"
 
 build() {
     cd "$builddir"
-    echo "Building the application..."
-    touch my-app
+    echo "Building WebLabs-MobIDE Docker Ubuntu Environment..."
+    npm install
+    npm run build
+    ./gradlew assembleRelease
 }
 
 package() {
     cd "$builddir"
     mkdir -p "$pkgdir"/usr/bin
-    cp my-app "$pkgdir"/usr/bin/my-app
+    mkdir -p "$pkgdir"/opt/weblabs-mobide
+    cp -r app/build/outputs/apk/release/*.apk "$pkgdir"/opt/weblabs-mobide/
+    cp -r docs/* "$pkgdir"/opt/weblabs-mobide/webide/
+    echo "#!/bin/sh" > "$pkgdir"/usr/bin/weblabs-mobide
+    echo "cd /opt/weblabs-mobide && node server.js" >> "$pkgdir"/usr/bin/weblabs-mobide
+    chmod +x "$pkgdir"/usr/bin/weblabs-mobide
 }`,
                         'abuild-keygen.in': `#!/bin/sh
 # Simulates key generation for package signing.
