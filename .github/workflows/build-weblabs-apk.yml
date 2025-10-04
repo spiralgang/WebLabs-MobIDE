@@ -57,7 +57,7 @@ jobs:
     - name: Validate Docker environment
       run: |
         echo "🚀 WebLabs-MobIDE Docker Environment Validation"
-        ./gradlew validateDockerEnvironment --no-daemon
+        ./gradlew validateDockerApp --no-daemon
 
     - name: Build Debug APK
       run: |
