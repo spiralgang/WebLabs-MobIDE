@@ -273,7 +273,7 @@ class MainActivity : AppCompatActivity() {
                 val command = url.removePrefix("docker://")
                 val result = when (command) {
                     "status" -> dockerManager.getContainerStatus()
-                    "start" -> dockerManager.startContainer()
+                    "start" -> dockerManager.startContainerPublic()
                     "stop" -> dockerManager.stopContainer()
                     else -> "Unknown command: $command"
                 }
