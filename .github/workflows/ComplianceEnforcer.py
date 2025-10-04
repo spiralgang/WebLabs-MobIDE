@@ -23,7 +23,9 @@ from github import Github  # pip install PyGithub
 ORG_NAME = "your-org"  # GitHub org
 REPO_NAME = "your-repo"  # Or loop over repos
 HF_TOKEN = "your-hf-token"  # For AI checks
-EMAIL_ALERT = "your-email@example.com"
+EMAIL_ALERT = os.environ.get("EMAIL_ALERT")
+if not EMAIL_ALERT:
+    raise ValueError("EMAIL_ALERT environment variable not set")
 PENALTY_THRESHOLD = 10  # x10 = nuke
 MAX_PENALTY = 10  # Cap at x10
 
