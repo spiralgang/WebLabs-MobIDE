@@ -38,7 +38,7 @@ STANDARD_TREE = {
 }
 PERM_REGEX = r"rw-r--r--"  # 644
 UTF8_REGEX = r"encoding=\"UTF-8\""  # In XML
-ALPINE_CHECK = "alpine" in str(Path("assets/alpine"))  # File existence
+ALPINE_CHECK = Path("assets/alpine").exists()  # File existence
 AI_INTEGRATION = "huggingface" in open("app/build.gradle.kts").read()  # Dep check
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", filename="compliance.log")
