@@ -59,6 +59,11 @@ jobs:
     needs: setup
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Vendor Hugging Face model
         run: git clone https://huggingface.co/Salesforce/codet5-small.git
 
@@ -88,6 +93,11 @@ jobs:
     needs: vendor
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Commit changes
         run: |
           git checkout -b fix/weblabs-codelab-${{ github.run_id }}
@@ -120,6 +130,9 @@ jobs:
     if: ${{ inputs.build_apk == 'true' }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
