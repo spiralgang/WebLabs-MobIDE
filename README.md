@@ -1,13 +1,14 @@
 # Reference: Copilot Instructions
 
-The master Copilot instructions for this repository are located at:
+GitHub Copilot instructions for this repository are configured at:
 
-[`copilot_instructions.md`](https://github.com/spiralgang/WebLabs-MobIDE/blob/main/copilot_instructions.md)
+- **GitHub Copilot Configuration**: [`.github/copilot_instructions.md`](https://github.com/spiralgang/WebLabs-MobIDE/blob/main/.github/copilot_instructions.md) - GitHub's official Copilot instructions
+- **Detailed Technical Standards**: [`copilot_instructions.md`](https://github.com/spiralgang/WebLabs-MobIDE/blob/main/copilot_instructions.md) - Comprehensive development standards
 
-All coding, refactoring, and documentation must comply with the standards and workflow described there.
+All coding, refactoring, and documentation must comply with the standards and workflow described in these files.
 
 References:  
-- [GitHub Copilot Org Instructions](https://docs.github.com/en/copilot/customizing-copilot/adding-organization-custom-instructions-for-github-copilot)
+- [GitHub Copilot Organization Instructions](https://docs.github.com/en/copilot/customizing-copilot/adding-organization-custom-instructions-for-github-copilot)
 
 
 # 🚀 WebLabs-MobIDE - Docker Ubuntu Environment

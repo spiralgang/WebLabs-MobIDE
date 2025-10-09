@@ -14,10 +14,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install deps
-        run: pip install PyGithub
-      - name: Run Enforcer
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Compliance Check
+        working-directory: .github/workflows
         run: |
           python ComplianceEnforcer.py
+      - name: Upload compliance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-report
+          path: .github/workflows/compliance-report.json

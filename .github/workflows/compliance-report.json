@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-10-09T10:38:53.528991",
+  "repository": "spiralgang/WebLabs-MobIDE",
+  "compliance_score": 100,
+  "status": "COMPLIANT",
+  "violations": [],
+  "passed_checks": [
+    "\u2705 Directory exists: app",
+    "\u2705 File/dir exists: app/src/main/java/com/spiralgang/weblabs/",
+    "\u2705 File/dir exists: app/build.gradle.kts",
+    "\u2705 Directory exists: app/src/main/assets",
+    "\u2705 File/dir exists: app/src/main/assets/webide-components/",
+    "\u2705 File/dir exists: app/src/main/assets/scripts/",
+    "\u2705 Directory exists: gradle",
+    "\u2705 File/dir exists: gradle/wrapper/",
+    "\u2705 Directory exists: docs",
+    "\u2705 Directory exists: scripts",
+    "\u2705 Directory exists: .github",
+    "\u2705 File/dir exists: .github/workflows/",
+    "\u2705 File/dir exists: .github/copilot_instructions.md",
+    "\u2705 Critical file exists: package.json",
+    "\u2705 Critical file exists: .github/copilot_instructions.md",
+    "\u2705 Critical file exists: copilot_instructions.md",
+    "\u2705 Critical file exists: README.md",
+    "\u2705 Critical file exists: build.gradle.kts"
+  ]
+}

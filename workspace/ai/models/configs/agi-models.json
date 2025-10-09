@@ -1,0 +1,93 @@
+{
+  "agi_models": {
+    "version": "1.0",
+    "architecture": "near_quantum_agentic",
+    "models": [
+      {
+        "name": "reasoning_engine",
+        "type": "hybrid_symbolic_neural",
+        "path": "agi/reasoning_engine.onnx",
+        "capabilities": ["logical_inference", "causal_reasoning", "planning"],
+        "quantum_features": {
+          "superposition_reasoning": true,
+          "entangled_concepts": true,
+          "coherent_processing": true
+        }
+      },
+      {
+        "name": "memory_system",
+        "type": "graph_neural_network",
+        "path": "agi/memory_system.pt",
+        "capabilities": ["episodic_storage", "semantic_retrieval", "working_memory"],
+        "architecture": {
+          "graph_layers": 6,
+          "embedding_dim": 512,
+          "attention_heads": 8
+        }
+      },
+      {
+        "name": "goal_planner",
+        "type": "transformer_based",
+        "path": "agi/goal_planner.safetensors",
+        "capabilities": ["goal_formation", "plan_generation", "adaptation"],
+        "optimization": {
+          "quantization": "int8",
+          "pruning": "structured",
+          "compilation": "arm64"
+        }
+      },
+      {
+        "name": "meta_learner",
+        "type": "few_shot_learning",
+        "path": "agi/meta_learner.onnx",
+        "capabilities": ["rapid_adaptation", "transfer_learning", "meta_cognition"],
+        "few_shot_config": {
+          "support_shots": 5,
+          "query_shots": 1,
+          "meta_batch_size": 32
+        }
+      }
+    ]
+  },
+  "language_models": [
+    {
+      "name": "codebert_base",
+      "type": "transformer",
+      "path": "language/codebert-base",
+      "use_cases": ["code_completion", "code_analysis", "bug_detection"],
+      "optimization": {
+        "quantization": "int8",
+        "arm64_optimized": true,
+        "max_sequence_length": 512
+      }
+    },
+    {
+      "name": "codet5_small",
+      "type": "text2text",
+      "path": "language/codet5-small",
+      "use_cases": ["code_generation", "code_translation", "documentation"],
+      "optimization": {
+        "quantization": "fp16",
+        "beam_search": true,
+        "max_new_tokens": 256
+      }
+    }
+  ],
+  "multimodal_models": [
+    {
+      "name": "clip_vision_text",
+      "type": "vision_language",
+      "path": "multimodal/clip-vit-base",
+      "capabilities": ["image_understanding", "text_image_matching", "visual_reasoning"],
+      "modalities": ["vision", "text"],
+      "embedding_dim": 512
+    }
+  ],
+  "deployment": {
+    "runtime": "onnx",
+    "optimization_level": "aggressive",
+    "target_platform": "ARM64",
+    "memory_limit_mb": 512,
+    "inference_providers": ["CPUExecutionProvider"]
+  }
+}
