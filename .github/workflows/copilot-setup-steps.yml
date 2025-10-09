@@ -58,34 +58,113 @@ jobs:
       - name: Install Android SDK Components
         run: |
           echo "Installing Android SDK components for WebLabs-MobIDE..."
-          sdkmanager --install "platforms;android-34" "build-tools;34.0.0" "platform-tools"
-          sdkmanager --install "ndk;25.2.9519653"
-          echo "Android SDK setup complete"
+          
+          # Set Android environment variables explicitly
+          export ANDROID_HOME=$ANDROID_HOME
+          export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT
+          
+          # Install SDK components with error handling
+          if ! sdkmanager --install "platforms;android-34" "build-tools;34.0.0" "platform-tools" 2>&1 | tee android-sdk-install.log; then
+            echo "::error::Android SDK platform installation failed. See android-sdk-install.log for details."
+            cat android-sdk-install.log
+            exit 1
+          fi
+          
+          if ! sdkmanager --install "ndk;25.2.9519653" 2>&1 | tee android-ndk-install.log; then
+            echo "::error::Android NDK installation failed. See android-ndk-install.log for details."
+            cat android-ndk-install.log
+            exit 1
+          fi
+          
+          echo "✅ Android SDK setup complete"
 
       - name: Set up Docker for Ubuntu Environment
         run: |
           echo "Setting up Docker for Ubuntu 24.04 ARM64 environment..."
-          sudo apt-get update
-          sudo apt-get install -y docker.io docker-compose
+          
+          # Use GitHub Actions runner's default package sources (more reliable than Azure mirrors)
+          echo "Updating package sources..."
+          sudo apt-get update -qq
+          
+          # Install Docker with explicit error handling
+          echo "Installing Docker and Docker Compose..."
+          if ! sudo apt-get install -y docker.io docker-compose 2>&1 | tee docker-install.log; then
+            echo "::error::Docker installation failed. See docker-install.log for details."
+            cat docker-install.log
+            echo "::warning::If this persists, it may be due to Azure mirror connectivity issues."
+            exit 1
+          fi
+          
+          # Start and configure Docker
+          echo "Starting Docker services..."
           sudo systemctl start docker
           sudo systemctl enable docker
           sudo usermod -aG docker $USER
-          echo "Docker setup complete"
+          
+          # Verify Docker installation
+          if ! docker --version; then
+            echo "::error::Docker installation verification failed"
+            exit 1
+          fi
+          
+          echo "✅ Docker setup complete"
 
       - name: Install JavaScript dependencies (if package.json exists)
+        shell: bash
         run: |
+          # Check for package.json files in root and docs directories
           if [ -f "package.json" ]; then
-            npm ci
-          else
-            echo "No package.json found, skipping npm install"
+            echo "package.json found in root, installing dependencies..."
+            if ! npm install 2>&1 | tee npm-install.log; then
+              echo "::error::npm install failed in root directory. See npm-install.log for details."
+              cat npm-install.log
+              exit 1
+            fi
+            echo "✅ Root dependencies installed successfully"
+          fi
+          
+          if [ -f "docs/package.json" ]; then
+            echo "package.json found in docs/, installing dependencies..."
+            cd docs
+            if ! npm install 2>&1 | tee ../npm-install-docs.log; then
+              echo "::error::npm install failed in docs/ directory. See npm-install-docs.log for details."
+              cat ../npm-install-docs.log
+              exit 1
+            fi
+            echo "✅ Docs dependencies installed successfully"
+            cd ..
+          fi
+          
+          if [ ! -f "package.json" ] && [ ! -f "docs/package.json" ]; then
+            echo "No package.json found in root or docs/. Skipping npm install."
           fi
 
       - name: Install Python dependencies for AI features
         run: |
-          pip install --upgrade pip
-          pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-          pip install transformers huggingface_hub accelerate safetensors
-          echo "Python AI dependencies installed"
+          echo "Installing Python AI dependencies..."
+          
+          # Upgrade pip first
+          if ! pip install --upgrade pip 2>&1 | tee pip-upgrade.log; then
+            echo "::error::pip upgrade failed. See pip-upgrade.log for details."
+            cat pip-upgrade.log
+            exit 1
+          fi
+          
+          # Install PyTorch with explicit error handling
+          if ! pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu 2>&1 | tee pytorch-install.log; then
+            echo "::error::PyTorch installation failed. See pytorch-install.log for details."
+            cat pytorch-install.log
+            exit 1
+          fi
+          
+          # Install additional AI libraries
+          if ! pip install transformers huggingface_hub accelerate safetensors 2>&1 | tee ai-libs-install.log; then
+            echo "::error::AI libraries installation failed. See ai-libs-install.log for details."
+            cat ai-libs-install.log
+            exit 1
+          fi
+          
+          echo "✅ Python AI dependencies installed"
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
