@@ -574,26 +574,26 @@
       deploymentManager.initializeDeployment();
     }
 
-    function updateDashboard() {
+    async function updateDashboard() {
       // Update performance status
-      const perfReport = performanceMonitor.getReport();
+      const perfReport = await performanceMonitor.getReport();
       document.getElementById('performance-status').querySelector('.status-value').textContent = 
-        perfReport.marketReadiness.ready ? 'Market Ready' : 'Needs Optimization';
+        perfReport.marketReadiness && perfReport.marketReadiness.ready ? 'Market Ready' : 'Needs Optimization';
 
       // Update security status
-      const secReport = securityManager.generateSecurityReport();
+      const secReport = await securityManager.getReport();
       document.getElementById('security-status').querySelector('.status-value').textContent = 
         secReport.securityLevel === 'production' ? 'Production Ready' : 'Needs Review';
 
       // Update network status
-      const netMetrics = networkManager.getNetworkMetrics();
+      const netMetrics = await networkManager.getReport();
       document.getElementById('network-status').querySelector('.status-value').textContent = 
         netMetrics.connectionType === '4g' ? 'Optimized' : 'Limited';
 
       // Update deployment status
-      const deploymentReady = deploymentManager.validateEnvironment();
+      const deploymentReport = await deploymentManager.getReport();
       document.getElementById('deployment-status').querySelector('.status-value').textContent = 
-        deploymentReady ? 'Ready to Deploy' : 'Setup Required';
+        deploymentReport && deploymentReport.ready ? 'Ready to Deploy' : 'Setup Required';
     }
 
     function showManagerDetail(managerType) {
