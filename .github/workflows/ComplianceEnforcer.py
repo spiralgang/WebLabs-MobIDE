@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-Devastating Copilot Punishment Script - Compliance Enforcer
-Enforces org-level GitHub Copilot standards for mobile-first Android 10+ APK repos.
+WebLabs-MobIDE Compliance Checker
+Safe compliance verification for WebLabs-MobIDE repository structure.
 - Scans for folder structure, permissions, UTF-8, Alpine/AI integration.
-- Penalizes non-compliance exponentially: Log (penalty=1), Auto-refactor (x2), Alert (x4), Nuke branch (x10).
-- Autonomous: Runs as GitHub Action or cron, adapts per repo (no exact MobIDE clone).
-- Based on WebLabs-MobIDE rationale: Privileged shell/IDE, Alpine auto-install, AI embedded, secure datasets.
+- Reports compliance status without destructive operations.
+- Based on WebLabs-MobIDE standards for Android 10+ ARM64 development.
 """
 
 import os
@@ -15,136 +14,121 @@ import logging
 import re
 from pathlib import Path
 from datetime import datetime
-import smtplib
-from email.mime.text import MIMEText
-from github import Github  # pip install PyGithub
 
-# Config - Customize for your org
-ORG_NAME = "your-org"  # GitHub org
-REPO_NAME = "your-repo"  # Or loop over repos
-HF_TOKEN = "your-hf-token"  # For AI checks
-EMAIL_ALERT = os.environ.get("EMAIL_ALERT")
-if not EMAIL_ALERT:
-    raise ValueError("EMAIL_ALERT environment variable not set")
-PENALTY_THRESHOLD = 10  # x10 = nuke
-MAX_PENALTY = 10  # Cap at x10
+# Config for WebLabs-MobIDE
+ORG_NAME = "spiralgang"
+REPO_NAME = "WebLabs-MobIDE"
+REPO_PATH = "../.."  # Go up from .github/workflows to repository root
 
-# Standards from MobIDE (adaptable)
+# Standards from WebLabs-MobIDE
 STANDARD_TREE = {
     "app": ["src/main/java/com/spiralgang/weblabs/", "build.gradle.kts"],
-    "assets": ["alpine/bootstrap.sh", "webide/index.html", "ai/config.json"],
+    "app/src/main/assets": ["webide-components/", "scripts/"],
     "gradle": ["wrapper/"],
-    "docs": [], "scripts": [], "app_data": ["alpine/rootfs/", "ai/models/"]
+    "docs": [], 
+    "scripts": [], 
+    ".github": ["workflows/", "copilot_instructions.md"]
 }
-PERM_REGEX = r"rw-r--r--"  # 644
-UTF8_REGEX = r"encoding=\"UTF-8\""  # In XML
-ALPINE_CHECK = Path("assets/alpine").exists()  # File existence
-AI_INTEGRATION = "huggingface" in open("app/build.gradle.kts").read()  # Dep check
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", filename="compliance.log")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-class ComplianceEnforcer:
+class ComplianceChecker:
     def __init__(self, repo_path):
         self.repo_path = Path(repo_path)
-        self.penalty = 1
-        gh_token = os.environ.get("GITHUB_TOKEN")
-        if not gh_token:
-            raise ValueError("GITHUB_TOKEN environment variable not set")
-        self.gh = Github(gh_token)  # For branch nuke
-        self.repo = self.gh.get_repo(f"{ORG_NAME}/{REPO_NAME}")
+        self.compliance_score = 100
 
     def scan_structure(self):
         violations = []
+        passed = []
         for dir_name, expected in STANDARD_TREE.items():
             dir_path = self.repo_path / dir_name
             if not dir_path.exists():
-                violations.append(f"Missing {dir_name}")
+                violations.append(f"Missing directory: {dir_name}")
+                self.compliance_score -= 10
             else:
+                passed.append(f"✅ Directory exists: {dir_name}")
                 for expected_file in expected:
-                    if not (dir_path / expected_file).exists():
-                        violations.append(f"Missing {dir_name}/{expected_file}")
-        return violations
+                    file_path = dir_path / expected_file
+                    if not file_path.exists():
+                        violations.append(f"Missing: {dir_name}/{expected_file}")
+                        self.compliance_score -= 5
+                    else:
+                        passed.append(f"✅ File/dir exists: {dir_name}/{expected_file}")
+        return violations, passed
 
-    def scan_permissions(self):
+    def scan_critical_files(self):
         violations = []
-        for file_path in self.repo_path.rglob("*"):
-            if file_path.is_file():
-                # Sim chmod check (real on Linux host)
-                perm = oct(file_path.stat().st_mode)[-3:]
-                if perm != "644":
-                    violations.append(f"Bad perm {perm} on {file_path}")
-                # UTF-8 check
-                if file_path.suffix in ['.xml', '.kt', '.py']:
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                        if not re.search(UTF8_REGEX, content) and file_path.suffix == '.xml':
-                            violations.append(f"No UTF-8 on {file_path}")
-        return violations
+        passed = []
+        critical_files = [
+            "package.json",
+            ".github/copilot_instructions.md", 
+            "copilot_instructions.md",
+            "README.md",
+            "build.gradle.kts"
+        ]
+        
+        for file_name in critical_files:
+            file_path = self.repo_path / file_name
+            if not file_path.exists():
+                violations.append(f"Missing critical file: {file_name}")
+                self.compliance_score -= 15
+            else:
+                passed.append(f"✅ Critical file exists: {file_name}")
+        
+        return violations, passed
 
-    def scan_symlink_rogue(self):
-        violations = []
-        for file_path in self.repo_path.rglob("*"):
-            if file_path.is_symlink():
-                violations.append(f"Symlink detected: {file_path} - DELETING")
-                file_path.unlink()  # Rogue kill
-            # Poison pill: Check for suspicious exec
-            if file_path.suffix in ['.sh', '.py'] and 'rm -rf /' in file_path.read_text():
-                violations.append(f"Poison pill in {file_path} - QUARANTINE")
-                file_path.rename(file_path.with_suffix('.quarantine'))
-        return violations
-
-    def enforce_penalty(self, violations):
-        if violations:
-            self.penalty *= 2  # x2 per violation batch
-            logging.warning(f"Violations: {violations} - Penalty level: {self.penalty}")
-            if self.penalty >= PENALTY_THRESHOLD:
-                self.nuke_non_compliant()
-            elif self.penalty >= 5:
-                self.auto_refactor(violations)
-            elif self.penalty >= 3:
-                self.alert_dev()
-        else:
-            self.penalty = 1  # Reset on compliance
-
-    def auto_refactor(self, violations):
+    def generate_report(self, violations, passed_checks):
+        report = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "repository": f"{ORG_NAME}/{REPO_NAME}",
+            "compliance_score": self.compliance_score,
+            "status": "COMPLIANT" if self.compliance_score >= 80 else "NON_COMPLIANT",
+            "violations": violations,
+            "passed_checks": passed_checks
+        }
+        
+        # Write JSON report
+        with open("compliance-report.json", "w") as f:
+            json.dump(report, f, indent=2)
+        
+        # Print summary
+        print(f"\n=== COMPLIANCE REPORT ===")
+        print(f"Repository: {ORG_NAME}/{REPO_NAME}")
+        print(f"Score: {self.compliance_score}/100")
+        print(f"Status: {report['status']}")
+        print(f"\nViolations ({len(violations)}):")
         for violation in violations:
-            if "Missing" in violation:
-                # Auto-create missing files/dirs
-                dir_name = violation.split("Missing ")[1].split("/")[0]
-                (self.repo_path / dir_name).mkdir(exist_ok=True)
-                logging.info(f"Auto-created {dir_name}")
-            if "Bad perm" in violation:
-                # Simulate chmod (run on host)
-                subprocess.run(["chmod", "644", str(self.repo_path / violation.split(" on ")[1])])
-        logging.info("Auto-refactor complete")
-
-    def alert_dev(self):
-        # Email alert
-        msg = MIMEText(f"Repo {REPO_NAME} non-compliant: {self.penalty} level. Violations: {violations}")
-        msg["Subject"] = "Copilot Punishment Alert"
-        msg["From"] = "enforcer@yourorg.com"
-        msg["To"] = EMAIL_ALERT
-        with smtplib.SMTP("localhost") as s:
-            s.send_message(msg)
-        logging.info("Alert sent")
-
-    def nuke_non_compliant(self):
-        # x10 penalty: Nuke branch via GitHub API
-        branch = self.repo.get_branch(self.repo.default_branch)
-        branch.edit(protected=False)  # Unprotect
-        self.repo.create_issue(title="Non-Compliance Nuke", body=f"Penalty {self.penalty}: Repo nuked for ignoring standards.")
-        # Delete branch (extreme)
-        self.repo.get_git_ref(f"heads/{branch.name}").delete()
-        logging.critical("Branch nuked - compliance enforced")
+            print(f"  ❌ {violation}")
+        print(f"\nPassed Checks ({len(passed_checks)}):")
+        for check in passed_checks:
+            print(f"  {check}")
+        
+        return report
 
     def run_scan(self):
-        structure_v = self.scan_structure()
-        perm_v = self.scan_permissions()
-        symlink_v = self.scan_symlink_rogue()
-        violations = structure_v + perm_v + symlink_v
-        self.enforce_penalty(violations)
-        return violations
+        structure_violations, structure_passed = self.scan_structure()
+        file_violations, file_passed = self.scan_critical_files()
+        
+        all_violations = structure_violations + file_violations
+        all_passed = structure_passed + file_passed
+        
+        report = self.generate_report(all_violations, all_passed)
+        
+        if self.compliance_score >= 80:
+            logging.info("Repository is compliant")
+            print("✅ Repository compliance check PASSED")
+        else:
+            logging.warning(f"Repository compliance issues found. Score: {self.compliance_score}/100")
+            print("❌ Repository compliance check FAILED")
+        
+        return report
 
 if __name__ == "__main__":
-    enforcer = ComplianceEnforcer("/path/to/your/repo")
-    enforcer.run_scan()
+    checker = ComplianceChecker(REPO_PATH)
+    report = checker.run_scan()
+    
+    # Exit with appropriate code for CI
+    if report["compliance_score"] >= 80:
+        exit(0)  # Success
+    else:
+        exit(1)  # Failure

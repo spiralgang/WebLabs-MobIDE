@@ -13,6 +13,9 @@ dist/
 *.swp
 *.swo
 *~
+*.bak
+*.backup
+*.orig
 
 # Android Studio files
 .gradle/
