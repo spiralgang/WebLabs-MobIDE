@@ -14,10 +14,12 @@ import com.spiralgang.weblabs.utils.PermissionManager
 import com.spiralgang.weblabs.utils.RepositoryDownloader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 
 /**
- * MainActivity - Docker Ubuntu Development Environment Launcher
+ * MainActivity - Android Virtualization Development Environment Launcher
  */
 class MainActivity : AppCompatActivity() {
     
@@ -35,12 +37,38 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        Log.i(TAG, "🚀 Starting WebLabs-MobIDE with Docker Ubuntu environment")
+        Log.i(TAG, "🚀 Starting WebLabs-MobIDE with virtualized Ubuntu environment")
         
         // Initialize managers
         permissionManager = PermissionManager(this)
         repositoryDownloader = RepositoryDownloader(this) 
         dockerManager = DockerManager(this)
+
+        activityScope.launch {
+            dockerManager.telemetry.collectLatest { event ->
+                when (event) {
+                    is DockerManager.VirtualizationEvent.Info -> {
+                        Log.i(TAG, "Telemetry: ${event.message}")
+                    }
+
+                    is DockerManager.VirtualizationEvent.Warning -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            event.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    is DockerManager.VirtualizationEvent.Error -> {
+                        Toast.makeText(
+                            this@MainActivity,
+                            event.message,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+        }
         
         // Setup WebView
         setupWebView()
@@ -63,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                 allowContentAccess = true
                 allowFileAccessFromFileURLs = true
                 allowUniversalAccessFromFileURLs = true
-                userAgentString = "WebLabs-MobIDE/2.0-Docker"
+                userAgentString = "WebLabs-MobIDE/2.1-Virtualized"
             }
             
             webViewClient = object : WebViewClient() {
@@ -93,10 +121,10 @@ class MainActivity : AppCompatActivity() {
     
     private suspend fun initializeEnvironment() {
         try {
-            val dockerSuccess = dockerManager.initializeDocker()
-            
-            if (dockerSuccess) {
-                showDockerInterface()
+            val virtualizationReady = dockerManager.initializeDocker()
+
+            if (virtualizationReady) {
+                showVirtualInterface()
             } else {
                 showLocalInterface()
             }
@@ -172,7 +200,7 @@ class MainActivity : AppCompatActivity() {
                 <div class="logo">🚀 WebLabs-MobIDE</div>
                 <div>Mobile-First Quantum Development Environment</div>
                 
-                <div class="feature">🐳 Docker Ubuntu 24.04 ARM64</div>
+                <div class="feature">🌀 Virtualized Ubuntu 24.04 Workspace</div>
                 <div class="feature">⚡ Code-Server IDE</div>
                 <div class="feature">🤖 AI Integration</div>
                 <div class="feature">📱 Mobile Optimized</div>
@@ -190,7 +218,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     
-    private fun showDockerInterface() {
+    private fun showVirtualInterface() {
         runOnUiThread {
             val html = """
                 <!DOCTYPE html>
@@ -233,12 +261,12 @@ class MainActivity : AppCompatActivity() {
                     </style>
                 </head>
                 <body>
-                    <div class="header">🐳 Docker Environment Ready</div>
-                    
+                    <div class="header">🌀 Virtual Environment Ready</div>
+
                     <div class="status">
-                        <h3>✅ Ubuntu 24.04 ARM64 Container</h3>
+                        <h3>✅ Ubuntu 24.04 (proot-distro)</h3>
                         <p>Code-Server IDE accessible at localhost:8080</p>
-                        <p>Docker container is running and ready for development</p>
+                        <p>Userspace virtualization is running and ready for development</p>
                     </div>
                     
                     <button class="button" onclick="location.href='http://localhost:8080'">
@@ -278,11 +306,11 @@ class MainActivity : AppCompatActivity() {
                     else -> "Unknown command: $command"
                 }
                 runOnUiThread {
-                    Toast.makeText(this@MainActivity, "Docker: $result", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Virtualization: $result", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 runOnUiThread {
-                    Toast.makeText(this@MainActivity, "Docker error: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, "Virtualization error: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -300,5 +328,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         dockerManager.cleanup()
+        activityScope.cancel()
     }
 }
