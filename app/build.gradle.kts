@@ -61,6 +61,12 @@ dependencies {
     testImplementation("androidx.test:core:1.5.0")
     testImplementation("org.robolectric:robolectric:4.11.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
@@ -85,4 +91,7 @@ tasks.register("validateDockerApp") {
 // Make assembleDebug depend on our validation
 tasks.matching { it.name == "assembleDebug" }.configureEach {
     dependsOn("validateDockerApp")
+// Make assembleDebug depend on our validation when the variant exists
+afterEvaluate {
+    tasks.findByName("assembleDebug")?.dependsOn("validateDockerApp")
 }
