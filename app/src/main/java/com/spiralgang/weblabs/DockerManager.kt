@@ -39,6 +39,7 @@ class DockerManager(private val context: Context) {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val telemetryFlow = MutableSharedFlow<VirtualizationEvent>(replay = 0, extraBufferCapacity = 16)
     private var activeDistroAlias: String? = null
+    private val workspaceDir = File(context.filesDir, "workspace")
 
     sealed class VirtualizationEvent(val message: String, val throwable: Throwable? = null) {
         class Info(message: String) : VirtualizationEvent(message)
@@ -164,7 +165,6 @@ class DockerManager(private val context: Context) {
     private suspend fun provisionDistro(): Boolean {
         val alias = activeDistroAlias ?: return false
 
-        val workspaceDir = File(context.filesDir, "workspace")
         if (!workspaceDir.exists()) {
             workspaceDir.mkdirs()
         }
@@ -230,13 +230,8 @@ class DockerManager(private val context: Context) {
         """.trimIndent()
 
         val result = executeHostCommand(
-            listOf(
-                "proot-distro",
-                "login",
+            buildLoginCommand(
                 alias,
-                "--shared-tmp",
-                "--termux-home",
-                "--",
                 "bash",
                 "-lc",
                 setupScript
@@ -262,13 +257,8 @@ class DockerManager(private val context: Context) {
         stopContainer()
 
         val startResult = executeHostCommand(
-            listOf(
-                "proot-distro",
-                "login",
+            buildLoginCommand(
                 alias,
-                "--shared-tmp",
-                "--termux-home",
-                "--",
                 "bash",
                 "-lc",
                 "$START_SCRIPT start"
@@ -373,13 +363,8 @@ class DockerManager(private val context: Context) {
     suspend fun executeCommand(command: String): String = withContext(Dispatchers.IO) {
         val alias = activeDistroAlias ?: throw IllegalStateException("Virtual environment not initialized")
         val result = executeHostCommand(
-            listOf(
-                "proot-distro",
-                "login",
+            buildLoginCommand(
                 alias,
-                "--shared-tmp",
-                "--termux-home",
-                "--",
                 "bash",
                 "-lc",
                 "cd $WORKSPACE_DIR && $command"
@@ -431,13 +416,8 @@ class DockerManager(private val context: Context) {
 
         val alias = activeDistroAlias ?: return@withContext "Not provisioned"
         val result = executeHostCommand(
-            listOf(
-                "proot-distro",
-                "login",
+            buildLoginCommand(
                 alias,
-                "--shared-tmp",
-                "--termux-home",
-                "--",
                 "bash",
                 "-lc",
                 "$START_SCRIPT status"
@@ -465,13 +445,8 @@ class DockerManager(private val context: Context) {
     suspend fun stopContainer(): Boolean = withContext(Dispatchers.IO) {
         val alias = activeDistroAlias ?: return@withContext true
         val result = executeHostCommand(
-            listOf(
-                "proot-distro",
-                "login",
+            buildLoginCommand(
                 alias,
-                "--shared-tmp",
-                "--termux-home",
-                "--",
                 "bash",
                 "-lc",
                 "$START_SCRIPT stop"
@@ -541,4 +516,20 @@ class DockerManager(private val context: Context) {
         val stdout: String,
         val stderr: String
     )
+
+    private fun buildLoginCommand(alias: String, vararg command: String): List<String> {
+        workspaceDir.mkdirs()
+        val base = mutableListOf(
+            "proot-distro",
+            "login",
+            alias,
+            "--shared-tmp",
+            "--termux-home",
+            "--bind",
+            "${workspaceDir.absolutePath}:$WORKSPACE_DIR",
+            "--"
+        )
+        base.addAll(command)
+        return base
+    }
 }
