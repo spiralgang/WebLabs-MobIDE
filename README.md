@@ -27,15 +27,17 @@ The WebLabs-MobIDE Docker Ubuntu environment is fully implemented and ready to b
 - ✅ **Docker Ubuntu 24.04 Environment**: Complete implementation
 - ✅ **Code-Server Integration**: Web IDE ready
 - ✅ **Android App Architecture**: All Kotlin source files ready
-- ✅ **Build Configuration**: Android Gradle Plugin 8.2.0 + Kotlin 1.9.22
 - ⏳ **Network Access**: Requires domains to be added to allowlist
 
 ### 🌐 **Required Domains for APK Build:**
-The following domains need to be added to the repository allowlist for successful APK builds:
+The Actions runner must be able to reach every dependency host so the release workflow can complete. See the [GitHub Actions network allowlist guide](docs/operations/actions-network-allowlist.md) for step-by-step configuration, including API automation options. At a minimum, permit outbound connections to:
 - `dl.google.com` (Android SDK/tools)
 - `maven.google.com` (Android dependencies)
 - `repo1.maven.org` (Maven Central)
-- `services.gradle.org` (Gradle)
+- `services.gradle.org` (Gradle tooling used only during the CI build)
+- `github.com` / `objects.githubusercontent.com` (source checkout and release uploads)
+- `actions.githubusercontent.com` (token exchange for GitHub Actions marketplace steps)
+- `storage.googleapis.com` (Android build tool mirrors)
 
 ### 📦 **How to Get APK Once Network Access is Resolved:**
 
@@ -47,6 +49,16 @@ The following domains need to be added to the repository allowlist for successfu
 1. GitHub Actions will automatically build APK on push
 2. APK will be available in GitHub Releases
 3. Direct download links will be active
+
+## 📦 Releases
+
+Review comprehensive release notes and download links for the production Android package in the [WebLabs-MobIDE Linux Environment v1.0.0 release document](docs/releases/weblabs-mobide-linux-env.md).
+
+- **Direct APK download:** https://github.com/WebLabs-MobIDE/WebLabs-MobIDE/releases/download/v1.0.0/WebLabs-MobIDE-LinuxEnv.apk
+- **Release overview:** https://github.com/WebLabs-MobIDE/WebLabs-MobIDE/releases/tag/v1.0.0
+- **Automated release workflow:** [.github/workflows/production-release-apk.yml](.github/workflows/production-release-apk.yml)
+
+Attach the signed APK to the GitHub release using the filename `WebLabs-MobIDE-LinuxEnv.apk` to keep the direct link active and ensure users always have access to the latest build with every documented feature enabled. The production workflow above signs and publishes the APK automatically whenever a semantic version tag (for example `v1.0.1`) is pushed. The uploaded artifact contains only the runtime required to launch WebLabs-MobIDE—no Gradle wrapper, caches, or auxiliary build tooling are bundled inside the release package.
 
 ### 🎯 **PRODUCTION READY - Virtual Linux Development Environment**
 
@@ -126,9 +138,9 @@ The following domains need to be added to the repository allowlist for successfu
 - Mobile-optimized request batching
 
 ### 🚀 ARM64 Deployment Manager
-- Production build configuration for ARM64
+- Production build configuration for ARM64 (applied during CI)
 - Android manifest generation with security features
-- Gradle build script with optimization settings
+- Release pipeline optimisation steps that keep the shipped APK free of Gradle tooling
 - Market deployment to Play Store, Galaxy Store, Amazon
 - Environment validation and signing key management
 
