@@ -71,27 +71,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
 
-// Custom validation task (in addition to actual Android build)
-tasks.register("validateDockerApp") {
-    group = "verification"
-    description = "Validate WebLabs-MobIDE Docker Ubuntu app configuration"
-    
-    doLast {
-        println("📱 WebLabs-MobIDE Docker Ubuntu Environment APK")
-        println("==================================================")
-        println("✅ Production APK build configuration active")
-        println("✅ Docker Ubuntu 24.04 ARM64 environment")
-        println("✅ Code-Server web IDE integration")
-        println("✅ ARM64 Android 10+ optimization")
-        println("")
-        println("🚀 Ready to build actual production APK!")
-    }
-}
+// Build-time validation happens within CI workflows; keeping this
+// module free from auxiliary Gradle tasks ensures the shipped APK
+// does not include build-system artefacts.
 
-// Make assembleDebug depend on our validation
-tasks.matching { it.name == "assembleDebug" }.configureEach {
-    dependsOn("validateDockerApp")
-// Make assembleDebug depend on our validation when the variant exists
-afterEvaluate {
-    tasks.findByName("assembleDebug")?.dependsOn("validateDockerApp")
-}
