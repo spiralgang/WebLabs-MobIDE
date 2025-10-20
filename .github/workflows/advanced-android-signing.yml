@@ -12,8 +12,6 @@ permissions:
 env:
   APK_BUILD_PATH: app/build/outputs/apk/release/app-release.apk
   ZIPALIGNED_APK: app/build/outputs/apk/release/app-release-aligned.apk
-  SIGNED_APK_PLATFORM: app/build/outputs/apk/release/app-release-signed-platform.apk
-  SIGNED_APK_USER: app/build/outputs/apk/release/app-release-signed-user.apk
   SIGNED_APK_FINAL: app/build/outputs/apk/release/app-release-signed-final.apk
 
 jobs:
@@ -159,7 +157,7 @@ jobs:
           ZIPALIGN_BIN="${ANDROID_HOME:-$ANDROID_SDK_ROOT}/build-tools/34.0.0/zipalign"
           "$ZIPALIGN_BIN" -v -p 4 "${{ env.APK_BUILD_PATH }}" "${{ env.ZIPALIGNED_APK }}"
 
-      - name: Sign with platform keystore
+      - name: Sign with platform and user keystores
         shell: bash
         run: |
           set -euo pipefail
@@ -169,23 +167,14 @@ jobs:
             --ks-key-alias platform \
             --ks-pass pass:${{ steps.validate_secrets.outputs.storepass_platform }} \
             --key-pass pass:${{ steps.validate_secrets.outputs.keypass_platform }} \
-            --out "${{ env.SIGNED_APK_PLATFORM }}" \
-            "${{ env.ZIPALIGNED_APK }}"
-          "$APK_SIGNER_BIN" verify --verbose "${{ env.SIGNED_APK_PLATFORM }}"
-
-      - name: Sign with user keystore
-        shell: bash
-        run: |
-          set -euo pipefail
-          APK_SIGNER_BIN="${ANDROID_HOME:-$ANDROID_SDK_ROOT}/build-tools/34.0.0/apksigner"
-          "$APK_SIGNER_BIN" sign \
+            --next-signer \
             --ks user.keystore \
             --ks-key-alias userkey \
             --ks-pass pass:${{ steps.validate_secrets.outputs.storepass_user }} \
             --key-pass pass:${{ steps.validate_secrets.outputs.keypass_user }} \
-            --out "${{ env.SIGNED_APK_USER }}" \
-            "${{ env.SIGNED_APK_PLATFORM }}"
-          "$APK_SIGNER_BIN" verify --verbose "${{ env.SIGNED_APK_USER }}"
+            --out "${{ env.SIGNED_APK_FINAL }}" \
+            "${{ env.ZIPALIGNED_APK }}"
+          "$APK_SIGNER_BIN" verify --verbose "${{ env.SIGNED_APK_FINAL }}"
 
       - name: Collect chain of trust
         shell: bash
@@ -194,7 +183,6 @@ jobs:
           cat "${{ steps.root_ca.outputs.cert }}" "${{ steps.intermediate_ca.outputs.cert }}" > trust-chain.pem
           cp "${{ steps.root_ca.outputs.cert }}" ca-root.pem
           cp "${{ steps.intermediate_ca.outputs.cert }}" ca-intermediate.pem
-          mv "${{ env.SIGNED_APK_USER }}" "${{ env.SIGNED_APK_FINAL }}"
           sha256sum "${{ env.SIGNED_APK_FINAL }}" > "${{ env.SIGNED_APK_FINAL }}.sha256"
 
       - name: Upload artifacts
@@ -217,9 +205,7 @@ jobs:
           name: mobide-ca-audit
           retention-days: 30
           path: |
-            ${{ steps.root_ca.outputs.key }}
             ${{ steps.root_ca.outputs.cert }}
-            ${{ steps.intermediate_ca.outputs.key }}
             ${{ steps.intermediate_ca.outputs.cert }}
             intermediate-ca.ext
             intermediate-ca.csr.pem
