@@ -1,0 +1,211 @@
+name: Advanced Android Signing Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  APK_BUILD_PATH: app/build/outputs/apk/release/app-release.apk
+  ZIPALIGNED_APK: app/build/outputs/apk/release/app-release-aligned.apk
+  SIGNED_APK_FINAL: app/build/outputs/apk/release/app-release-signed-final.apk
+
+jobs:
+  build-and-sign:
+    name: Build, Align, and Sign APK with Multi-tier CA
+    runs-on: ubuntu-latest
+    env:
+      PLATFORM_STORE_PASS: ${{ secrets.PLATFORM_STORE_PASS }}
+      PLATFORM_KEY_PASS: ${{ secrets.PLATFORM_KEY_PASS }}
+      USER_STORE_PASS: ${{ secrets.USER_STORE_PASS }}
+      USER_KEY_PASS: ${{ secrets.USER_KEY_PASS }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install Android SDK and platform tools
+        uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            platforms;android-34
+            build-tools;34.0.0
+
+      - name: Install required native tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends openssl tar unzip
+
+      - name: Ensure signing secret defaults
+        id: validate_secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          for var in PLATFORM_STORE_PASS PLATFORM_KEY_PASS USER_STORE_PASS USER_KEY_PASS; do
+            if [[ -z "${!var:-}" ]]; then
+              missing+=("$var")
+            fi
+          done
+          if (( ${#missing[@]} )); then
+            printf '::error::Missing required signing secrets: %s\n' "${missing[*]}"
+            exit 1
+          fi
+          echo "storepass_platform=$PLATFORM_STORE_PASS" >> "$GITHUB_OUTPUT"
+          echo "keypass_platform=$PLATFORM_KEY_PASS" >> "$GITHUB_OUTPUT"
+          echo "storepass_user=$USER_STORE_PASS" >> "$GITHUB_OUTPUT"
+          echo "keypass_user=$USER_KEY_PASS" >> "$GITHUB_OUTPUT"
+
+      - name: Generate Root CA keypair
+        id: root_ca
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          ROOT_CA_KEY=root-ca.key.pem
+          ROOT_CA_CERT=root-ca.cert.pem
+          openssl req \
+            -new \
+            -x509 \
+            -days 1825 \
+            -extensions v3_ca \
+            -keyout "$ROOT_CA_KEY" \
+            -out "$ROOT_CA_CERT" \
+            -nodes \
+            -subj "/CN=MobIDE Root CA/O=WebLabs Security/C=US"
+          ls -l "$ROOT_CA_KEY" "$ROOT_CA_CERT"
+          echo "key=$ROOT_CA_KEY" >> "$GITHUB_OUTPUT"
+          echo "cert=$ROOT_CA_CERT" >> "$GITHUB_OUTPUT"
+
+      - name: Generate Intermediate CA signed by Root CA
+        id: intermediate_ca
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          INTERMEDIATE_KEY=intermediate-ca.key.pem
+          INTERMEDIATE_CSR=intermediate-ca.csr.pem
+          INTERMEDIATE_CERT=intermediate-ca.cert.pem
+          openssl genrsa -out "$INTERMEDIATE_KEY" 4096
+          openssl req \
+            -new \
+            -key "$INTERMEDIATE_KEY" \
+            -out "$INTERMEDIATE_CSR" \
+            -subj "/CN=MobIDE Intermediate CA/O=WebLabs Security/C=US"
+          printf 'basicConstraints=CA:TRUE,pathlen:0\nkeyUsage=critical,digitalSignature,keyCertSign\nsubjectKeyIdentifier=hash\nauthorityKeyIdentifier=keyid:always,issuer:always\n' > intermediate-ca.ext
+          openssl x509 \
+            -req \
+            -in "$INTERMEDIATE_CSR" \
+            -CA "${{ steps.root_ca.outputs.cert }}" \
+            -CAkey "${{ steps.root_ca.outputs.key }}" \
+            -CAcreateserial \
+            -out "$INTERMEDIATE_CERT" \
+            -days 1095 \
+            -sha256 \
+            -extfile intermediate-ca.ext
+          ls -l "$INTERMEDIATE_KEY" "$INTERMEDIATE_CERT"
+          echo "key=$INTERMEDIATE_KEY" >> "$GITHUB_OUTPUT"
+          echo "cert=$INTERMEDIATE_CERT" >> "$GITHUB_OUTPUT"
+
+      - name: Build keystores for platform and user signing
+        id: keystores
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          keytool -genkeypair \
+            -alias platform \
+            -keyalg RSA \
+            -keysize 4096 \
+            -validity 1000 \
+            -keystore platform.keystore \
+            -storepass "${{ steps.validate_secrets.outputs.storepass_platform }}" \
+            -keypass "${{ steps.validate_secrets.outputs.keypass_platform }}" \
+            -dname "CN=MobIDE Platform Signing,O=WebLabs Security,C=US"
+
+          keytool -genkeypair \
+            -alias userkey \
+            -keyalg RSA \
+            -keysize 3072 \
+            -validity 1000 \
+            -keystore user.keystore \
+            -storepass "${{ steps.validate_secrets.outputs.storepass_user }}" \
+            -keypass "${{ steps.validate_secrets.outputs.keypass_user }}" \
+            -dname "CN=MobIDE User Signing,O=WebLabs Security,C=US"
+
+          ls -l platform.keystore user.keystore
+
+      - name: Prepare Gradle
+        run: chmod +x gradlew
+
+      - name: Build release APK
+        run: ./gradlew assembleRelease --stacktrace --no-daemon
+
+      - name: Zipalign APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          ZIPALIGN_BIN="${ANDROID_HOME:-$ANDROID_SDK_ROOT}/build-tools/34.0.0/zipalign"
+          "$ZIPALIGN_BIN" -v -p 4 "${{ env.APK_BUILD_PATH }}" "${{ env.ZIPALIGNED_APK }}"
+
+      - name: Sign with platform and user keystores
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK_SIGNER_BIN="${ANDROID_HOME:-$ANDROID_SDK_ROOT}/build-tools/34.0.0/apksigner"
+          "$APK_SIGNER_BIN" sign \
+            --ks platform.keystore \
+            --ks-key-alias platform \
+            --ks-pass pass:${{ steps.validate_secrets.outputs.storepass_platform }} \
+            --key-pass pass:${{ steps.validate_secrets.outputs.keypass_platform }} \
+            --next-signer \
+            --ks user.keystore \
+            --ks-key-alias userkey \
+            --ks-pass pass:${{ steps.validate_secrets.outputs.storepass_user }} \
+            --key-pass pass:${{ steps.validate_secrets.outputs.keypass_user }} \
+            --out "${{ env.SIGNED_APK_FINAL }}" \
+            "${{ env.ZIPALIGNED_APK }}"
+          "$APK_SIGNER_BIN" verify --verbose "${{ env.SIGNED_APK_FINAL }}"
+
+      - name: Collect chain of trust
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat "${{ steps.root_ca.outputs.cert }}" "${{ steps.intermediate_ca.outputs.cert }}" > trust-chain.pem
+          cp "${{ steps.root_ca.outputs.cert }}" ca-root.pem
+          cp "${{ steps.intermediate_ca.outputs.cert }}" ca-intermediate.pem
+          sha256sum "${{ env.SIGNED_APK_FINAL }}" > "${{ env.SIGNED_APK_FINAL }}.sha256"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobide-signed-apk-bundle
+          retention-days: 30
+          path: |
+            ${{ env.SIGNED_APK_FINAL }}
+            ${{ env.SIGNED_APK_FINAL }}.sha256
+            trust-chain.pem
+            ca-root.pem
+            ca-intermediate.pem
+            platform.keystore
+            user.keystore
+
+      - name: Upload CA outputs for auditing
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobide-ca-audit
+          retention-days: 30
+          path: |
+            ${{ steps.root_ca.outputs.cert }}
+            ${{ steps.intermediate_ca.outputs.cert }}
+            intermediate-ca.ext
+            intermediate-ca.csr.pem
