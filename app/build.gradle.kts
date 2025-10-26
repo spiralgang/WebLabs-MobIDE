@@ -75,3 +75,12 @@ dependencies {
 // module free from auxiliary Gradle tasks ensures the shipped APK
 // does not include build-system artefacts.
 
+// Make assembleDebug depend on our validation
+tasks.matching { it.name == "assembleDebug" }.configureEach {
+    dependsOn("validateDockerApp")
+}
+
+// Make assembleDebug depend on our validation when the variant exists
+afterEvaluate {
+    tasks.findByName("assembleDebug")?.dependsOn("validateDockerApp")
+}
