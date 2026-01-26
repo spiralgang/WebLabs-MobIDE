@@ -1,0 +1,290 @@
+name: "Sourcery AI Code Review"
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - feature/*
+      - bugfix/*
+    tags:
+      - v*
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  issue_comment:
+    types: [created]
+  issues:
+    types: [opened, edited, labeled]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode (review, refactor, scan, teach, integrate)'
+        required: true
+        default: 'review'
+      target:
+        description: 'Target file or PR number'
+        required: false
+  schedule:
+    - cron: '0 2 * * *'  # Daily 2AM code review patrol
+    - cron: '*/6 * * * *'  # Every 6 minutes for agentic monitoring
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  checks: write
+  statuses: write
+  id-token: write
+
+env:
+  SOURCERY_API_KEY: ${{ secrets.SOURCERY_API_KEY }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  REPO_NAME: ${{ github.repository }}
+  REPO_OWNER: ${{ github.repository_owner }}
+  QUANTUM_SIG: "$(date +%s | sha256sum | head -c 8)"  # Dynamic quantum signature
+  NEON_MODE: true  # Enable neon logging flair
+  AGENTIC_LEVEL: high  # Agentic behavior: low/med/high - high for self-learning
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  initialize_quantum_core:
+    runs-on: ubuntu-latest
+    outputs:
+      quantum_state: ${{ steps.state.outputs.state }}
+      dynamic_matrix: ${{ steps.matrix.outputs.matrix }}
+      # FIXED: Export the env var as a job output so downstream jobs can check it
+      agentic_level: ${{ steps.export_config.outputs.level }}
+    steps:
+      - name: Checkout Repo for Initial Analysis
+        uses: actions/checkout@v4
+
+      # FIXED: Added this step to capture the ENV variable for job-level logic
+      - name: Export Workflow Configuration
+        id: export_config
+        run: echo "level=${{ env.AGENTIC_LEVEL }}" >> $GITHUB_OUTPUT
+
+      - name: Set Up Python for Quantum Initialization
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Quantum Dependencies
+        run: |
+          pip install requests pyyaml sourcery-cli  # For Sourcery integration
+          pip install pygithub  # For GitHub API interactions
+          pip install termcolor  # For neon logging
+
+      - name: Generate Quantum State Signature
+        id: state
+        run: |
+          state=$(python -c "import random; print(''.join(random.choices('0123456789ABCDEF', k=16)))")
+          echo "state=$state" >> $GITHUB_OUTPUT
+
+      - name: Build Dynamic Job Matrix Agentically
+        id: matrix
+        run: |
+          matrix=$(python <<EOF
+          import json
+          import os
+          import random
+          # Agentic logic to build matrix based on repo files
+          files = os.listdir('.')
+          branches = ['main', 'develop'] if random.choice([True, False]) else ['main']
+          modes = ['review', 'refactor'] if os.getenv('AGENTIC_LEVEL') == 'high' else ['review']
+          matrix = {
+            'include': [
+              {'branch': branch, 'mode': mode, 'file': file}
+              for branch in branches
+              for mode in modes
+              for file in files if file.endswith('.html') or file.endswith('.js')
+            ]
+          }
+          print(json.dumps(matrix))
+          EOF
+          )
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+
+      - name: Log Quantum Initialization
+        run: echo "Quantum Core Initialized with State ${{ steps.state.outputs.state }}"
+
+  triage_issues:
+    runs-on: ubuntu-latest
+    needs: initialize_quantum_core
+    if: github.event_name == 'issues' || github.event_name == 'issue_comment'
+    steps:
+      - name: Checkout Repo for Issue Triage
+        uses: actions/checkout@v4
+
+      - name: Set Up Sourcery CLI
+        run: pip install sourcery-cli
+
+      - name: Configure Sourcery API
+        run: sourcery login --token ${{ env.SOURCERY_API_KEY }}
+
+      - name: Triage Issue with Sourcery AI
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          issue_title="$ISSUE_TITLE"
+          issue_body="$ISSUE_BODY"
+          response=$(sourcery review --prompt "Analyze this issue: Title: $issue_title Body: $issue_body. Suggest labels, priority, and actions." --file "dummy.py" || echo "Sourcery triage fallback")
+          echo "Sourcery Triage Response: $response"
+          gh issue comment ${{ github.event.issue.number }} --body "Sourcery AI Triage: $response"
+
+      - name: Agentic Label Application
+        if: ${{ github.event_name == 'issues' && github.event.action == 'opened' }}
+        run: |
+          labels=$(echo "$response" | grep -oE "Labels: [a-z, ]+" | cut -d':' -f2 | tr -d ' ')
+          if [ -n "$labels" ]; then
+            gh issue edit ${{ github.event.issue.number }} --add-label "$labels"
+          fi
+
+      - name: Neon Log Issue Triage
+        run: echo -e "\033[1;35mIssue ${{ github.event.issue.number }} Triaged with AI Force!${RESET}"
+
+  code_review_pr:
+    runs-on: ubuntu-latest
+    needs: initialize_quantum_core
+    if: github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize')
+    strategy:
+      matrix: ${{fromJson(needs.initialize_quantum_core.outputs.dynamic_matrix)}}
+    steps:
+      - name: Checkout Repo for PR Review
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+
+      - name: Set Up Sourcery CLI
+        run: pip install sourcery-cli
+
+      - name: Configure Sourcery API
+        run: sourcery login --token ${{ env.SOURCERY_API_KEY }}
+
+      - name: Run Sourcery Code Review
+        run: |
+          pr_number=${{ github.event.pull_request.number }}
+          sourcery review --pr $pr_number --repo . --github-token ${{ env.GITHUB_TOKEN }}
+
+      - name: Agentic PR Comment and Label
+        run: |
+          # Simulated agentic logic - parse Sourcery output (assume it's in a file)
+          if [ -f "sourcery_review.txt" ]; then
+            score=$(cat sourcery_review.txt | grep -oE "Score: [0-10]" | cut -d':' -f2 | tr -d ' ')
+            if [ "$score" -lt 5 ]; then
+              gh pr edit $pr_number --add-label "needs-refactor"
+              gh pr comment $pr_number --body "Sourcery AI flagged low quality (score $score/10). Reaver demands upgrades!"
+            fi
+          fi
+
+      - name: Neon Log PR Review
+        run: echo -e "\033[1;32mPR ${{ github.event.pull_request.number }} Reviewed with AI Domination!${RESET}"
+
+  refactor_code:
+    runs-on: ubuntu-latest
+    needs: code_review_pr
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'refactor' }}
+    steps:
+      - name: Checkout Repo for Code Refactor
+        uses: actions/checkout@v4
+
+      - name: Set Up Sourcery CLI
+        run: pip install sourcery-cli
+
+      - name: Configure Sourcery API
+        run: sourcery login --token ${{ env.SOURCERY_API_KEY }}
+
+      - name: Refactor Code with Sourcery AI
+        run: |
+          file="${{ github.event.inputs.file }}"
+          if [ ! -f "$file" ]; then echo "File $file not found!"; exit 1; fi
+          sourcery refactor "$file" --instructions "${{ github.event.inputs.instructions }}" --apply
+          git add "$file"
+          git commit -m "Sourcery AI Refactored: $file - ${{ github.event.inputs.instructions }}"
+          git push
+
+      - name: Neon Log Code Refactor
+        run: echo -e "\033[1;35mCode Refactored and Pimped for ${{ github.event.inputs.file }}!${RESET}"
+
+  security_scan:
+    runs-on: ubuntu-latest
+    needs: initialize_quantum_core
+    steps:
+      - name: Checkout Repo for Security Scan
+        uses: actions/checkout@v4
+
+      - name: Set Up Sourcery CLI
+        run: pip install sourcery-cli
+
+      - name: Configure Sourcery API
+        run: sourcery login --token ${{ env.SOURCERY_API_KEY }}
+
+      - name: Run Sourcery Security Scan
+        run: sourcery scan .
+
+      - name: Agentic Security Fixes
+        run: |
+          if [ -f "sourcery_security_report.txt" ]; then
+            issues=$(cat sourcery_security_report.txt | grep -c "CRITICAL")
+            if [ "$issues" -gt 0 ]; then
+              gh issue create --title "Sourcery Security Alert: $issues Critical Issues" --body "Fix immediately!"
+            fi
+          fi
+
+      - name: Neon Log Security Scan
+        run: echo -e "\033[1;31mSecurity Scan Enforced - Vulnerabilities Reaved!${RESET}"
+
+  self_optimize_workflow:
+    runs-on: ubuntu-latest
+    # FIXED: Added initialize_quantum_core to needs so we can access its outputs
+    needs: [security_scan, initialize_quantum_core]
+    # FIXED: Checking the 'needs' output instead of the 'env' context
+    if: ${{ needs.initialize_quantum_core.outputs.agentic_level == 'high' }}
+    steps:
+      - name: Checkout Repo for Self-Optimization
+        uses: actions/checkout@v4
+
+      - name: Set Up Python for Workflow Optimization
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install AI Optimization Tools
+        run: pip install openai pyyaml sourcery-cli
+
+      - name: Agentic Workflow Self-Review
+        run: |
+          workflow_content=$(cat .github/workflows/sourcery-bot-workflow.yml)
+          prompt="Review this GitHub Workflow YAML: \n$workflow_content\nSuggest optimizations, bug fixes, and efficiency improvements. Output updated YAML."
+          updated_yaml=$(python -c "
+          from openai import OpenAI
+          client = OpenAI(api_key='${{ env.SOURCERY_API_KEY }}', base_url='$API_URL')
+          completion = client.chat.completions.create(model='sourcery-pro', messages=[{'role': 'user', 'content': '$prompt'}])
+          print(completion.choices[0].message.content)
+          ")
+          echo "$updated_yaml" > .github/workflows/sourcery-bot-workflow.yml
+          git add .github/workflows/sourcery-bot-workflow.yml
+          git commit -m "Agentic Self-Optimization by Sourcery AI - Quantum Evolution"
+          git push
+
+      - name: Neon Log Self-Optimization
+        run: echo -e "\033[1;35mWorkflow Self-Pimped by AI Domination!${RESET}"
+
+  cleanup_quantum_residue:
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Purge Artifacts and Caches
+        run: |
+          gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts | jq '.artifacts[] | .id' | while read id; do
+            gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/artifacts/$id
+          done
+          gh api repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches | jq '.actions_caches[] | .id' | while read id; do
+            gh api -X DELETE repos/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}/actions/caches/$id
+          done
+      - name: Neon Log Cleanup
+        run: echo -e "\033[1;31mQuantum Residue Purged - Reaver Reigns Supreme!${RESET}"
+
