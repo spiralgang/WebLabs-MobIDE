@@ -1,1 +1,0 @@
-# Dockerfile content as per updated compliance
