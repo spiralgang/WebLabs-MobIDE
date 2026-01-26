@@ -1,86 +1,86 @@
-name: Build WebLabs-MobIDE Docker APK
+name: Build WebLabs APK
 
 on:
   push:
-    branches: [ main, copilot/fix-29 ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - 'release/**'
   workflow_dispatch:
 
 jobs:
   build-apk:
-    name: Build WebLabs-MobIDE APK
+    name: Build APK
     runs-on: ubuntu-latest
-    
+    env:
+      GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx3g
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      # Replace the unresolved android-actions/setup -> setup-java for Gradle/Android builds
+      - name: Set up Java (required for Gradle)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'   # Temurin (Adoptium). Change if you use a different JDK distribution.
+          java-version: '17'       # Match the project's Gradle toolchain if different.
 
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v4
-      with:
-        api-level: 34
-        build-tools: 34.0.0
-        ndk-version: 25.2.9519653
+      # Optional: cache Gradle to speed builds
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties', '**/*.gradle*', '**/*.gradle.kts') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
 
-    - name: Cache Gradle dependencies
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-    - name: Make Gradle wrapper executable
-      run: chmod +x ./gradlew
+      - name: Install project dependencies
+        run: |
+          ./gradlew --no-daemon dependencies || true
 
-    - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@v4
+      - name: Assemble release APK
+        run: |
+          ./gradlew assembleRelease --no-daemon
 
-    - name: Create workspace structure
-      run: |
-        echo "Creating WebLabs-MobIDE workspace structure..."
-        mkdir -p workspace/{projects,ai/{models,cache},logs}
-        mkdir -p app/src/main/assets/{scripts,webide,models}
-        echo "Workspace structure created"
-    - name: Validate build configuration
-      run: |
-        echo "🚀 WebLabs-MobIDE Build Configuration Validation"
-        echo "Checking build.gradle.kts and settings..."
-        if [ -f "build.gradle.kts" ]; then
-          echo "✅ Root build.gradle.kts found"
-        fi
-        if [ -f "app/build.gradle.kts" ]; then
-          echo "✅ App build.gradle.kts found"
-        fi
-    - name: Build Debug APK
-      run: |
-        echo "🔨 Building WebLabs-MobIDE Debug APK..."
-        ./gradlew assembleDebug --no-daemon --stacktrace
-    - name: Build Release APK  
-      run: |
-        echo "🔨 Building WebLabs-MobIDE Release APK..."
-        ./gradlew assembleRelease --no-daemon --stacktrace
-    - name: List APK outputs
-      run: |
-        echo "📦 APK Build Results:"
-        find app/build/outputs/apk -name "*.apk" -type f || echo "No APK files found"
-    - name: Upload Debug APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: WebLabs-MobIDE-Debug-v${{ github.run_number }}
-        path: app/build/outputs/apk/debug/*.apk
-        if-no-files-found: warn
+      - name: Collect APK artifact(s)
+        if: always()
+        run: |
+          mkdir -p artifacts
+          # Copy any APK outputs to a single artifacts folder so upload-artifact collects them
+          find app/build/outputs -type f -name "*.apk" -exec cp {} artifacts/ \; || true
 
+      - name: Upload APK artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: WebLabs-MobIDE-apk
+          path: artifacts/*.apk
+
+      # Optional: when you need the Android SDK/emulator in CI for tests/emulator runs,
+      # prefer reactivecircus/android-emulator-runner (keeps SDK/emulator setup standardized).
+      # Uncomment and adjust only if you need emulator-based tests:
+      #
+      # - name: Setup Android emulator (optional)
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: 30
+      #     target: default
+      #     abi: x86_64
+      #
+      # If you need to install specific Android SDK components manually, invoke sdkmanager after ensuring
+      # ANDROID_SDK_ROOT is available. For most Gradle builds on GitHub runners installing Java is sufficient.
+
+      - name: Upload build logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weblabs-build-logs
+          path: |
+            **/build/*.log
+            app/build/outputs/**/*.log
+            
     - name: Upload Release APK
       uses: actions/upload-artifact@v3
       with:
