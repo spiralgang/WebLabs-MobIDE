@@ -13,25 +13,51 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones disable some SonarQube features
 
-      - name: Install Java
+      - name: Install Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
+      # FIXED: Start the SonarQube Server Container
+      - name: Start SonarQube Server
+        run: |
+          # Start SonarQube Community Edition in the background
+          docker run -d --name sonarqube -p 9000:9000 -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true sonarqube:community
+          
+          echo "Waiting for SonarQube to start..."
+          # Poll until the server is up (usually takes 60-90 seconds)
+          timeout 300 bash -c 'until curl -s http://localhost:9000/api/system/status | grep -q "UP"; do sleep 5; done'
+          echo "SonarQube is UP!"
+
+      # Create a default project and token so the scanner has permissions
+      - name: Configure SonarQube Project
+        run: |
+          # Wait a few more seconds for the API to be fully writable
+          sleep 10
+          # Generate a user token (login: admin, password: admin)
+          curl -u admin:admin -X POST "http://localhost:9000/api/user_tokens/generate?name=ci-token" > token.json
+          token=$(jq -r .token token.json)
+          echo "SONAR_TOKEN=$token" >> $GITHUB_ENV
+
       - name: Download SonarScanner CLI
         run: |
           curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-          unzip sonar-scanner.zip -d $HOME/sonar-scanner
+          unzip -q sonar-scanner.zip -d $HOME/sonar-scanner
           echo "$HOME/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
 
-      - name: Run SonarScanner (local only)
+      # FIXED: Run scanner pointing to port 9000 with the generated token
+      - name: Run SonarScanner
         run: |
-          $HOME/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
-            -Dsonar.projectKey=local-project \
+          sonar-scanner \
+            -Dsonar.projectKey=local-mobide-project \
             -Dsonar.sources=. \
-            -Dsonar.host.url=http://localhost
+            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.login=${{ env.SONAR_TOKEN }} \
+            -Dsonar.scm.disabled=true
 
       - name: Archive scannerwork
         uses: actions/upload-artifact@v4
