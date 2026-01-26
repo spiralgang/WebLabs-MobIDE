@@ -1,13 +1,14 @@
-> **MARKET RELEASE — OFFICIAL PLATFORM SUPPORT**
-> 
-> This repository, build scripts, and documentation are made to be market release ready
->
-> **Supported platforms:**
-> - Ubuntu 24.04 ARM64 (glibc) via Docker
-> - Android 10+ ARM64 devices
-> - Code-Server web IDE
-> 
-> Any features or scripts not covered here are not supported for market release. See /reference/vault for authoritative standards.
+**MARKET RELEASE — OFFICIAL PLATFORM SUPPORT**
+
+This repository, build scripts, and documentation are made to be market release ready.
+
+**Supported platforms:**
+- Ubuntu 24.04 ARM64 (glibc) via Docker
+- Android 10+ ARM64 devices
+- Code-Server web IDE
+
+Any features or scripts not covered here are not supported for market release. See /reference/VAULT for authoritative standards.
+
 # WebLabs-MobIDE — Copilot Coding Standards
 
 ## 1. Repository Structure
@@ -20,10 +21,10 @@ root/
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── java/com/spiralgang/weblabs/
-│   │   │   │   ├── MainActivity.java / .kt
-│   │   │   │   ├── DockerManager.java / .kt
-│   │   │   │   ├── WebIDEActivity.java / .kt
-│   │   │   │   ├── AiManager.java / .kt
+│   │   │   │   ├── MainActivity.kt
+│   │   │   │   ├── DockerManager.kt
+│   │   │   │   ├── WebIDEActivity.kt
+│   │   │   │   ├── AiManager.kt
 │   │   │   ├── res/
 │   │   │   │   ├── layout/activity_main.xml, ide_browser.xml
 │   │   │   │   ├── values/strings.xml, colors.xml, styles.xml
@@ -65,18 +66,18 @@ root/
 
 ## 2. Coding & Documentation Standards
 
-- **Android 10+ Compliance:** All code must target ARM64, minSdkVersion 29+, and use only APIs compatible with Android 10+.
-- **Docker Integration:** Bundle Ubuntu 24.04 ARM64 Docker environment; scripts must set up, manage, and expose the full development environment.
+- **Android 10+ Compliance:** All code must target ARM64, minSdkVersion 29+, and use only APIs compatible with Android 10+. Kotlin preferred for new development.
+- **Docker Integration:** Bundle Ubuntu 24.04 ARM64 Docker environment; scripts must set up, manage, and expose the full development environment with native glibc performance.
 - **Web-Based IDE:** All front-end code (HTML/CSS/JS) must enable browser-based code editing, file management, and terminal emulation via Code-Server.
 - **AI Embedded:** JavaScript/Python interfaces must connect to AI models via HuggingFace or local inference; provide secure key management and error handling.
-- **Security:** Use privileged permissions, enforce proper Android manifest declarations, and follow OWASP mobile security best practices.
-- **Build System:** All Gradle configs must support reproducible, CI/CD-ready builds, APK signing, and GitHub Copilot compatibility.
+- **Security:** Use privileged permissions only where essential, enforce proper Android manifest declarations, and follow OWASP mobile security best practices.
+- **Build System:** All Gradle configs must support reproducible, CI/CD-ready builds (Java 17 Temurin, minification, resource shrinking, dependency caching), APK signing, and GitHub Actions compatibility.
 
 ## 3. Docker Environment Standards
 
 - **Base Image:** Ubuntu 24.04 ARM64 with glibc (NO Alpine Linux or musl)
 - **Containerization:** Docker-based (NO proot virtualization)
-- **Performance:** Native performance without proot overhead
+- **Performance:** Native performance without overhead
 - **IDE:** Code-Server web-based VS Code environment
 - **Tools:** Android SDK, NDK, Python 3, Node.js, build tools
 - **GitHub Copilot:** Full compatibility with standard Ubuntu environment
@@ -84,16 +85,16 @@ root/
 ## 4. Copilot Behavior
 
 - **Format all new code, refactors, and docs to match above repo structure.**
-- **Use Docker and Ubuntu 24.04 ARM64 instead of Alpine Linux or proot.**
+- **Use Docker and Ubuntu 24.04 ARM64 exclusively.**
 - **Validate and lint code for Android, Linux, and AI integration.**
 - **Never create "example" or stub code: always generate production-ready, runnable code only.**
 - **Document every module and script with concise, context-relevant rationale.**
-- **Reference all foundational standards in /reference/vault, never duplicate.**
+- **Reference all foundational standards in /reference/VAULT, never duplicate.**
 - **Audit every change for directory and permission correctness.**
 
 ## 5. Reference Vault
 
-- All foundational standards, external docs, and best practices are summarized and linked in `/reference/vault`.
+- All foundational standards, external docs, and best practices are summarized and linked in `/reference/VAULT`.
 - All audit, compliance, and rationale must be traceable to the vault.
 
 ---
@@ -106,11 +107,12 @@ root/
 
 ## References
 
-- `/reference/vault`
+- `/reference/VAULT`
 - [Android Studio Project Structure](https://developer.android.com/studio/projects)
 - [Android Manifest Permissions](https://developer.android.com/guide/topics/manifest/permission-element)
 - [OWASP Mobile Security](https://owasp.org/www-project-mobile-security/)
 - [Docker Documentation](https://docs.docker.com/)
 - [Ubuntu 24.04 ARM64](https://ubuntu.com/download/server/arm)
 - [HuggingFace API](https://huggingface.co/docs/api-inference/index)
-- [CI/CD Gradle Best Practices](https://docs.gradle.org/current/userguide/ci.html)
+- [Gradle Best Practices (2026)](https://docs.gradle.org/current/userguide/what_is_new.html)
+- [Java 17 Temurin](https://adoptium.net/)
