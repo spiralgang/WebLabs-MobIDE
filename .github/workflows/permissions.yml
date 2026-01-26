@@ -1,0 +1,9 @@
+# This file is used to manage GitHub Actions permissions for the repository.
+
+yaml:
+  permissions:
+    contents: write
+    actions: write
+    issues: write
+    pull-requests: write
+    workflows: write

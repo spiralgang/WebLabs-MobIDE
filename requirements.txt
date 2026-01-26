@@ -1,11 +1,24 @@
 # WebLabs-MobIDE: Python-side and tooling dependencies
-python>=3.9
+
+# Core Dependencies
 PyGithub>=1.55
 requests>=2.28.0
 huggingface_hub>=0.17.0
 pandas>=1.3.0
 openai>=0.28.0
-# If using Gradio/Streamlit for AI features:
+
+# AI/UI Features (Gradio/Streamlit)
 gradio>=3.0.0
 streamlit>=1.7.0
+
+# Security & Code Analysis
+safety>=2.3.0
+bandit>=1.7.5
+pip-audit>=2.6.1
+
+# Utilities
+tqdm>=4.65.0
+pyyaml>=6.0.1
+termcolor>=2.3.0
+
 # Shell and Node.js dependencies are managed outside requirements.txt
