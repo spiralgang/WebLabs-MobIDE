@@ -23,6 +23,7 @@ jobs:
       PLATFORM_KEY_PASS: ${{ secrets.PLATFORM_KEY_PASS }}
       USER_STORE_PASS: ${{ secrets.USER_STORE_PASS }}
       USER_KEY_PASS: ${{ secrets.USER_KEY_PASS }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,12 +34,13 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      # FIXED: Switched to Android 33 / Build Tools 33.0.2 for stability
       - name: Install Android SDK and platform tools
         uses: android-actions/setup-android@v3
         with:
           packages: |
-            platforms;android-34
-            build-tools;34.0.0
+            platforms;android-33
+            build-tools;33.0.2
 
       - name: Install required native tooling
         run: |
@@ -95,13 +97,16 @@ jobs:
           INTERMEDIATE_KEY=intermediate-ca.key.pem
           INTERMEDIATE_CSR=intermediate-ca.csr.pem
           INTERMEDIATE_CERT=intermediate-ca.cert.pem
+          
           openssl genrsa -out "$INTERMEDIATE_KEY" 4096
           openssl req \
             -new \
             -key "$INTERMEDIATE_KEY" \
             -out "$INTERMEDIATE_CSR" \
             -subj "/CN=MobIDE Intermediate CA/O=WebLabs Security/C=US"
+          
           printf 'basicConstraints=CA:TRUE,pathlen:0\nkeyUsage=critical,digitalSignature,keyCertSign\nsubjectKeyIdentifier=hash\nauthorityKeyIdentifier=keyid:always,issuer:always\n' > intermediate-ca.ext
+          
           openssl x509 \
             -req \
             -in "$INTERMEDIATE_CSR" \
@@ -112,6 +117,7 @@ jobs:
             -days 1095 \
             -sha256 \
             -extfile intermediate-ca.ext
+            
           ls -l "$INTERMEDIATE_KEY" "$INTERMEDIATE_CERT"
           echo "key=$INTERMEDIATE_KEY" >> "$GITHUB_OUTPUT"
           echo "cert=$INTERMEDIATE_CERT" >> "$GITHUB_OUTPUT"
@@ -122,6 +128,7 @@ jobs:
         run: |
           set -euo pipefail
           umask 077
+          
           keytool -genkeypair \
             -alias platform \
             -keyalg RSA \
@@ -131,7 +138,7 @@ jobs:
             -storepass "${{ steps.validate_secrets.outputs.storepass_platform }}" \
             -keypass "${{ steps.validate_secrets.outputs.keypass_platform }}" \
             -dname "CN=MobIDE Platform Signing,O=WebLabs Security,C=US"
-
+            
           keytool -genkeypair \
             -alias userkey \
             -keyalg RSA \
@@ -141,7 +148,7 @@ jobs:
             -storepass "${{ steps.validate_secrets.outputs.storepass_user }}" \
             -keypass "${{ steps.validate_secrets.outputs.keypass_user }}" \
             -dname "CN=MobIDE User Signing,O=WebLabs Security,C=US"
-
+            
           ls -l platform.keystore user.keystore
 
       - name: Prepare Gradle
@@ -154,14 +161,17 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ZIPALIGN_BIN="${ANDROID_HOME:-$ANDROID_SDK_ROOT}/build-tools/34.0.0/zipalign"
+          # FIXED: Updated path to match the installed build-tools 33.0.2
+          ZIPALIGN_BIN="${ANDROID_HOME:-$ANDROID_SDK_ROOT}/build-tools/33.0.2/zipalign"
           "$ZIPALIGN_BIN" -v -p 4 "${{ env.APK_BUILD_PATH }}" "${{ env.ZIPALIGNED_APK }}"
 
       - name: Sign with platform and user keystores
         shell: bash
         run: |
           set -euo pipefail
-          APK_SIGNER_BIN="${ANDROID_HOME:-$ANDROID_SDK_ROOT}/build-tools/34.0.0/apksigner"
+          # FIXED: Updated path to match the installed build-tools 33.0.2
+          APK_SIGNER_BIN="${ANDROID_HOME:-$ANDROID_SDK_ROOT}/build-tools/33.0.2/apksigner"
+          
           "$APK_SIGNER_BIN" sign \
             --ks platform.keystore \
             --ks-key-alias platform \
@@ -174,6 +184,7 @@ jobs:
             --key-pass pass:${{ steps.validate_secrets.outputs.keypass_user }} \
             --out "${{ env.SIGNED_APK_FINAL }}" \
             "${{ env.ZIPALIGNED_APK }}"
+            
           "$APK_SIGNER_BIN" verify --verbose "${{ env.SIGNED_APK_FINAL }}"
 
       - name: Collect chain of trust
@@ -196,16 +207,3 @@ jobs:
             trust-chain.pem
             ca-root.pem
             ca-intermediate.pem
-            platform.keystore
-            user.keystore
-
-      - name: Upload CA outputs for auditing
-        uses: actions/upload-artifact@v4
-        with:
-          name: mobide-ca-audit
-          retention-days: 30
-          path: |
-            ${{ steps.root_ca.outputs.cert }}
-            ${{ steps.intermediate_ca.outputs.cert }}
-            intermediate-ca.ext
-            intermediate-ca.csr.pem
