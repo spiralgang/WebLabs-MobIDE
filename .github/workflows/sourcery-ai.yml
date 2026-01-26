@@ -119,9 +119,12 @@ jobs:
         run: sourcery login --token ${{ env.SOURCERY_API_KEY }}
 
       - name: Triage Issue with Sourcery AI
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
-          issue_title="${{ github.event.issue.title }}"
-          issue_body="${{ github.event.issue.body }}"
+          issue_title="$ISSUE_TITLE"
+          issue_body="$ISSUE_BODY"
           response=$(sourcery review --prompt "Analyze this issue: Title: $issue_title Body: $issue_body. Suggest labels, priority, and actions." --file "dummy.py" || echo "Sourcery triage fallback")
           echo "Sourcery Triage Response: $response"
           gh issue comment ${{ github.event.issue.number }} --body "Sourcery AI Triage: $response"
