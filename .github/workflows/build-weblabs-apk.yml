@@ -40,7 +40,6 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-
     - name: Make Gradle wrapper executable
       run: chmod +x ./gradlew
 
@@ -53,7 +52,6 @@ jobs:
         mkdir -p workspace/{projects,ai/{models,cache},logs}
         mkdir -p app/src/main/assets/{scripts,webide,models}
         echo "Workspace structure created"
-
     - name: Validate build configuration
       run: |
         echo "🚀 WebLabs-MobIDE Build Configuration Validation"
@@ -64,22 +62,18 @@ jobs:
         if [ -f "app/build.gradle.kts" ]; then
           echo "✅ App build.gradle.kts found"
         fi
-
     - name: Build Debug APK
       run: |
         echo "🔨 Building WebLabs-MobIDE Debug APK..."
         ./gradlew assembleDebug --no-daemon --stacktrace
-
     - name: Build Release APK  
       run: |
         echo "🔨 Building WebLabs-MobIDE Release APK..."
         ./gradlew assembleRelease --no-daemon --stacktrace
-
     - name: List APK outputs
       run: |
         echo "📦 APK Build Results:"
         find app/build/outputs/apk -name "*.apk" -type f || echo "No APK files found"
-
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
       with:
@@ -115,7 +109,6 @@ jobs:
         echo "2. Enable 'Install from unknown sources' on Android"
         echo "3. Install APK on ARM64 Android 10+ device"
         echo "4. Launch WebLabs-MobIDE for Docker environment"
-
   create-release:
     name: Create GitHub Release
     needs: build-apk
