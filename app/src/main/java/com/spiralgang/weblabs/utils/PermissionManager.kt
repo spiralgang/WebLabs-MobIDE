@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.net.Uri
@@ -21,6 +22,7 @@ class PermissionManager(private val activity: Activity) {
     companion object {
         const val REQUEST_CODE_PERMISSIONS = 1001
         const val REQUEST_CODE_ALL_FILES_ACCESS = 1002
+        const val REQUEST_CODE_MANAGE_ALL_FILES = 1002
 
         private val REQUIRED_PERMISSIONS = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             arrayOf(
@@ -47,9 +49,13 @@ class PermissionManager(private val activity: Activity) {
     
     private var permissionCallback: ((Boolean) -> Unit)? = null
     private var awaitingAllFilesAccess: Boolean = false
+    private var shouldRequestManageAllFiles = false
 
     fun requestAllPermissions(callback: (Boolean) -> Unit) {
         permissionCallback = callback
+
+        shouldRequestManageAllFiles = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+            !Environment.isExternalStorageManager()
 
         val deniedPermissions = REQUIRED_PERMISSIONS.filter {
             ContextCompat.checkSelfPermission(activity, it) != PackageManager.PERMISSION_GRANTED
@@ -74,6 +80,18 @@ class PermissionManager(private val activity: Activity) {
                 callback(true)
                 permissionCallback = null
             }
+        if (deniedPermissions.isEmpty()) {
+            if (shouldRequestManageAllFiles) {
+                launchManageAllFilesAccessIntent()
+            } else {
+                finishPermissionRequest(true)
+            }
+        } else {
+            ActivityCompat.requestPermissions(
+                activity,
+                deniedPermissions.toTypedArray(),
+                REQUEST_CODE_PERMISSIONS
+            )
         }
     }
 
@@ -98,6 +116,14 @@ class PermissionManager(private val activity: Activity) {
                 permissionCallback?.invoke(true)
                 permissionCallback = null
                 awaitingAllFilesAccess = false
+            if (allGranted) {
+                if (shouldRequestManageAllFiles) {
+                    launchManageAllFilesAccessIntent()
+                } else {
+                    finishPermissionRequest(true)
+                }
+            } else {
+                finishPermissionRequest(false)
             }
         }
     }
@@ -122,7 +148,14 @@ class PermissionManager(private val activity: Activity) {
 
     private fun hasStandardPermissions(): Boolean {
         return REQUIRED_PERMISSIONS.all {
+        val standardPermissionsGranted = REQUIRED_PERMISSIONS.all {
             ContextCompat.checkSelfPermission(activity, it) == PackageManager.PERMISSION_GRANTED
+        }
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            standardPermissionsGranted && Environment.isExternalStorageManager()
+        } else {
+            standardPermissionsGranted
         }
     }
 
@@ -148,5 +181,49 @@ class PermissionManager(private val activity: Activity) {
             permissionCallback = null
             awaitingAllFilesAccess = false
         }
+    fun hasPermission(permission: String): Boolean {
+        if (permission == Manifest.permission.MANAGE_EXTERNAL_STORAGE &&
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+        ) {
+            return Environment.isExternalStorageManager()
+        }
+
+        return ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun onActivityResult(requestCode: Int) {
+        if (requestCode == REQUEST_CODE_MANAGE_ALL_FILES) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                finishPermissionRequest(Environment.isExternalStorageManager())
+            } else {
+                finishPermissionRequest(true)
+            }
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun launchManageAllFilesAccessIntent() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            finishPermissionRequest(true)
+            return
+        }
+
+        shouldRequestManageAllFiles = false
+
+        val packageUri = Uri.parse("package:${activity.packageName}")
+        val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, packageUri)
+
+        try {
+            activity.startActivityForResult(intent, REQUEST_CODE_MANAGE_ALL_FILES)
+        } catch (e: ActivityNotFoundException) {
+            val fallbackIntent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+            activity.startActivityForResult(fallbackIntent, REQUEST_CODE_MANAGE_ALL_FILES)
+        }
+    }
+
+    private fun finishPermissionRequest(granted: Boolean) {
+        shouldRequestManageAllFiles = false
+        permissionCallback?.invoke(granted)
+        permissionCallback = null
     }
 }
