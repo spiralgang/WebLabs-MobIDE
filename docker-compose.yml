@@ -1,54 +1,23 @@
-# WebLabs-MobIDE Docker Compose Configuration
-# Ubuntu 24.04 ARM64 Development Environment
-
-version: '3.8'
+version: '3'
 
 services:
-  weblabs-ide:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      platforms:
-        - linux/arm64
-    container_name: weblabs-mobide
-    ports:
-      - "8080:8080"  # Code-Server IDE
-      - "3000:3000"  # Development server port
-      - "5000:5000"  # Flask/FastAPI port
+  app:
+    image: <your-app-image>
     volumes:
-      - weblabs-workspace:/home/developer/workspace
-      - weblabs-ai-models:/home/developer/ai/models
-      - /tmp/.X11-unix:/tmp/.X11-unix:rw
-    environment:
-      - DISPLAY=${DISPLAY}
-      - IDE_PORT=8080
-      - WORKSPACE_DIR=/home/developer/workspace
-      - AI_DIR=/home/developer/ai
-    restart: unless-stopped
-    platform: linux/arm64
-    user: developer
-    working_dir: /home/developer/workspace
-    command: ["/usr/local/bin/start-ide.sh"]
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+      - ./logs/app:/var/logs/app
+  database:
+    image: <your-database-image>
+    volumes:
+      - ./logs/database:/var/logs/database
+  web:
+    image: <your-web-image>
+    volumes:
+      - ./logs/web:/var/logs/web
 
 volumes:
-  weblabs-workspace:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./workspace
-  weblabs-ai-models:
+  logs:
     driver: local
 
 networks:
-  default:
+  app_net:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
