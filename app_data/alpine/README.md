@@ -1,9 +1,4 @@
-# Alpine Linux Runtime Data
+# LEGACY/COMPAT: Alpine assets are retained for migration/testing only. All production environments use Ubuntu 24.04 ARM64 (glibc) via Docker. See copilot_instructions.md for details.
 
-This directory contains Alpine Linux ARM64 rootfs and runtime data for the WebLabs-MobIDE development environment.
 
-## Structure
-- `rootfs/` - Alpine Linux root filesystem (ARM64)
-- Runtime files are populated during app execution
 
-This directory is used by AlpineInstaller.kt and related components for mobile development environment setup.
