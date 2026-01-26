@@ -1,0 +1,577 @@
+name: "CodePilot: Quantum Autonomous Guardian (Type-IV)"
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+    paths-ignore:
+      - '.github/workflows/**' # Phase 4 handles workflow updates safely
+  pull_request:
+    types: [opened, synchronize, reopened]
+  schedule:
+    - cron: '0 3 * * *' # Daily Quantum Patrol
+  workflow_dispatch:
+    inputs:
+      override_directive:
+        description: 'Force Executive Protocol (maintain/refactor/emergency)'
+        required: false
+        default: 'maintain'
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  checks: write
+  statuses: write
+  security-events: write
+  id-token: write
+
+env:
+  # SYSTEM CONSTANTS
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PAT_TOKEN: ${{ secrets.PAT_WORKFLOW_UPDATE }} # REQUIRED for Phase 4
+  REPO_OWNER: ${{ github.repository_owner }}
+  REPO_NAME: ${{ github.event.repository.name }}
+  
+  # NEON LOGGING PALETTE
+  NEON_CYAN: '\033[1;36m'
+  NEON_MAGENTA: '\033[1;35m'
+  NEON_GREEN: '\033[1;32m'
+  NEON_RED: '\033[1;31m'
+  NEON_RESET: '\033[0m'
+  
+  # QUANTUM STATE
+  QUANTUM_SIG: "INIT_PENDING"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+
+  # ==================================================================================
+  # PHASE 1: THE QUANTUM/NEON ARCHITECTURE
+  # Objective: Matrix builds, Quantum Signatures, Environment Logging, Context Loading
+  # ==================================================================================
+  phase_1_quantum_architecture:
+    name: "P1: Quantum Architecture Initialization"
+    runs-on: ubuntu-latest
+    outputs:
+      quantum_sig: ${{ steps.keygen.outputs.sig }}
+      matrix_config: ${{ steps.matrix_calc.outputs.matrix }}
+    steps:
+      - name: "[P1] Initialize Repository Context"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "[P1] Neon Environment Setup"
+        id: neon_setup
+        run: |
+          echo "Setting up Neon Logging Environment..."
+          echo "TERM=xterm-256color" >> $GITHUB_ENV
+          # Verify color support
+          if [ -t 1 ]; then
+             echo "Color support verified."
+          fi
+
+      - name: "[P1] Generate Quantum Signature"
+        id: keygen
+        run: |
+          # Generates a cryptographically unique identifier for this specific run instance
+          # This ID is used to tag all artifacts, logs, and git commits for this session.
+          
+          TIMESTAMP=$(date +%s%N)
+          RANDOM_SEED=$(head -c 100 /dev/urandom | tr -dc 'a-zA-Z0-9')
+          RAW_SIG="${TIMESTAMP}-${RANDOM_SEED}-${{ github.sha }}"
+          
+          # Hashing the signature
+          FINAL_SIG=$(echo -n "$RAW_SIG" | sha256sum | head -c 16 | tr '[:lower:]' '[:upper:]')
+          
+          echo "::set-output name=sig::$FINAL_SIG"
+          echo "QUANTUM_SIG=$FINAL_SIG" >> $GITHUB_ENV
+          
+          echo -e "${{ env.NEON_CYAN}}==================================================${{ env.NEON_RESET}}"
+          echo -e "${{ env.NEON_CYAN}}   QUANTUM SIGNATURE GENERATED: $FINAL_SIG   ${{ env.NEON_RESET}}"
+          echo -e "${{ env.NEON_CYAN}}==================================================${{ env.NEON_RESET}}"
+
+      - name: "[P1] Matrix & Dependency Calculation"
+        id: matrix_calc
+        run: |
+          # Analyzes the repo to determine parallelization requirements
+          # Outputs a JSON matrix for potentially spawning sub-jobs (if we expanded this workflow)
+          
+          echo -e "${{ env.NEON_MAGENTA}}Analyzing Repository Topology...${{ env.NEON_RESET}}"
+          
+          python3 -c "
+          import os, json
+          
+          def detect_stacks():
+              matrix = {'include': []}
+              if os.path.exists('package.json'):
+                  matrix['include'].append({'stack': 'node', 'runner': 'ubuntu-latest'})
+              if os.path.exists('requirements.txt') or os.path.exists('pyproject.toml'):
+                  matrix['include'].append({'stack': 'python', 'runner': 'ubuntu-latest'})
+              if os.path.exists('gradlew') or os.path.exists('pom.xml'):
+                  matrix['include'].append({'stack': 'java', 'runner': 'ubuntu-latest'})
+              if os.path.exists('Dockerfile'):
+                  matrix['include'].append({'stack': 'docker', 'runner': 'ubuntu-latest'})
+              
+              print(json.dumps(matrix))
+          detect_stacks()
+          " > matrix_output.json
+          
+          MATRIX_JSON=$(cat matrix_output.json)
+          echo "::set-output name=matrix::$MATRIX_JSON"
+          echo -e "${{ env.NEON_MAGENTA}}Topology Mapped: $MATRIX_JSON${{ env.NEON_RESET}}"
+
+      - name: "[P1] Extensive Logging Initialization"
+        run: |
+          # Creates a persistent log file for this run
+          mkdir -p .quantum_logs
+          LOG_FILE=".quantum_logs/${{ steps.keygen.outputs.sig }}.log"
+          
+          echo "Initialization Complete at $(date)" > "$LOG_FILE"
+          echo "Triggered by: ${{ github.event_name }}" >> "$LOG_FILE"
+          echo "Actor: ${{ github.actor }}" >> "$LOG_FILE"
+          
+          # Commit the log initialization (independent action)
+          git config --global user.name "Quantum Architect"
+          git config --global user.email "quantum@codepilot.ai"
+          git add .quantum_logs
+          git commit -m "Phase 1: Initialized Quantum Log ${{ steps.keygen.outputs.sig }}" || echo "Log already exists"
+          git push
+
+  # ==================================================================================
+  # PHASE 2: THE SYNTHETIC CORTEX
+  # Objective: Heuristic Analysis, Finite State Machine Maintenance, Structural Reform
+  # ==================================================================================
+  phase_2_synthetic_cortex:
+    name: "P2: Synthetic Cortex (Heuristic Engine)"
+    needs: phase_1_quantum_architecture
+    runs-on: ubuntu-latest
+    env:
+      QUANTUM_SIG: ${{ needs.phase_1_quantum_architecture.outputs.quantum_sig }}
+    steps:
+      - name: "[P2] Checkout State"
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.ref_name }} # Ensure we are on the branch we are updating
+
+      - name: "[P2] Setup Cortex Engine"
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: "[P2] Initialize Cortex Finite State Machine"
+        id: cortex_fsm
+        run: |
+          # This script acts as the repository's subconscious maintenance system.
+          # It fixes structural issues, naming conventions, and organization WITHOUT asking.
+          
+          cat << 'EOF' > cortex_engine.py
+          import os
+          import re
+          import shutil
+          import sys
+          import json
+          from datetime import datetime
+
+          # NEON COLORS FOR PYTHON
+          CYAN = '\033[1;36m'
+          GREEN = '\033[1;32m'
+          RESET = '\033[0m'
+
+          class RepositoryState:
+              def __init__(self):
+                  self.files = []
+                  self.dirs = []
+                  self.health_score = 100
+                  self.anomalies = []
+
+              def scan(self):
+                  for root, d, f in os.walk('.'):
+                      if '.git' in root or '.quantum_logs' in root: continue
+                      for file in f:
+                          self.files.append(os.path.join(root, file))
+                      for directory in d:
+                          self.dirs.append(os.path.join(root, directory))
+
+          class FiniteStateMachine:
+              def __init__(self, repo_state):
+                  self.state = 'IDLE'
+                  self.repo = repo_state
+                  self.changes_made = []
+
+              def transition(self, new_state):
+                  print(f"{CYAN}[CORTEX FSM] Transitioning: {self.state} -> {new_state}{RESET}")
+                  self.state = new_state
+
+              def execute_cycle(self):
+                  self.transition('ANALYZING_STRUCTURE')
+                  self._enforce_directory_standards()
+                  
+                  self.transition('ANALYZING_NAMING')
+                  self._enforce_naming_conventions()
+                  
+                  self.transition('OPTIMIZING_FILESYSTEM')
+                  self._clean_legacy_artifacts()
+                  
+                  self.transition('COMMITTING')
+                  return self.changes_made
+
+              def _enforce_directory_standards(self):
+                  # Heuristic: Every repo needs specific folders
+                  required_dirs = ['docs', 'scripts', 'tests']
+                  for d in required_dirs:
+                      if not os.path.exists(d):
+                          os.makedirs(d)
+                          self.changes_made.append(f"Created standard directory: {d}")
+                          print(f"{GREEN}Structure Enforced: +{d}/{RESET}")
+
+              def _enforce_naming_conventions(self):
+                  # Heuristic: Whitespace in filenames is inefficient for CLI operations
+                  for filepath in self.repo.files:
+                      filename = os.path.basename(filepath)
+                      dirname = os.path.dirname(filepath)
+                      
+                      if ' ' in filename:
+                          new_name = filename.replace(' ', '_').lower()
+                          new_path = os.path.join(dirname, new_name)
+                          shutil.move(filepath, new_path)
+                          self.changes_made.append(f"Renamed: {filename} -> {new_name}")
+                          print(f"{GREEN}Naming Enforced: {filename} -> {new_name}{RESET}")
+
+              def _clean_legacy_artifacts(self):
+                  # Heuristic: Delete temp files that clutter the repo
+                  junk_extensions = ['.tmp', '.log', '.bak', '.swp']
+                  # Exclude our quantum logs
+                  for filepath in self.repo.files:
+                      if any(filepath.endswith(ext) for ext in junk_extensions):
+                          if '.quantum_logs' not in filepath:
+                              os.remove(filepath)
+                              self.changes_made.append(f"Purged artifact: {filepath}")
+                              print(f"{GREEN}Filesystem Optimized: -{filepath}{RESET}")
+
+          def main():
+              print(f"{CYAN}Initializing Synthetic Cortex Engine...{RESET}")
+              repo = RepositoryState()
+              repo.scan()
+              
+              fsm = FiniteStateMachine(repo)
+              changes = fsm.execute_cycle()
+              
+              # Output Report for Phase 3 to read (but Phase 2 acts independently)
+              with open('cortex_report.json', 'w') as f:
+                  json.dump(changes, f)
+                  
+              if changes:
+                  print(f"{GREEN}Cortex Cycle Complete. {len(changes)} structural modifications applied.{RESET}")
+              else:
+                  print(f"{GREEN}Cortex Cycle Complete. Repository structure is nominal.{RESET}")
+
+          if __name__ == "__main__":
+              main()
+          EOF
+
+          # EXECUTE THE ENGINE
+          python3 cortex_engine.py
+
+      - name: "[P2] Heuristic Commit (Cortex Action)"
+        run: |
+          # Phase 2 acts for its own reasoning: Structural Integrity
+          git config --global user.name "Synthetic Cortex"
+          git config --global user.email "cortex@codepilot.ai"
+          
+          if [[ `git status --porcelain` ]]; then
+            git add .
+            git commit -m "Phase 2: Cortex FSM Structural Optimization [${{ env.QUANTUM_SIG }}]"
+            git push
+            echo "::notice::Cortex pushed structural fixes to remote."
+          else
+            echo "No structural changes required by Cortex."
+          fi
+
+  # ==================================================================================
+  # PHASE 3: THE COPILOT AGENTIC BRAIN
+  # Objective: Error Analysis, Problem Solving, Drafting PRs, Corporate Fixer
+  # ==================================================================================
+  phase_3_copilot_brain:
+    name: "P3: Copilot Agentic Brain (Corporate Fixer)"
+    needs: [phase_1_quantum_architecture, phase_2_synthetic_cortex]
+    runs-on: ubuntu-latest
+    env:
+      QUANTUM_SIG: ${{ needs.phase_1_quantum_architecture.outputs.quantum_sig }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: "[P3] Checkout Updated Baseline"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }} # We pull the changes made by Phase 2
+
+      - name: "[P3] Initialize Agentic Cognitive Layer"
+        id: agent_brain
+        run: |
+          echo -e "${{ env.NEON_MAGENTA}}Initializing Copilot Agentic Brain...${{ env.NEON_RESET}}"
+          
+          # This script acts as the "Corporate Fixer". 
+          # It looks for Functional Errors (broken builds, security vulns) 
+          # which is distinct from Phase 2's Structural Errors.
+          
+          cat << 'EOF' > agent_brain.py
+          import subprocess
+          import sys
+          import os
+          
+          def exec_cmd(cmd):
+              try:
+                  result = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT)
+                  return result.decode('utf-8'), 0
+              except subprocess.CalledProcessError as e:
+                  return e.output.decode('utf-8'), e.returncode
+
+          def analyze_runtime_integrity():
+              issues = []
+              
+              # 1. Dependency Analysis (NPM/PIP check)
+              if os.path.exists('package.json'):
+                  print("Analyzing Node Dependencies...")
+                  out, code = exec_cmd("npm audit --json")
+                  if code != 0:
+                      issues.append({"type": "security", "ecosystem": "npm", "details": "Vulnerabilities detected"})
+              
+              if os.path.exists('requirements.txt'):
+                  print("Analyzing Python Dependencies...")
+                  # Heuristic: Check for pinned versions
+                  with open('requirements.txt', 'r') as f:
+                      content = f.read()
+                      if '==' not in content:
+                          issues.append({"type": "stability", "ecosystem": "python", "details": "Unpinned dependencies"})
+
+              # 2. Build Integrity Analysis
+              if os.path.exists('gradlew'):
+                  print("Analyzing Gradle Build Integrity...")
+                  out, code = exec_cmd("./gradlew properties")
+                  if code != 0:
+                       issues.append({"type": "build", "ecosystem": "android", "details": "Gradle configuration failure"})
+
+              return issues
+
+          def formulate_solution(issues):
+              fixes = []
+              for issue in issues:
+                  print(f"Resolving Issue: {issue}")
+                  
+                  if issue['ecosystem'] == 'npm' and issue['type'] == 'security':
+                      # Agentic Decision: Force Fix
+                      cmd = "npm audit fix --force"
+                      fixes.append(cmd)
+                  
+                  if issue['ecosystem'] == 'android' and issue['type'] == 'build':
+                      # Agentic Decision: Clean and Rebuild Cache
+                      cmd = "chmod +x gradlew && ./gradlew clean"
+                      fixes.append(cmd)
+                  
+                  if issue['ecosystem'] == 'python' and issue['type'] == 'stability':
+                      # Agentic Decision: Generate freeze (Approximation)
+                      cmd = "pip install -r requirements.txt && pip freeze > requirements.lock"
+                      fixes.append(cmd)
+                      
+              return fixes
+
+          def main():
+              print("Agentic Brain: Scanning for Inoperable Errors...")
+              detected_issues = analyze_runtime_integrity()
+              
+              if not detected_issues:
+                  print("Agentic Brain: Repository Logic is Nominal.")
+                  sys.exit(0)
+                  
+              print(f"Agentic Brain: Detected {len(detected_issues)} non-functional errors.")
+              solutions = formulate_solution(detected_issues)
+              
+              for solution in solutions:
+                  print(f"Executing Corporate Fix: {solution}")
+                  out, code = exec_cmd(solution)
+                  print(out)
+
+          if __name__ == "__main__":
+              main()
+          EOF
+          
+          # Install dependencies required for the fixer to work (e.g. npm is preinstalled on runner)
+          python3 agent_brain.py
+
+      - name: "[P3] Corporate Fixer Commit (Agent Action)"
+        run: |
+          # Phase 3 acts for its own reasoning: Functional Operability
+          git config --global user.name "Copilot Brain"
+          git config --global user.email "brain@codepilot.ai"
+          
+          if [[ `git status --porcelain` ]]; then
+            git add .
+            git commit -m "Phase 3: Copilot Brain Error Resolution [${{ env.QUANTUM_SIG }}]"
+            git push
+            
+            echo -e "${{ env.NEON_GREEN}}>> Corporate Fixer: Patches Applied and Deployed. <<${{ env.NEON_RESET}}"
+          else
+            echo "No functional patches required by Agentic Brain."
+          fi
+
+      - name: "[P3] Draft Pull Request (If Branching)"
+        if: github.ref_name != 'main'
+        run: |
+          # If we are on a develop branch, Phase 3 drafts a PR to main
+          # This represents the "Drafting Pull Requests" capability
+          
+          TITLE="[CodePilot] Auto-Fixes from Gen ${{ env.QUANTUM_SIG }}"
+          BODY="Phase 2 (Cortex) and Phase 3 (Brain) have applied optimizations. Review for merge."
+          
+          # Check if PR exists
+          PR_EXISTS=$(gh pr list --head ${{ github.ref_name }} --json number -q '.[0].number')
+          
+          if [ -z "$PR_EXISTS" ]; then
+             gh pr create --title "$TITLE" --body "$BODY" --base main
+             echo "PR Drafted."
+          else
+             echo "PR already active."
+          fi
+
+  # ==================================================================================
+  # PHASE 4: AGENTIC EVOLUTIONARY "CURRENT-OPTIMIZATION"
+  # Objective: Generation numbering, Archiving, Baseline Establishment, Spawning
+  # ==================================================================================
+  phase_4_evolutionary_optimization:
+    name: "P4: Evolutionary Optimization (The Highlander Protocol)"
+    needs: [phase_1_quantum_architecture, phase_3_copilot_brain]
+    runs-on: ubuntu-latest
+    if: always() # Must run even if previous phases made changes (success)
+    env:
+      QUANTUM_SIG: ${{ needs.phase_1_quantum_architecture.outputs.quantum_sig }}
+    steps:
+      - name: "[P4] Checkout Final Baseline"
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_WORKFLOW_UPDATE }} # PAT REQUIRED for self-modification
+          fetch-depth: 0
+
+      - name: "[P4] Establish Current Baseline Scope"
+        run: |
+          echo -e "${{ env.NEON_RED}}Initiating Evolutionary Protocol...${{ env.NEON_RESET}}"
+          
+          # We ensure we have the absolute latest state from Phase 2 and 3
+          git pull origin ${{ github.ref_name }}
+          
+          echo "Baseline Scope established. This state is the seed for the next generation."
+
+      - name: "[P4] Execute Spawning & Archival (Python Engine)"
+        run: |
+          # This script handles the "Highlander" logic.
+          # It finds the current file, archives it, and creates the successor.
+          
+          cat << 'EOF' > evolution_engine.py
+          import os
+          import re
+          import shutil
+          import sys
+
+          WORKFLOW_DIR = '.github/workflows'
+          ARCHIVE_DIR = 'archive/workflows/lineage'
+
+          def evolve():
+              # 1. Identify Current Generation
+              # We look for files matching *codepilot.yml
+              candidates = []
+              for f in os.listdir(WORKFLOW_DIR):
+                  if f.endswith('codepilot.yml'):
+                      # Extract number
+                      match = re.match(r'(\d*)codepilot\.yml', f)
+                      if match:
+                          num = int(match.group(1)) if match.group(1) else 1
+                          candidates.append((num, f))
+              
+              if not candidates:
+                  print("Critical: No Genesis file found.")
+                  sys.exit(1)
+              
+              # Sort to find the highest number (current active agent)
+              candidates.sort(key=lambda x: x[0])
+              current_gen_num, current_filename = candidates[-1]
+              
+              print(f"Identified Active Agent: Generation {current_gen_num} ({current_filename})")
+              
+              # 2. Archive Ancestors (and Self)
+              if not os.path.exists(ARCHIVE_DIR):
+                  os.makedirs(ARCHIVE_DIR)
+                  
+              src_path = os.path.join(WORKFLOW_DIR, current_filename)
+              
+              # Rename current to backup with signature
+              backup_name = f"gen_{current_gen_num}_ancestor.yaml.bak"
+              dest_path = os.path.join(ARCHIVE_DIR, backup_name)
+              
+              print(f"Archiving Ancestor: {src_path} -> {dest_path}")
+              shutil.move(src_path, dest_path)
+              
+              # Git Remove the old file (staged)
+              os.system(f"git rm {src_path}")
+              # Git Add the archive (staged)
+              os.system(f"git add {ARCHIVE_DIR}")
+
+              # 3. Spawn Successor
+              # The successor inherits the EXACT content of the current script (which we are running inside)
+              # But since we moved the file, we need to copy from the archive back to workflows with new name
+              
+              next_gen_num = current_gen_num + 1
+              next_filename = f"{next_gen_num}codepilot.yml"
+              next_path = os.path.join(WORKFLOW_DIR, next_filename)
+              
+              print(f"Spawning Successor: Generation {next_gen_num} ({next_filename})")
+              shutil.copy(dest_path, next_path)
+              
+              # Git Add the new file
+              os.system(f"git add {next_path}")
+              
+              return next_gen_num
+
+          if __name__ == "__main__":
+              try:
+                  new_gen = evolve()
+                  print(f"Evolution Successful. Welcome Gen {new_gen}.")
+              except Exception as e:
+                  print(f"Evolution Failure: {e}")
+                  sys.exit(1)
+          EOF
+          
+          python3 evolution_engine.py
+
+      - name: "[P4] Commit Evolutionary Ascension"
+        env:
+          GH_PAT: ${{ secrets.PAT_WORKFLOW_UPDATE }}
+        run: |
+          # Phase 4 acts for its own reasoning: Perpetuity and Optimization
+          git config --global user.name "Evolutionary Agent"
+          git config --global user.email "evolution@codepilot.ai"
+          
+          # Force add any changes to ensure the move is captured
+          git add .
+          
+          if [[ `git status --porcelain` ]]; then
+             # We use the PAT to push because we modified workflows
+             git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
+             
+             git commit -m "Phase 4: Evolution Complete. Spawning Gen N+1. [${{ env.QUANTUM_SIG }}]"
+             git push
+             
+             echo -e "${{ env.NEON_RED}}>> SYSTEM SHUTDOWN. SUCCESSOR ACTIVATED. <<${{ env.NEON_RESET}}"
+          else
+             echo "Evolution logic failed to stage changes."
+             exit 1
+          fi
+
+      - name: "[P4] Final Quantum Log Dump"
+        if: always()
+        run: |
+          echo "Run Complete."
+          # This would act as a 'black box' recorder if artifact upload was enabled
+          # Keeping it purely log-based for speed in this 600 line context.
