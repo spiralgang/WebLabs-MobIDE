@@ -1,0 +1,406 @@
+name: "CodeLite: Quantum Evolutionary Guardian (Type-VII)"
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+    paths-ignore:
+      - '.github/workflows/**' # Phase 4 manages its own lineage safely
+  pull_request:
+    types: [opened, synchronize, reopened]
+  schedule:
+    - cron: '0 3 * * *' # Daily Quantum Patrol
+  workflow_dispatch:
+    inputs:
+      override_directive:
+        description: 'Force Executive Protocol'
+        required: false
+        default: 'auto_remediate'
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  checks: write
+  statuses: write
+  security-events: write
+  id-token: write
+
+env:
+  # SYSTEM CONSTANTS
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PAT_TOKEN: ${{ secrets.PAT_WORKFLOW_UPDATE }}
+  REPO_OWNER: ${{ github.repository_owner }}
+  REPO_NAME: ${{ github.event.repository.name }}
+  
+  # NEON LOGGING PALETTE
+  NEON_CYAN: '\033[1;36m'
+  NEON_MAGENTA: '\033[1;35m'
+  NEON_GREEN: '\033[1;32m'
+  NEON_RED: '\033[1;31m'
+  NEON_RESET: '\033[0m'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+
+  # ==================================================================================
+  # PHASE 1: THE QUANTUM/NEON ARCHITECTURE
+  # Objective: Context Loading, Matrix, Quantum Signatures
+  # ==================================================================================
+  phase_1_quantum_architecture:
+    name: "P1: Quantum Architecture Initialization"
+    runs-on: ubuntu-latest
+    outputs:
+      quantum_sig: ${{ steps.keygen.outputs.sig }}
+      matrix_config: ${{ steps.matrix_calc.outputs.matrix }}
+    steps:
+      - name: "[P1] Initialize Repository Context"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "[P1] Neon Environment Setup"
+        run: |
+          echo "TERM=xterm-256color" >> $GITHUB_ENV
+
+      - name: "[P1] Generate Quantum Signature"
+        id: keygen
+        run: |
+          TIMESTAMP=$(date +%s%N)
+          RANDOM_SEED=$(head -c 100 /dev/urandom | tr -dc 'a-zA-Z0-9')
+          RAW_SIG="${TIMESTAMP}-${RANDOM_SEED}-${{ github.sha }}"
+          FINAL_SIG=$(echo -n "$RAW_SIG" | sha256sum | head -c 16 | tr '[:lower:]' '[:upper:]')
+          
+          echo "::set-output name=sig::$FINAL_SIG"
+          echo "QUANTUM_SIG=$FINAL_SIG" >> $GITHUB_ENV
+          
+          echo -e "${{ env.NEON_CYAN}}==================================================${{ env.NEON_RESET}}"
+          echo -e "${{ env.NEON_CYAN}}   QUANTUM SIGNATURE: $FINAL_SIG   ${{ env.NEON_RESET}}"
+          echo -e "${{ env.NEON_CYAN}}==================================================${{ env.NEON_RESET}}"
+
+      - name: "[P1] Matrix Calculation"
+        id: matrix_calc
+        run: |
+          echo -e "${{ env.NEON_MAGENTA}}Analyzing Repository Topology...${{ env.NEON_RESET}}"
+          python3 -c "
+          import os, json
+          def detect_stacks():
+              matrix = {'include': []}
+              if os.path.exists('package.json'): matrix['include'].append({'stack': 'node'})
+              if os.path.exists('requirements.txt'): matrix['include'].append({'stack': 'python'})
+              if os.path.exists('gradlew'): matrix['include'].append({'stack': 'android'})
+              if os.path.exists('Dockerfile'): matrix['include'].append({'stack': 'docker'})
+              print(json.dumps(matrix))
+          detect_stacks()
+          " > matrix_output.json
+          
+          MATRIX_JSON=$(cat matrix_output.json)
+          echo "::set-output name=matrix::$MATRIX_JSON"
+
+  # ==================================================================================
+  # PHASE 2: THE SYNTHETIC CORTEX (The Analyst & Isolation Enforcer)
+  # Objective: Heuristic Analysis + Enforcing "Product vs Factory" Separation
+  # ==================================================================================
+  phase_2_synthetic_cortex:
+    name: "P2: Synthetic Cortex (Heuristic Engine)"
+    needs: phase_1_quantum_architecture
+    runs-on: ubuntu-latest
+    env:
+      QUANTUM_SIG: ${{ needs.phase_1_quantum_architecture.outputs.quantum_sig }}
+    steps:
+      - name: "[P2] Checkout State"
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.ref_name }}
+
+      - name: "[P2] Setup Cortex Engine"
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: "[P2] Initialize Cortex Finite State Machine"
+        run: |
+          cat << 'EOF' > cortex_engine.py
+          import os, re, json, shutil
+          
+          CYAN = '\033[1;36m'
+          RED = '\033[1;31m'
+          RESET = '\033[0m'
+
+          # DEFINITIONS FROM COPILOT_INSTRUCTIONS.MD
+          FACTORY_ASSETS = [
+              'agent_brain.py', 'cortex_engine.py', 'evolution_engine.py', 'agent_fixer.py',
+              'cortex_anomalies.json', '.github', 'docs', 'reference', 'VAULT', 'archive',
+              '.quantum_logs', 'requirements.txt', 'matrix_output.json'
+          ]
+          
+          class CortexAnalyst:
+              def __init__(self):
+                  self.anomalies = []
+
+              def scan_architecture_isolation(self):
+                  print(f"{CYAN}[CORTEX] Scanning Product/Factory Isolation...{RESET}")
+                  if os.path.exists('.dockerignore'):
+                      with open('.dockerignore', 'r') as f: ignored = f.read()
+                      for asset in FACTORY_ASSETS:
+                          if asset not in ignored:
+                              self.anomalies.append({'type': 'isolation_leak', 'asset': asset})
+                              print(f"{RED}[CRITICAL] Factory Asset '{asset}' exposed to Docker!{RESET}")
+                  else:
+                      self.anomalies.append({'type': 'missing_dockerignore'})
+
+              def scan_docker_conflicts(self):
+                  # Hunts for the "containerd.io : Conflicts" error in scripts/workflows
+                  print(f"{CYAN}[CORTEX] Scanning for Docker Conflicts...{RESET}")
+                  for root, _, files in os.walk('.'):
+                      if '.git' in root: continue
+                      for f in files:
+                          path = os.path.join(root, f)
+                          if f.endswith(('.yml', '.yaml', '.sh')):
+                              with open(path, 'r') as file: content = file.read()
+                              
+                              # Conflict Detection: "apt-get install docker.io" on Runner
+                              if 'apt-get install' in content and 'docker.io' in content:
+                                  self.anomalies.append({'type': 'docker_install_conflict', 'file': path})
+                                  print(f"{RED}[DETECTED] Docker Install Conflict in {path}{RESET}")
+                                  
+                              # Deprecation Detection: "docker-compose" (v1)
+                              if 'docker-compose' in content and 'docker compose' not in content:
+                                   if not path.endswith('codelite.yml'): # Ignore self
+                                      self.anomalies.append({'type': 'deprecated_compose', 'file': path})
+                                      print(f"{RED}[DETECTED] Deprecated docker-compose in {path}{RESET}")
+
+              def scan_workflows(self):
+                  workflow_dir = '.github/workflows'
+                  if not os.path.exists(workflow_dir): return
+                  for f in os.listdir(workflow_dir):
+                      path = os.path.join(workflow_dir, f)
+                      if not f.endswith(('.yml', '.yaml')): continue
+                      with open(path, 'r') as file: content = file.read()
+                      if 'uses: actions/upload-artifact@v4' in content and 'uses: actions/download-artifact@v3' in content:
+                          self.anomalies.append({'type': 'artifact_mismatch', 'file': path})
+
+              def report(self):
+                  with open('cortex_anomalies.json', 'w') as f: json.dump(self.anomalies, f)
+
+          if __name__ == "__main__":
+              cortex = CortexAnalyst()
+              cortex.scan_architecture_isolation()
+              cortex.scan_docker_conflicts()
+              cortex.scan_workflows()
+              cortex.report()
+          EOF
+          python3 cortex_engine.py
+
+      - name: "[P2] Publish Heuristic Report"
+        run: if [ -f cortex_anomalies.json ]; then cat cortex_anomalies.json; fi
+
+  # ==================================================================================
+  # PHASE 3: THE COPILOT AGENTIC BRAIN (The Fixer)
+  # Objective: Rewrite files to fix errors, enforce Isolation, and Modernize Docker.
+  # ==================================================================================
+  phase_3_copilot_brain:
+    name: "P3: Copilot Agentic Brain (Auto-Remediation)"
+    needs: [phase_1_quantum_architecture, phase_2_synthetic_cortex]
+    runs-on: ubuntu-latest
+    env:
+      QUANTUM_SIG: ${{ needs.phase_1_quantum_architecture.outputs.quantum_sig }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: "[P3] Checkout Code"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: "[P3] Execute Agentic Fixer Protocols"
+        run: |
+          cat << 'EOF' > agent_fixer.py
+          import os, re
+          
+          # PROTOCOL: FIX DOCKER INSTALL CONFLICTS & DEPRECATION
+          def fix_docker_issues():
+              # We rely on the Cortex scan, but for robustness we iterate potential targets
+              targets = ['.github/workflows', 'scripts']
+              for target in targets:
+                  if not os.path.exists(target): continue
+                  for root, _, files in os.walk(target):
+                      for f in files:
+                          path = os.path.join(root, f)
+                          if f.endswith(('.yml', '.yaml', '.sh')):
+                              with open(path, 'r') as file: content = file.read()
+                              
+                              modified = False
+                              
+                              # Fix 1: Remove "apt-get install docker" logic if it exists
+                              # We replace it with a check or comment out to prevent conflict on runners
+                              if 'apt-get install' in content and 'docker.io' in content:
+                                  print(f"FIXING: Removing Docker Install Conflict in {f}")
+                                  # Regex to neutralize the install command safely
+                                  content = re.sub(r'(sudo apt-get install.*docker\.io.*)', r'# \1 (Neutralized by CodeLite: Docker pre-installed on Runner)', content)
+                                  modified = True
+                                  
+                              # Fix 2: Upgrade docker-compose (v1) to docker compose (v2)
+                              if 'docker-compose' in content:
+                                  print(f"FIXING: Upgrading docker-compose to v2 in {f}")
+                                  content = content.replace('docker-compose', 'docker compose')
+                                  modified = True
+                                  
+                              if modified:
+                                  with open(path, 'w') as file: file.write(content)
+
+          # PROTOCOL: ENFORCE ARCHITECTURE ISOLATION
+          def fix_isolation():
+              print("FIXING: Enforcing Factory/Product Isolation (.dockerignore)")
+              factory_assets = [
+                  '.git', '.github', '.quantum_logs', 'archive', 'docs', 'reference', 'VAULT',
+                  'agent_brain.py', 'cortex_engine.py', 'evolution_engine.py', 'agent_fixer.py',
+                  'cortex_anomalies.json', 'matrix_output.json', 'requirements.txt', '*.md', 'LICENSE'
+              ]
+              current_ignores = []
+              if os.path.exists('.dockerignore'):
+                  with open('.dockerignore', 'r') as f: current_ignores = f.read().splitlines()
+              
+              needs_update = False
+              for asset in factory_assets:
+                  if asset not in current_ignores:
+                      current_ignores.append(asset)
+                      needs_update = True
+              
+              if needs_update:
+                  with open('.dockerignore', 'w') as f: f.write('\n'.join(current_ignores))
+
+          # PROTOCOL: FIX ARTIFACT VERSIONS
+          def fix_artifact_versions():
+              workflow_dir = '.github/workflows'
+              if not os.path.exists(workflow_dir): return
+              for f in os.listdir(workflow_dir):
+                  path = os.path.join(workflow_dir, f)
+                  if f.endswith(('.yml', '.yaml')):
+                      with open(path, 'r') as file: content = file.read()
+                      if 'uses: actions/upload-artifact@v4' in content and 'uses: actions/download-artifact@v3' in content:
+                          print(f"FIXING: Upgrading download-artifact to v4 in {f}")
+                          content = content.replace('uses: actions/download-artifact@v3', 'uses: actions/download-artifact@v4')
+                          with open(path, 'w') as file: file.write(content)
+
+          if __name__ == "__main__":
+              fix_docker_issues() # Priority Fix
+              fix_isolation()
+              fix_artifact_versions()
+          EOF
+          python3 agent_fixer.py
+
+      - name: "[P3] Corporate Fixer Commit (Agent Action)"
+        run: |
+          git config --global user.name "CodeLite Fixer"
+          git config --global user.email "fixer@codelite.ai"
+          if [[ `git status --porcelain` ]]; then
+            git add .
+            git commit -m "Phase 3: Docker Conflicts & Isolation Fixed [${{ env.QUANTUM_SIG }}]"
+            git push
+            echo -e "${{ env.NEON_GREEN}}>> FIXES DEPLOYED <<${{ env.NEON_RESET}}"
+          else
+            echo "No remediations required."
+          fi
+
+  # ==================================================================================
+  # PHASE 4: AGENTIC EVOLUTIONARY "CURRENT-OPTIMIZATION"
+  # Objective: Generate N+1 workflow by ADDING today's fixes to the genetic baseline.
+  # ==================================================================================
+  phase_4_evolutionary_optimization:
+    name: "P4: Evolutionary Optimization (Smart Mutation)"
+    needs: [phase_1_quantum_architecture, phase_3_copilot_brain]
+    runs-on: ubuntu-latest
+    if: always()
+    env:
+      QUANTUM_SIG: ${{ needs.phase_1_quantum_architecture.outputs.quantum_sig }}
+    steps:
+      - name: "[P4] Checkout Final Baseline"
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_WORKFLOW_UPDATE }}
+          fetch-depth: 0
+
+      - name: "[P4] Establish Baseline"
+        run: |
+          echo -e "${{ env.NEON_RED}}Initiating Evolutionary Protocol...${{ env.NEON_RESET}}"
+          git pull origin ${{ github.ref_name }}
+
+      - name: "[P4] Execute Genetic Mutation Engine"
+        run: |
+          cat << 'EOF' > genetic_mutation.py
+          import os, re, shutil, sys
+
+          WORKFLOW_DIR = '.github/workflows'
+          ARCHIVE_DIR = 'archive/workflows/lineage'
+
+          def mutate_and_spawn():
+              # 1. Identify Current Generation
+              candidates = []
+              for f in os.listdir(WORKFLOW_DIR):
+                  if 'codelite.yml' in f:
+                      match = re.match(r'(\d*)codelite\.yml', f)
+                      if match: candidates.append((int(match.group(1)), f))
+              
+              if not candidates:
+                  if os.path.exists(os.path.join(WORKFLOW_DIR, 'codelite.yml')): candidates.append((1, 'codelite.yml'))
+                  else: sys.exit(0)
+              
+              candidates.sort(key=lambda x: x[0])
+              curr_gen, curr_file = candidates[-1]
+              print(f"Active Agent: Gen {curr_gen} ({curr_file})")
+              
+              # 2. Archive Ancestor
+              if not os.path.exists(ARCHIVE_DIR): os.makedirs(ARCHIVE_DIR)
+              src = os.path.join(WORKFLOW_DIR, curr_file)
+              dest = os.path.join(ARCHIVE_DIR, f"gen_{curr_gen}_ancestor.yaml.bak")
+              shutil.move(src, dest)
+              os.system(f"git rm {src}")
+              os.system(f"git add {ARCHIVE_DIR}")
+
+              # 3. GENETIC MUTATION (The "Reasoning" Step)
+              # We read the content of the moved ancestor to create the successor
+              with open(dest, 'r') as f: genome = f.read()
+              
+              # Mutation 1: Increment Generation Tag
+              next_gen = curr_gen + 1
+              new_name = f"CodeLite: Quantum Evolutionary Guardian (Type-VII Gen-{next_gen})"
+              genome = re.sub(r'name: "CodeLite.*"', f'name: "{new_name}"', genome)
+              
+              # Mutation 2: Embed "Learned" Heuristics from Phase 3 into Phase 4
+              # If Phase 3 ran fixes today, we reinforce the check schedule
+              # (This simulates 'reasoning' - if usage is high, increase frequency)
+              genome = genome.replace("cron: '0 3 * * *'", "cron: '0 2 * * *'") # Optimize to 2AM
+              
+              # 4. Spawn Successor
+              next_filename = f"{next_gen}codelite.yml"
+              next_path = os.path.join(WORKFLOW_DIR, next_filename)
+              
+              print(f"Spawning Mutated Successor: {next_filename}")
+              with open(next_path, 'w') as f: f.write(genome)
+              os.system(f"git add {next_path}")
+
+          if __name__ == "__main__":
+              mutate_and_spawn()
+          EOF
+          python3 genetic_mutation.py
+
+      - name: "[P4] Commit Evolutionary Ascension"
+        env:
+          GH_PAT: ${{ secrets.PAT_WORKFLOW_UPDATE }}
+        run: |
+          git config --global user.name "Evolutionary Agent"
+          git config --global user.email "evolution@codelite.ai"
+          git add .
+          
+          if [[ `git status --porcelain` ]]; then
+             git remote set-url origin https://x-access-token:${GH_PAT}@github.com/${{ github.repository }}
+             git commit -m "Phase 4: Evolution Complete. Spawning Gen N+1. [${{ env.QUANTUM_SIG }}]"
+             git push
+             echo -e "${{ env.NEON_RED}}>> SYSTEM SHUTDOWN. SUCCESSOR ACTIVATED. <<${{ env.NEON_RESET}}"
+          else
+             echo "Evolution logic failed to stage changes."
+          fi
+
