@@ -1,40 +1,20 @@
-name: SonarQube Community Autonomous Lint
+- name: Start SonarQube Server
+  run: docker run -d --name sonarqube -p 9000:9000 sonarqube:community
 
-on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
-  workflow_dispatch:
+- name: Wait for SonarQube Server
+  run: |
+    until curl --output /dev/null --silent --head --fail http://localhost:9000; do
+      echo 'Waiting for SonarQube...'
+      sleep 5
+    done
 
-jobs:
-  sonar-lint:
-    name: SonarQube Community Lint (Local)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Download SonarScanner CLI
-        run: |
-          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-          unzip sonar-scanner.zip -d $HOME/sonar-scanner
-          echo "$HOME/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin" >> $GITHUB_PATH
-
-      - name: Run SonarScanner (local only)
-        run: |
-          $HOME/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
-            -Dsonar.projectKey=local-project \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=http://localhost
-
-      - name: Archive scannerwork
-        uses: actions/upload-artifact@v4
-        with:
-          name: sonar-local-analysis
-          path: .scannerwork/
+- name: Run SonarQube Scan
+  env:
+    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    SONAR_HOST_URL: http://localhost:9000
+  run: |
+    sonar-scanner \
+      -Dsonar.projectKey=<your_project_key> \
+      -Dsonar.organization=<your_org> \
+      -Dsonar.host.url=$SONAR_HOST_URL \
+      -Dsonar.login=$SONAR_TOKEN
