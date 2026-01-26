@@ -1,3 +1,13 @@
+> **MARKET RELEASE — OFFICIAL PLATFORM SUPPORT**
+> 
+> This repository, build scripts, and documentation are made to be market release ready
+>
+> **Supported platforms:**
+> - Ubuntu 24.04 ARM64 (glibc) via Docker
+> - Android 10+ ARM64 devices
+> - Code-Server web IDE
+> 
+> Any features or scripts not covered here are not supported for market release. See /reference/vault for authoritative standards.
 # WebLabs-MobIDE — Copilot Coding Standards
 
 ## 1. Repository Structure

@@ -7,6 +7,10 @@ on:
       - 'release/**'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build-apk:
     name: Build APK
@@ -18,14 +22,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Replace the unresolved android-actions/setup -> setup-java for Gradle/Android builds
       - name: Set up Java (required for Gradle)
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'   # Temurin (Adoptium). Change if you use a different JDK distribution.
-          java-version: '17'       # Match the project's Gradle toolchain if different.
+          distribution: 'temurin'
+          java-version: '17'
 
-      # Optional: cache Gradle to speed builds
       - name: Cache Gradle packages
         uses: actions/cache@v4
         with:
@@ -36,19 +38,19 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
 
+      - name: Make Gradlew Executable
+        run: chmod +x gradlew
+
       - name: Install project dependencies
-        run: |
-          ./gradlew --no-daemon dependencies || true
+        run: ./gradlew --no-daemon dependencies || true
 
       - name: Assemble release APK
-        run: |
-          ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleRelease --no-daemon
 
       - name: Collect APK artifact(s)
         if: always()
         run: |
           mkdir -p artifacts
-          # Copy any APK outputs to a single artifacts folder so upload-artifact collects them
           find app/build/outputs -type f -name "*.apk" -exec cp {} artifacts/ \; || true
 
       - name: Upload APK artifact
@@ -58,19 +60,13 @@ jobs:
           name: WebLabs-MobIDE-apk
           path: artifacts/*.apk
 
-      # Optional: when you need the Android SDK/emulator in CI for tests/emulator runs,
-      # prefer reactivecircus/android-emulator-runner (keeps SDK/emulator setup standardized).
-      # Uncomment and adjust only if you need emulator-based tests:
-      #
-      # - name: Setup Android emulator (optional)
-      #   uses: reactivecircus/android-emulator-runner@v2
-      #   with:
-      #     api-level: 30
-      #     target: default
-      #     abi: x86_64
-      #
-      # If you need to install specific Android SDK components manually, invoke sdkmanager after ensuring
-      # ANDROID_SDK_ROOT is available. For most Gradle builds on GitHub runners installing Java is sufficient.
+      # FIXED: Indentation corrected here
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4 # UPDATED to v4
+        with:
+          name: WebLabs-MobIDE-Release-v${{ github.run_number }}
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: warn
 
       - name: Upload build logs
         if: failure()
@@ -80,35 +76,30 @@ jobs:
           path: |
             **/build/*.log
             app/build/outputs/**/*.log
-    # Upload Release APK
-    - name: Upload Release APK
-      uses: actions/upload-artifact@v3
-      with:
-        name: WebLabs-MobIDE-Release-v${{ github.run_number }}
-        path: app/build/outputs/apk/release/*.apk
-        if-no-files-found: warn
 
-    - name: Generate download links
-      if: success()
-      run: |
-        echo "🎉 WebLabs-MobIDE APK Build Successful!"
-        echo ""
-        echo "📱 APK Downloads:"
-        echo "- Debug APK: Available in Actions artifacts"
-        echo "- Release APK: Available in Actions artifacts" 
-        echo ""
-        echo "🐳 Features:"
-        echo "- Ubuntu 24.04 ARM64 Docker environment"
-        echo "- Code-Server web IDE at localhost:8080"  
-        echo "- AI-powered development assistance"
-        echo "- Mobile-optimized interface"
-        echo "- Production-grade development tools"
-        echo ""
-        echo "📋 Installation:"
-        echo "1. Download APK from GitHub Actions artifacts"
-        echo "2. Enable 'Install from unknown sources' on Android"
-        echo "3. Install APK on ARM64 Android 10+ device"
-        echo "4. Launch WebLabs-MobIDE for Docker environment"
+      # FIXED: Indentation corrected here
+      - name: Generate download links
+        if: success()
+        run: |
+          echo "🎉 WebLabs-MobIDE APK Build Successful!"
+          echo ""
+          echo "📱 APK Downloads:"
+          echo "- Debug APK: Available in Actions artifacts"
+          echo "- Release APK: Available in Actions artifacts" 
+          echo ""
+          echo "🐳 Features:"
+          echo "- Ubuntu 24.04 ARM64 Docker environment"
+          echo "- Code-Server web IDE at localhost:8080"  
+          echo "- AI-powered development assistance"
+          echo "- Mobile-optimized interface"
+          echo "- Production-grade development tools"
+          echo ""
+          echo "📋 Installation:"
+          echo "1. Download APK from GitHub Actions artifacts"
+          echo "2. Enable 'Install from unknown sources' on Android"
+          echo "3. Install APK on ARM64 Android 10+ device"
+          echo "4. Launch WebLabs-MobIDE for Docker environment"
+
   create-release:
     name: Create GitHub Release
     needs: build-apk
@@ -116,60 +107,50 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
-    - name: Download APK artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: WebLabs-MobIDE-Release-v${{ github.run_number }}
-        path: ./apks
+      # UPDATED: Switched to v4 to match the upload step (Critical Fix)
+      - name: Download APK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: WebLabs-MobIDE-Release-v${{ github.run_number }}
+          path: ./apks
 
-    - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v2.0.${{ github.run_number }}
-        release_name: WebLabs-MobIDE v2.0.${{ github.run_number }} - Docker Ubuntu Environment
-        body: |
-          🚀 **WebLabs-MobIDE Docker Ubuntu Environment Release**
-          
-          A complete virtual Linux development environment running on Android devices!
-          
-          ## 🐳 What's New
-          - **Ubuntu 24.04 ARM64** Docker environment with glibc (not Alpine musl)
-          - **Code-Server IDE** - Full VS Code experience at localhost:8080
-          - **AI Integration** - Development assistance ready
-          - **Mobile Optimized** - Touch-friendly cyberpunk interface
-          - **Production Tools** - Complete development workspace
-          
-          ## 📱 Features
-          - Virtual Linux development environment on Android
-          - Docker container management
-          - Web-based VS Code IDE
-          - AI-powered coding assistance
-          - Project workspace management
-          - GitHub Copilot compatible environment
-          
-          ## 🎯 Requirements  
-          - Android 10+ (API 29+)
-          - ARM64/AArch64 device
-          - 4GB+ RAM recommended
-          - Storage for Docker images
-          
-          ## 📥 Installation
-          1. Download the APK below
-          2. Enable "Install from unknown sources" in Android settings
-          3. Install APK on your ARM64 Android device
-          4. Launch WebLabs-MobIDE
-          5. Access Code-Server IDE at localhost:8080
-          
-          ## 🛠️ Development Environment
-          Your own virtual Linux workspace with:
-          - Ubuntu 24.04 ARM64 with full development tools
-          - Code-Server web-based VS Code IDE
-          - Docker container management
-          - AI development assistance
-          - Production-grade mobile development environment
-          
-          Perfect for developers who want a complete Linux development environment on their Android device!
-        draft: false
-        prerelease: false
+      # UPDATED: Switched to softprops/action-gh-release (Modern Standard)
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v2.0.${{ github.run_number }}
+          name: WebLabs-MobIDE v2.0.${{ github.run_number }} - Docker Ubuntu Environment
+          files: ./apks/*.apk
+          draft: false
+          prerelease: false
+          body: |
+            🚀 **WebLabs-MobIDE Docker Ubuntu Environment Release**
+            
+            A complete virtual Linux development environment running on Android devices!
+            
+            ## 🐳 What's New
+            - **Ubuntu 24.04 ARM64** Docker environment with glibc
+            - **Code-Server IDE** - Full VS Code experience at localhost:8080
+            - **AI Integration** - Development assistance ready
+            - **Mobile Optimized** - Touch-friendly cyberpunk interface
+            
+            ## 📱 Features
+            - Virtual Linux development environment on Android
+            - Docker container management
+            - Web-based VS Code IDE
+            - AI-powered coding assistance
+            - Project workspace management
+            
+            ## 🎯 Requirements  
+            - Android 10+ (API 29+)
+            - ARM64/AArch64 device
+            - 4GB+ RAM recommended
+            
+            ## 📥 Installation
+            1. Download the APK below
+            2. Enable "Install from unknown sources" in Android settings
+            3. Install APK on your ARM64 Android device
+            4. Launch WebLabs-MobIDE
+            5. Access Code-Server IDE at localhost:8080
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
