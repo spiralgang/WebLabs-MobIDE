@@ -1,0 +1,64 @@
+name: "CodeQL Advanced Security Scan"
+
+on:
+  push:
+    branches: [ "main", "develop", "master" ]
+  pull_request:
+    branches: [ "main", "develop", "master" ]
+  schedule:
+    - cron: '30 1 * * 0' # Runs at 01:30 on Sundays
+
+permissions:
+  contents: read
+  actions: read
+  security-events: write # Required to upload security alerts
+  checks: write
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Scanning Python (Scripts), Javascript (WebIDE), and Java (Android/Kotlin)
+        language: [ 'python', 'javascript', 'java' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # Setup Java 17 for the Android build portion of the scan
+    - name: Set up JDK 17
+      if: matrix.language == 'java'
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # Initialize CodeQL tools for the specific language
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        # If you have specific build commands, you can disable default queries here
+        # queries: security-extended,security-and-quality
+
+    # Autobuild attempts to build the code automatically
+    # This works for standard Python/JS/Gradle structures
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    # If Autobuild fails for Android, you can replace the step above with:
+    # - run: ./gradlew assembleDebug --no-daemon
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{ matrix.language }}"
