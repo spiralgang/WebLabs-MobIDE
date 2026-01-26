@@ -1,0 +1,130 @@
+name: "AI Architect: Structural Integrity Guardian"
+
+on:
+  workflow_dispatch:
+    inputs:
+      aggressiveness:
+        description: 'Organization Level (safe/strict)'
+        required: true
+        default: 'strict'
+  schedule:
+    - cron: '0 4 * * 1' # Runs weekly on Monday at 4 AM to tidy up
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  analyze_and_restructure:
+    name: "Analyze and Enforce File Structure"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Initialize AI Architect (Python Setup)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Execute Structural Reorganization Agent
+        id: organizer
+        run: |
+          python -c "
+          import os
+          import shutil
+          import sys
+          from datetime import datetime
+
+          # --- CONFIGURATION: The Ideal Architecture ---
+          # Maps target directories to file patterns or specific names
+          STRUCTURE_MAP = {
+              'mobile/android': [
+                  'app', 'gradle', 'build.gradle.kts', 'settings.gradle.kts', 
+                  'gradlew', 'gradlew.bat', 'gradle.properties', 'local.properties'
+              ],
+              'web/ide-core': [
+                  'package.json', 'package-lock.json', 'node_modules', 'webpack.config.js'
+              ],
+              'ops/infrastructure': [
+                  'Dockerfile', 'docker-compose.yml', '.dockerignore', 
+                  'app_data', 'requirements.txt'
+              ],
+              'docs/knowledge-base': [
+                  'copilot_instructions.md', 'reference', 'VAULT', 'SECURITY.md', 
+                  'CONTRIBUTING.md', 'PULL_REQUEST_TEMPLATE.md'
+              ],
+              'docs/legal': [
+                  'LICENSE'
+              ],
+              'scripts/automation': [
+                  'scripts', '.github'
+              ]
+          }
+
+          # Files to strictly IGNORE and leave in root
+          SAFE_LIST = ['.git', 'README.md', '.gitignore']
+
+          def log(msg):
+              print(f'[AI ARCHITECT] {msg}')
+
+          def move_item(item, target_dir):
+              if not os.path.exists(item):
+                  return
+              
+              if not os.path.exists(target_dir):
+                  os.makedirs(target_dir, exist_ok=True)
+                  log(f'Created directory: {target_dir}')
+
+              try:
+                  # Handle destination collisions
+                  dest_path = os.path.join(target_dir, os.path.basename(item))
+                  if os.path.exists(dest_path):
+                      log(f'Skipping {item} -> exists in destination.')
+                      return
+
+                  shutil.move(item, target_dir)
+                  log(f'MOVED: {item} -> {target_dir}')
+              except Exception as e:
+                  log(f'ERROR moving {item}: {str(e)}')
+
+          def main():
+              log('Initiating Structural Integrity Scan...')
+              root_files = os.listdir('.')
+              
+              moves_count = 0
+
+              for target_dir, items in STRUCTURE_MAP.items():
+                  for pattern in items:
+                      # Direct match check
+                      if pattern in root_files and pattern not in SAFE_LIST:
+                          move_item(pattern, target_dir)
+                          moves_count += 1
+
+              # Special Handler: Move all loose .md files to docs if not README
+              for f in os.listdir('.'):
+                  if f.endswith('.md') and f not in SAFE_LIST and os.path.isfile(f):
+                      move_item(f, 'docs/knowledge-base')
+                      moves_count += 1
+
+              if moves_count == 0:
+                  log('Structure is valid. No actions needed.')
+                  print('::set-output name=changes::false')
+              else:
+                  log(f'Optimization Complete. {moves_count} items relocated.')
+                  print('::set-output name=changes::true')
+
+          if __name__ == '__main__':
+              main()
+          "
+
+      - name: Commit Structural Changes
+        if: steps.organizer.outputs.changes == 'true'
+        run: |
+          git config --global user.name "AI Architect Agent"
+          git config --global user.email "ai-architect@spiralgang.bot"
+          git add .
+          git commit -m "chore(structure): AI Agent reorganized file system for Monorepo compliance"
+          git push origin main
