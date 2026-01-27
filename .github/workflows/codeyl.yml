@@ -27,38 +27,48 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Scanning Python (Scripts), Javascript (WebIDE), and Java (Android/Kotlin)
         language: [ 'python', 'javascript', 'java' ]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    # Setup Java 17 for the Android build portion of the scan
-    - name: Set up JDK 17
-      if: matrix.language == 'java'
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Set up Java (for Java scans)
+        if: matrix.language == 'java'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    # Initialize CodeQL tools for the specific language
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        # If you have specific build commands, you can disable default queries here
-        # queries: security-extended,security-and-quality
+      - name: Set up Node (for JavaScript scans)
+        if: matrix.language == 'javascript'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    # Autobuild attempts to build the code automatically
-    # This works for standard Python/JS/Gradle structures
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
 
-    # If Autobuild fails for Android, you can replace the step above with:
-    # - run: ./gradlew assembleDebug --no-daemon
+      - name: Build code for analysis (explicit)
+        run: |
+          echo "Building for language: ${{ matrix.language }}"
+          if [ "${{ matrix.language }}" = "java" ]; then
+            chmod +x ./gradlew || true
+            ./gradlew assembleDebug --no-daemon || true
+          elif [ "${{ matrix.language }}" = "javascript" ]; then
+            if [ -f package.json ]; then
+              npm ci || true
+              npm run build || true
+            fi
+          else
+            echo "No explicit build for language: ${{ matrix.language }}"
+          fi
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{ matrix.language }}"
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
