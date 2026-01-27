@@ -1,0 +1,23 @@
+# Gradle
+.gradle/
+build/
+
+# Android
+app/build/
+*.apk
+*.aar
+*.ap_
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Logs
+*.log
+.quantum_logs/
+
+# Agent/Temp
+cortex_report.json
+gradlew.bak
+gradlew.txt.bak

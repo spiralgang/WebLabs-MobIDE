@@ -35,7 +35,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Java (for Java scans)
+      - name: Setup Android SDK (for Android scans)
+        if: matrix.language == 'java'
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Java (for Java/Android scans)
         if: matrix.language == 'java'
         uses: actions/setup-java@v4
         with:
@@ -57,12 +61,12 @@ jobs:
         run: |
           echo "Building for language: ${{ matrix.language }}"
           if [ "${{ matrix.language }}" = "java" ]; then
-            chmod +x ./gradlew || true
-            ./gradlew assembleDebug --no-daemon || true
+            chmod +x ./gradlew
+            ./gradlew assembleDebug --no-daemon
           elif [ "${{ matrix.language }}" = "javascript" ]; then
             if [ -f package.json ]; then
-              npm ci || true
-              npm run build || true
+              npm ci
+              npm run build
             fi
           else
             echo "No explicit build for language: ${{ matrix.language }}"
