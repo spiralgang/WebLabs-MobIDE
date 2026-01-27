@@ -1,0 +1,10 @@
+# Audit Step for Required Dependency/Provider Domains
+  - name: Audit Dependency Domains
+    run: |
+      required_domains=("dl.google.com" "maven.google.com" "repo1.maven.org" "services.gradle.org" "storage.googleapis.com" "github.com" "objects.githubusercontent.com" "actions.githubusercontent.com")
+      for domain in "${required_domains[@]}"; do
+        if ! ping -c 1 -W 1 $domain > /dev/null; then
+          echo "Domain $domain is not reachable";
+          exit 1;
+        fi;
+      done
