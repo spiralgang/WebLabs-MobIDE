@@ -233,14 +233,25 @@ class ProjectManager:
         }
         
         # Scan files
-        for file_path in self.project_root.rglob("*"):
-            if file_path.is_file() and not any(ignore in str(file_path) for ignore in ['.git', '__pycache__', 'node_modules']):
-                analysis["files"].append(str(file_path))
-                
-                # Detect language
-                suffix = file_path.suffix.lower()
-                if suffix in ['.py', '.js', '.ts', '.java', '.cpp', '.c', '.rs', '.go']:
-                    analysis["languages"].add(suffix[1:])
+        ignore_patterns = ['.git', '__pycache__', 'node_modules']
+
+        # Check if project root itself contains ignore patterns
+        if any(ignore in str(self.project_root) for ignore in ignore_patterns):
+            return analysis
+
+        for root, dirs, files in os.walk(self.project_root):
+            # Prune ignored directories in-place to prevent unnecessary traversal
+            dirs[:] = [d for d in dirs if not any(ignore in d for ignore in ignore_patterns)]
+
+            for file in files:
+                if not any(ignore in file for ignore in ignore_patterns):
+                    file_path = Path(root) / file
+                    analysis["files"].append(str(file_path))
+
+                    # Detect language
+                    suffix = file_path.suffix.lower()
+                    if suffix in ['.py', '.js', '.ts', '.java', '.cpp', '.c', '.rs', '.go']:
+                        analysis["languages"].add(suffix[1:])
         
         # Check for dependency files
         dep_files = ['requirements.txt', 'package.json', 'Cargo.toml', 'go.mod', 'pom.xml', 'build.gradle']
