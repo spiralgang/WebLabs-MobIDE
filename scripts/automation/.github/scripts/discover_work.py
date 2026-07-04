@@ -26,10 +26,9 @@ def find_modules():
         'pom.xml', 'build.gradle'              # Java/Kotlin
     ]
     
-    for root, _, files in os.walk('.'):
+    for root, dirs, files in os.walk('.'):
         # Ignore dot-folders like .github, .git
-        if any(part.startswith('.') for part in root.split(os.path.sep)):
-            continue
+        dirs[:] = [d for d in dirs if not d.startswith('.')]
 
         for dep_file in dependency_files:
             if dep_file in files:
