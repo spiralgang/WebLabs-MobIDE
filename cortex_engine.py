@@ -72,10 +72,10 @@ class FiniteStateMachine:
 
     def _clean_legacy_artifacts(self):
         # Heuristic: Delete temp files that clutter the repo
-        junk_extensions = ['.tmp', '.log', '.bak', '.swp']
+        junk_extensions = ('.tmp', '.log', '.bak', '.swp')
         # Exclude our quantum logs
         for filepath in self.repo.files:
-            if any(filepath.endswith(ext) for ext in junk_extensions):
+            if filepath.endswith(junk_extensions):
                 if '.quantum_logs' not in filepath:
                     os.remove(filepath)
                     self.changes_made.append(f"Purged artifact: {filepath}")
