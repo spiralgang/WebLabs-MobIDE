@@ -207,6 +207,8 @@ class AuditGenerator:
         # Check for HF_API_KEY handling
         hf_check = False
         for root, dirs, files in os.walk(self.repo_path / "ai" if (self.repo_path / "ai").exists() else self.repo_path):
+            # Prune common non-source directories
+            dirs[:] = [d for d in dirs if d not in ['.git', 'node_modules', '.gradle', 'build']]
             for file in files:
                 if file.endswith(('.py', '.js')):
                     try:

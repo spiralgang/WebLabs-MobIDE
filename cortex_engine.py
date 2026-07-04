@@ -19,7 +19,8 @@ class RepositoryState:
 
     def scan(self):
         for root, d, f in os.walk('.'):
-            if '.git' in root or '.quantum_logs' in root: continue
+            # Prune ignored directories in-place
+            d[:] = [dirname for dirname in d if dirname not in ('.git', '.quantum_logs')]
             for file in f:
                 self.files.append(os.path.join(root, file))
             for directory in d:
