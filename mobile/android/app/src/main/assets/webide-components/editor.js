@@ -42,6 +42,9 @@ class ARM64MobileEditor {
             </div>
         `;
         
+        this.editor = document.getElementById('editor');
+        this.cursorPos = document.getElementById('cursor-pos');
+
         this.setupEditorStyles();
         this.setupEventHandlers();
         this.setupSyntaxHighlighting();
@@ -130,11 +133,10 @@ class ARM64MobileEditor {
     }
 
     setupEventHandlers() {
-        const editor = document.getElementById('editor');
-        editor.value = files[openFile()] || '';
+        this.editor.value = files[openFile()] || '';
         
         document.getElementById('save-file-btn').onclick = () => {
-            saveFile(editor.value);
+            saveFile(this.editor.value);
             this.showStatus('File saved successfully!', 'success');
         };
         
@@ -142,7 +144,7 @@ class ARM64MobileEditor {
             const filename = prompt("New file name:");
             if (filename) {
                 openFile(filename);
-                editor.value = '';
+                this.editor.value = '';
                 this.showStatus(`Created new file: ${filename}`, 'info');
             }
         };
@@ -164,9 +166,9 @@ class ARM64MobileEditor {
         };
         
         // Cursor position tracking
-        editor.addEventListener('input', () => this.updateCursorPosition());
-        editor.addEventListener('click', () => this.updateCursorPosition());
-        editor.addEventListener('keyup', () => this.updateCursorPosition());
+        this.editor.addEventListener('input', () => this.updateCursorPosition());
+        this.editor.addEventListener('click', () => this.updateCursorPosition());
+        this.editor.addEventListener('keyup', () => this.updateCursorPosition());
     }
 
     setupMobileOptimizations() {
@@ -178,9 +180,8 @@ class ARM64MobileEditor {
     }
 
     enableARMOptimizations() {
-        const editor = document.getElementById('editor');
-        editor.style.willChange = 'transform';
-        editor.style.transform = 'translateZ(0)';
+        this.editor.style.willChange = 'transform';
+        this.editor.style.transform = 'translateZ(0)';
         
         if (typeof SharedArrayBuffer !== 'undefined') {
             this.useSharedMemory = true;
@@ -188,10 +189,9 @@ class ARM64MobileEditor {
     }
 
     setupTouchControls() {
-        const editor = document.getElementById('editor');
         let lastTap = 0;
         
-        editor.addEventListener('touchend', (e) => {
+        this.editor.addEventListener('touchend', (e) => {
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTap;
             if (tapLength < 500 && tapLength > 0) {
@@ -202,13 +202,13 @@ class ARM64MobileEditor {
 
         // Pinch to zoom
         let initialDistance = 0;
-        editor.addEventListener('touchstart', (e) => {
+        this.editor.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 initialDistance = this.getTouchDistance(e.touches[0], e.touches[1]);
             }
         });
 
-        editor.addEventListener('touchmove', (e) => {
+        this.editor.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2) {
                 const currentDistance = this.getTouchDistance(e.touches[0], e.touches[1]);
                 const scale = currentDistance / initialDistance;
@@ -228,14 +228,13 @@ class ARM64MobileEditor {
     }
 
     setupAutocomplete() {
-        const editor = document.getElementById('editor');
         this.autocompleteWords = [
             'function', 'return', 'const', 'let', 'var', 'class', 'extends',
             'import', 'export', 'async', 'await', 'Promise', 'setTimeout',
             'Alpine', 'Linux', 'ARM64', 'android', 'WebLabs', 'MobIDE'
         ];
         
-        editor.addEventListener('keydown', (e) => {
+        this.editor.addEventListener('keydown', (e) => {
             if (e.key === 'Tab') {
                 e.preventDefault();
                 this.handleTab();
@@ -244,18 +243,16 @@ class ARM64MobileEditor {
     }
 
     updateCursorPosition() {
-        const editor = document.getElementById('editor');
-        const cursor = editor.selectionStart;
-        const lines = editor.value.substr(0, cursor).split('\n');
+        const cursor = this.editor.selectionStart;
+        const lines = this.editor.value.substr(0, cursor).split('\n');
         const line = lines.length;
         const col = lines[lines.length - 1].length + 1;
         
-        document.getElementById('cursor-pos').textContent = `Line ${line}, Col ${col}`;
+        this.cursorPos.textContent = `Line ${line}, Col ${col}`;
     }
 
     formatCode() {
-        const editor = document.getElementById('editor');
-        let code = editor.value;
+        let code = this.editor.value;
         
         // Basic JavaScript formatting for ARM64 mobile
         code = code.replace(/;/g, ';\n');
@@ -263,17 +260,16 @@ class ARM64MobileEditor {
         code = code.replace(/}/g, '\n}\n');
         code = code.replace(/\n\s*\n/g, '\n');
         
-        editor.value = code;
+        this.editor.value = code;
         this.showStatus('Code formatted', 'success');
     }
 
     handleTab() {
-        const editor = document.getElementById('editor');
-        const start = editor.selectionStart;
-        const end = editor.selectionEnd;
+        const start = this.editor.selectionStart;
+        const end = this.editor.selectionEnd;
         
-        editor.value = editor.value.substring(0, start) + '    ' + editor.value.substring(end);
-        editor.selectionStart = editor.selectionEnd = start + 4;
+        this.editor.value = this.editor.value.substring(0, start) + '    ' + this.editor.value.substring(end);
+        this.editor.selectionStart = this.editor.selectionEnd = start + 4;
     }
 
     getTouchDistance(touch1, touch2) {
@@ -284,13 +280,12 @@ class ARM64MobileEditor {
     }
 
     selectWordAtTouch(touch) {
-        const editor = document.getElementById('editor');
-        const rect = editor.getBoundingClientRect();
+        const rect = this.editor.getBoundingClientRect();
         const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
         
         // Simple word selection logic for mobile
-        editor.focus();
+        this.editor.focus();
     }
 
     adjustFontSize(scale) {
@@ -302,15 +297,13 @@ class ARM64MobileEditor {
     }
 
     increaseFontSize() {
-        const editor = document.getElementById('editor');
-        const currentSize = parseInt(getComputedStyle(editor).fontSize) || 14;
-        editor.style.fontSize = Math.min(currentSize + 1, 24) + 'px';
+        const currentSize = parseInt(getComputedStyle(this.editor).fontSize) || 14;
+        this.editor.style.fontSize = Math.min(currentSize + 1, 24) + 'px';
     }
 
     decreaseFontSize() {
-        const editor = document.getElementById('editor');
-        const currentSize = parseInt(getComputedStyle(editor).fontSize) || 14;
-        editor.style.fontSize = Math.max(currentSize - 1, 10) + 'px';
+        const currentSize = parseInt(getComputedStyle(this.editor).fontSize) || 14;
+        this.editor.style.fontSize = Math.max(currentSize - 1, 10) + 'px';
     }
 
     optimizeMemoryUsage() {
@@ -322,17 +315,16 @@ class ARM64MobileEditor {
     }
 
     showStatus(message, type = 'info') {
-        const status = document.getElementById('cursor-pos');
-        const originalText = status.textContent;
+        const originalText = this.cursorPos.textContent;
         
-        status.textContent = message;
-        status.style.color = type === 'success' ? '#4CAF50' : 
+        this.cursorPos.textContent = message;
+        this.cursorPos.style.color = type === 'success' ? '#4CAF50' :
                             type === 'warning' ? '#FF9800' : 
                             type === 'error' ? '#F44336' : '#2196F3';
         
         setTimeout(() => {
-            status.textContent = originalText;
-            status.style.color = '';
+            this.cursorPos.textContent = originalText;
+            this.cursorPos.style.color = '';
         }, 2000);
     }
 }
