@@ -97,7 +97,8 @@ class ARM64MobileUtils {
         const maxAge = 24 * 60 * 60 * 1000; // 24 hours
         const now = Date.now();
         
-        for (let key in localStorage) {
+        // Using Object.keys() for performance and safety during item removal
+        Object.keys(localStorage).forEach(key => {
             if (key.endsWith('_timestamp')) {
                 const timestamp = parseInt(localStorage.getItem(key) || '0');
                 if (now - timestamp > maxAge) {
@@ -106,7 +107,7 @@ class ARM64MobileUtils {
                     localStorage.removeItem(dataKey);
                 }
             }
-        }
+        });
     }
     
     /**
@@ -151,15 +152,18 @@ export function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Pre-instantiate and reuse Intl.DateTimeFormat for performance
+const timeFormatter = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+});
+
 export function formatTime(date) {
-    return new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    }).format(date || new Date());
+    return timeFormatter.format(date || new Date());
 }
 
 export function generateId() {
