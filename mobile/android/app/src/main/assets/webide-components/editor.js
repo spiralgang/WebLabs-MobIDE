@@ -130,7 +130,11 @@ class ARM64MobileEditor {
     }
 
     setupEventHandlers() {
-        const editor = document.getElementById('editor');
+        // Cache high-frequency DOM elements to avoid redundant lookups in event listeners
+        this.editorElement = document.getElementById('editor');
+        this.cursorPosElement = document.getElementById('cursor-pos');
+
+        const editor = this.editorElement;
         editor.value = files[openFile()] || '';
         
         document.getElementById('save-file-btn').onclick = () => {
@@ -178,7 +182,7 @@ class ARM64MobileEditor {
     }
 
     enableARMOptimizations() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorElement || document.getElementById('editor');
         editor.style.willChange = 'transform';
         editor.style.transform = 'translateZ(0)';
         
@@ -188,7 +192,7 @@ class ARM64MobileEditor {
     }
 
     setupTouchControls() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorElement || document.getElementById('editor');
         let lastTap = 0;
         
         editor.addEventListener('touchend', (e) => {
@@ -228,7 +232,7 @@ class ARM64MobileEditor {
     }
 
     setupAutocomplete() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorElement || document.getElementById('editor');
         this.autocompleteWords = [
             'function', 'return', 'const', 'let', 'var', 'class', 'extends',
             'import', 'export', 'async', 'await', 'Promise', 'setTimeout',
@@ -244,17 +248,19 @@ class ARM64MobileEditor {
     }
 
     updateCursorPosition() {
-        const editor = document.getElementById('editor');
+        // Use cached DOM elements for high-frequency updates
+        const editor = this.editorElement || document.getElementById('editor');
         const cursor = editor.selectionStart;
         const lines = editor.value.substr(0, cursor).split('\n');
         const line = lines.length;
         const col = lines[lines.length - 1].length + 1;
         
-        document.getElementById('cursor-pos').textContent = `Line ${line}, Col ${col}`;
+        const cursorPos = this.cursorPosElement || document.getElementById('cursor-pos');
+        cursorPos.textContent = `Line ${line}, Col ${col}`;
     }
 
     formatCode() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorElement || document.getElementById('editor');
         let code = editor.value;
         
         // Basic JavaScript formatting for ARM64 mobile
@@ -268,7 +274,7 @@ class ARM64MobileEditor {
     }
 
     handleTab() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorElement || document.getElementById('editor');
         const start = editor.selectionStart;
         const end = editor.selectionEnd;
         
@@ -284,7 +290,7 @@ class ARM64MobileEditor {
     }
 
     selectWordAtTouch(touch) {
-        const editor = document.getElementById('editor');
+        const editor = this.editorElement || document.getElementById('editor');
         const rect = editor.getBoundingClientRect();
         const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
@@ -302,13 +308,13 @@ class ARM64MobileEditor {
     }
 
     increaseFontSize() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorElement || document.getElementById('editor');
         const currentSize = parseInt(getComputedStyle(editor).fontSize) || 14;
         editor.style.fontSize = Math.min(currentSize + 1, 24) + 'px';
     }
 
     decreaseFontSize() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorElement || document.getElementById('editor');
         const currentSize = parseInt(getComputedStyle(editor).fontSize) || 14;
         editor.style.fontSize = Math.max(currentSize - 1, 10) + 'px';
     }
@@ -322,7 +328,7 @@ class ARM64MobileEditor {
     }
 
     showStatus(message, type = 'info') {
-        const status = document.getElementById('cursor-pos');
+        const status = this.cursorPosElement || document.getElementById('cursor-pos');
         const originalText = status.textContent;
         
         status.textContent = message;
