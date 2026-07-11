@@ -41,6 +41,11 @@ class ARM64MobileEditor {
                 </div>
             </div>
         `;
+
+        // Cache frequently accessed DOM elements to improve performance
+        // This avoids expensive document.getElementById calls in high-frequency events
+        this.editorElem = document.getElementById('editor');
+        this.cursorStatusElem = document.getElementById('cursor-pos');
         
         this.setupEditorStyles();
         this.setupEventHandlers();
@@ -130,11 +135,10 @@ class ARM64MobileEditor {
     }
 
     setupEventHandlers() {
-        const editor = document.getElementById('editor');
-        editor.value = files[openFile()] || '';
+        this.editorElem.value = files[openFile()] || '';
         
         document.getElementById('save-file-btn').onclick = () => {
-            saveFile(editor.value);
+            saveFile(this.editorElem.value);
             this.showStatus('File saved successfully!', 'success');
         };
         
@@ -142,7 +146,7 @@ class ARM64MobileEditor {
             const filename = prompt("New file name:");
             if (filename) {
                 openFile(filename);
-                editor.value = '';
+                this.editorElem.value = '';
                 this.showStatus(`Created new file: ${filename}`, 'info');
             }
         };
@@ -164,9 +168,9 @@ class ARM64MobileEditor {
         };
         
         // Cursor position tracking
-        editor.addEventListener('input', () => this.updateCursorPosition());
-        editor.addEventListener('click', () => this.updateCursorPosition());
-        editor.addEventListener('keyup', () => this.updateCursorPosition());
+        this.editorElem.addEventListener('input', () => this.updateCursorPosition());
+        this.editorElem.addEventListener('click', () => this.updateCursorPosition());
+        this.editorElem.addEventListener('keyup', () => this.updateCursorPosition());
     }
 
     setupMobileOptimizations() {
@@ -178,9 +182,8 @@ class ARM64MobileEditor {
     }
 
     enableARMOptimizations() {
-        const editor = document.getElementById('editor');
-        editor.style.willChange = 'transform';
-        editor.style.transform = 'translateZ(0)';
+        this.editorElem.style.willChange = 'transform';
+        this.editorElem.style.transform = 'translateZ(0)';
         
         if (typeof SharedArrayBuffer !== 'undefined') {
             this.useSharedMemory = true;
@@ -188,10 +191,9 @@ class ARM64MobileEditor {
     }
 
     setupTouchControls() {
-        const editor = document.getElementById('editor');
         let lastTap = 0;
         
-        editor.addEventListener('touchend', (e) => {
+        this.editorElem.addEventListener('touchend', (e) => {
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTap;
             if (tapLength < 500 && tapLength > 0) {
@@ -202,13 +204,13 @@ class ARM64MobileEditor {
 
         // Pinch to zoom
         let initialDistance = 0;
-        editor.addEventListener('touchstart', (e) => {
+        this.editorElem.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 initialDistance = this.getTouchDistance(e.touches[0], e.touches[1]);
             }
         });
 
-        editor.addEventListener('touchmove', (e) => {
+        this.editorElem.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2) {
                 const currentDistance = this.getTouchDistance(e.touches[0], e.touches[1]);
                 const scale = currentDistance / initialDistance;
@@ -228,14 +230,13 @@ class ARM64MobileEditor {
     }
 
     setupAutocomplete() {
-        const editor = document.getElementById('editor');
         this.autocompleteWords = [
             'function', 'return', 'const', 'let', 'var', 'class', 'extends',
             'import', 'export', 'async', 'await', 'Promise', 'setTimeout',
             'Alpine', 'Linux', 'ARM64', 'android', 'WebLabs', 'MobIDE'
         ];
         
-        editor.addEventListener('keydown', (e) => {
+        this.editorElem.addEventListener('keydown', (e) => {
             if (e.key === 'Tab') {
                 e.preventDefault();
                 this.handleTab();
@@ -244,18 +245,16 @@ class ARM64MobileEditor {
     }
 
     updateCursorPosition() {
-        const editor = document.getElementById('editor');
-        const cursor = editor.selectionStart;
-        const lines = editor.value.substr(0, cursor).split('\n');
+        const cursor = this.editorElem.selectionStart;
+        const lines = this.editorElem.value.substr(0, cursor).split('\n');
         const line = lines.length;
         const col = lines[lines.length - 1].length + 1;
         
-        document.getElementById('cursor-pos').textContent = `Line ${line}, Col ${col}`;
+        this.cursorStatusElem.textContent = `Line ${line}, Col ${col}`;
     }
 
     formatCode() {
-        const editor = document.getElementById('editor');
-        let code = editor.value;
+        let code = this.editorElem.value;
         
         // Basic JavaScript formatting for ARM64 mobile
         code = code.replace(/;/g, ';\n');
@@ -263,17 +262,16 @@ class ARM64MobileEditor {
         code = code.replace(/}/g, '\n}\n');
         code = code.replace(/\n\s*\n/g, '\n');
         
-        editor.value = code;
+        this.editorElem.value = code;
         this.showStatus('Code formatted', 'success');
     }
 
     handleTab() {
-        const editor = document.getElementById('editor');
-        const start = editor.selectionStart;
-        const end = editor.selectionEnd;
+        const start = this.editorElem.selectionStart;
+        const end = this.editorElem.selectionEnd;
         
-        editor.value = editor.value.substring(0, start) + '    ' + editor.value.substring(end);
-        editor.selectionStart = editor.selectionEnd = start + 4;
+        this.editorElem.value = this.editorElem.value.substring(0, start) + '    ' + this.editorElem.value.substring(end);
+        this.editorElem.selectionStart = this.editorElem.selectionEnd = start + 4;
     }
 
     getTouchDistance(touch1, touch2) {
@@ -284,13 +282,12 @@ class ARM64MobileEditor {
     }
 
     selectWordAtTouch(touch) {
-        const editor = document.getElementById('editor');
-        const rect = editor.getBoundingClientRect();
+        const rect = this.editorElem.getBoundingClientRect();
         const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
         
         // Simple word selection logic for mobile
-        editor.focus();
+        this.editorElem.focus();
     }
 
     adjustFontSize(scale) {
@@ -302,15 +299,13 @@ class ARM64MobileEditor {
     }
 
     increaseFontSize() {
-        const editor = document.getElementById('editor');
-        const currentSize = parseInt(getComputedStyle(editor).fontSize) || 14;
-        editor.style.fontSize = Math.min(currentSize + 1, 24) + 'px';
+        const currentSize = parseInt(getComputedStyle(this.editorElem).fontSize) || 14;
+        this.editorElem.style.fontSize = Math.min(currentSize + 1, 24) + 'px';
     }
 
     decreaseFontSize() {
-        const editor = document.getElementById('editor');
-        const currentSize = parseInt(getComputedStyle(editor).fontSize) || 14;
-        editor.style.fontSize = Math.max(currentSize - 1, 10) + 'px';
+        const currentSize = parseInt(getComputedStyle(this.editorElem).fontSize) || 14;
+        this.editorElem.style.fontSize = Math.max(currentSize - 1, 10) + 'px';
     }
 
     optimizeMemoryUsage() {
@@ -322,17 +317,16 @@ class ARM64MobileEditor {
     }
 
     showStatus(message, type = 'info') {
-        const status = document.getElementById('cursor-pos');
-        const originalText = status.textContent;
+        const originalText = this.cursorStatusElem.textContent;
         
-        status.textContent = message;
-        status.style.color = type === 'success' ? '#4CAF50' : 
+        this.cursorStatusElem.textContent = message;
+        this.cursorStatusElem.style.color = type === 'success' ? '#4CAF50' :
                             type === 'warning' ? '#FF9800' : 
                             type === 'error' ? '#F44336' : '#2196F3';
         
         setTimeout(() => {
-            status.textContent = originalText;
-            status.style.color = '';
+            this.cursorStatusElem.textContent = originalText;
+            this.cursorStatusElem.style.color = '';
         }, 2000);
     }
 }
