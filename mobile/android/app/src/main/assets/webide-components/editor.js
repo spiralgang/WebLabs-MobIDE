@@ -274,7 +274,7 @@ class ARM64MobileEditor {
     }
 
     handleTab() {
-        const editor = this.editorElement || document.getElementById('editor');
+        const editor = this.editorElement;
         const start = editor.selectionStart;
         const end = editor.selectionEnd;
         
