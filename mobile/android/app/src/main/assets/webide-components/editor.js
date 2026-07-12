@@ -328,7 +328,7 @@ class ARM64MobileEditor {
     }
 
     showStatus(message, type = 'info') {
-        const status = this.cursorPosElement || document.getElementById('cursor-pos');
+        const status = this.cursorPosElement;
         const originalText = status.textContent;
         
         status.textContent = message;
