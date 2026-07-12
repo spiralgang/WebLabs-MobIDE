@@ -182,7 +182,7 @@ class ARM64MobileEditor {
     }
 
     enableARMOptimizations() {
-        const editor = this.editorElement || document.getElementById('editor');
+        const editor = this.editorElement;
         editor.style.willChange = 'transform';
         editor.style.transform = 'translateZ(0)';
         
