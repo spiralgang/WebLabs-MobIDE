@@ -192,7 +192,7 @@ class ARM64MobileEditor {
     }
 
     setupTouchControls() {
-        const editor = this.editorElement || document.getElementById('editor');
+        const editor = this.editorElement;
         let lastTap = 0;
         
         editor.addEventListener('touchend', (e) => {
