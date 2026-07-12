@@ -290,7 +290,7 @@ class ARM64MobileEditor {
     }
 
     selectWordAtTouch(touch) {
-        const editor = this.editorElement || document.getElementById('editor');
+        const editor = this.editorElement;
         const rect = editor.getBoundingClientRect();
         const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
