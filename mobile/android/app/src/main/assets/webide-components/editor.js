@@ -260,7 +260,7 @@ class ARM64MobileEditor {
     }
 
     formatCode() {
-        const editor = this.editorElement || document.getElementById('editor');
+        const editor = this.editorElement;
         let code = editor.value;
         
         // Basic JavaScript formatting for ARM64 mobile
