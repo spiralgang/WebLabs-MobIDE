@@ -249,7 +249,7 @@ class ARM64MobileEditor {
 
     updateCursorPosition() {
         // Use cached DOM elements for high-frequency updates
-        const editor = this.editorElement || document.getElementById('editor');
+        const editor = this.editorElement;
         const cursor = editor.selectionStart;
         const lines = editor.value.substr(0, cursor).split('\n');
         const line = lines.length;
