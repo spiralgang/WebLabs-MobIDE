@@ -308,7 +308,7 @@ class ARM64MobileEditor {
     }
 
     increaseFontSize() {
-        const editor = this.editorElement || document.getElementById('editor');
+        const editor = this.editorElement;
         const currentSize = parseInt(getComputedStyle(editor).fontSize) || 14;
         editor.style.fontSize = Math.min(currentSize + 1, 24) + 'px';
     }
