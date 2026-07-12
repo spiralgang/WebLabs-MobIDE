@@ -232,7 +232,7 @@ class ARM64MobileEditor {
     }
 
     setupAutocomplete() {
-        const editor = this.editorElement || document.getElementById('editor');
+        const editor = this.editorElement;
         this.autocompleteWords = [
             'function', 'return', 'const', 'let', 'var', 'class', 'extends',
             'import', 'export', 'async', 'await', 'Promise', 'setTimeout',
