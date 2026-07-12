@@ -255,7 +255,7 @@ class ARM64MobileEditor {
         const line = lines.length;
         const col = lines[lines.length - 1].length + 1;
         
-        const cursorPos = this.cursorPosElement || document.getElementById('cursor-pos');
+        const cursorPos = this.cursorPosElement;
         cursorPos.textContent = `Line ${line}, Col ${col}`;
     }
 
