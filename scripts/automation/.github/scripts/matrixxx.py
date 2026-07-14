@@ -118,13 +118,17 @@ class HostAgent:
         count = 0
         while self.running and count < 8:
             await asyncio.sleep(10)
+            tasks = []
             for agent in self.agents:
                 prompt = f"Agent update cycle {count} for {agent.name}. Adapt behavior dynamically."
-                await self.env.update_state(f"prompt_update_{agent.name}", prompt)
+                tasks.append(self.env.update_state(f"prompt_update_{agent.name}", prompt))
 
                 # Optional dynamic new C++ source for compilation
                 new_cpp_code = f"int dynamic_func() {{ return {count} * 42; }}"
-                await self.env.update_state(f"code_update_{agent.name}", new_cpp_code)
+                tasks.append(self.env.update_state(f"code_update_{agent.name}", new_cpp_code))
+
+            if tasks:
+                await asyncio.gather(*tasks)
 
             count += 1
 

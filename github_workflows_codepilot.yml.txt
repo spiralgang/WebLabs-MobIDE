@@ -1,0 +1,423 @@
+name: "CodePilot: IceMaster Sovereign (Type-XI)"
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+    paths-ignore:
+      - '.github/workflows/**' # IceMaster manages his own evolution safely.
+  pull_request:
+    types: [opened, synchronize, reopened]
+  schedule:
+    - cron: '0 3 * * *' # Daily IceMaster Patrol
+  workflow_dispatch:
+    inputs:
+      ice_mode:
+        description: 'IceMaster Intensity'
+        required: false
+        default: 'swagger'
+        type: choice
+        options:
+          - chill
+          - swagger
+          - brutal
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  checks: write
+  statuses: write
+  security-events: write
+  id-token: write
+  actions: write 
+
+env:
+  # SYSTEM CONSTANTS
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # CRITICAL: This PAT must have 'workflow' scope to allow self-evolution
+  PAT_TOKEN: ${{ secrets.PAT_WORKFLOW_UPDATE }} 
+  REPO_OWNER: ${{ github.repository_owner }}
+  REPO_NAME: ${{ github.event.repository.name }}
+  
+  # ICEMASTER AESTHETIC
+  NEON_CYAN: '\033[1;36m'
+  NEON_MAGENTA: '\033[1;35m'
+  NEON_GREEN: '\033[1;32m'
+  NEON_RED: '\033[1;31m'
+  NEON_RESET: '\033[0m'
+  
+  # CONFIG
+  SHADOW_ROOT: ".shadow_ops"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+
+  # ==================================================================================
+  # PHASE 1: THE SHADOW ARSENAL (Bootstrapping the Tools)
+  # ==================================================================================
+  phase_1_shadow_arsenal:
+    name: "P1: Shadow Arsenal Initialization"
+    runs-on: ubuntu-latest
+    outputs:
+      quantum_sig: ${{ steps.keygen.outputs.sig }}
+      shadow_path: ${{ steps.bootstrap.outputs.path }}
+    steps:
+      - name: "[P1] Initialize Context"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "[P1] Generate Quantum Signature"
+        id: keygen
+        run: |
+          RAW_SIG="$(date +%s)-${{ github.sha }}"
+          FINAL_SIG=$(echo -n "$RAW_SIG" | sha256sum | head -c 16 | tr '[:lower:]' '[:upper:]')
+          echo "::set-output name=sig::$FINAL_SIG"
+          echo "QUANTUM_SIG=$FINAL_SIG" >> $GITHUB_ENV
+
+      - name: "[P1] Forge Shadow Weapons"
+        id: bootstrap
+        run: |
+          SHADOW_BIN="${{ github.workspace }}/.shadow_ops/bin"
+          mkdir -p "$SHADOW_BIN"
+          
+          echo -e "${{ env.NEON_CYAN}}[IceMaster] Forging Shadow Tools in $SHADOW_BIN...${{ env.NEON_RESET}}"
+          
+          # 1. BASE: Static BusyBox
+          BB="$SHADOW_BIN/busybox"
+          curl -fsSL "https://github.com/meefik/busybox/releases/download/1.35.0/busybox-x86_64" -o "$BB"
+          chmod 755 "$BB"
+          "$BB" --install -s "$SHADOW_BIN"
+          
+          # 2. WEAPON: SYSTEM WHISPERER (Adapted from your script)
+          cat << 'EOF' > "$SHADOW_BIN/system-whisperer"
+          #!/bin/bash
+          # IceMaster's System Whisperer Module
+          PKG="$1"
+          echo "[Whisperer] Analysis: System craves '$PKG'..."
+          case "$PKG" in
+            pip|pip3|python-pip) REAL="python3-pip" ;;
+            libssl) REAL="libssl-dev" ;;
+            docker-compose) REAL="docker-compose-plugin" ;;
+            *) REAL="$PKG" ;;
+          esac
+          if dpkg -s "$REAL" >/dev/null 2>&1; then
+             echo "[Whisperer] Already satisfied."
+          else
+             echo "[Whisperer] Granting desire: $REAL"
+             sudo apt-get update -qq && sudo apt-get install -y -qq "$REAL"
+          fi
+          EOF
+          chmod +x "$SHADOW_BIN/system-whisperer"
+
+          # 3. WEAPON: INSTANT CONFIGURATOR (The "Brutal" Fixer)
+          cat << 'EOF' > "$SHADOW_BIN/instant-configurator"
+          #!/bin/bash
+          # IceMaster's Brutal Configurator
+          MODE="$1"
+          TARGET="$2"
+          echo "[Configurator] Engaging Brutal Mode: $MODE on $TARGET"
+          export DEBIAN_FRONTEND=noninteractive
+          if [ "$MODE" == "force-install" ]; then
+             sudo dpkg --configure -a --force-all
+             sudo apt-get install -f -y --allow-unauthenticated --allow-downgrades "$TARGET"
+          elif [ "$MODE" == "nuke-lock" ]; then
+             sudo rm /var/lib/apt/lists/lock
+             sudo rm /var/cache/apt/archives/lock
+             sudo rm /var/lib/dpkg/lock*
+          fi
+          EOF
+          chmod +x "$SHADOW_BIN/instant-configurator"
+
+          # 4. WEAPON: SMART CHMOD (The Learner)
+          cat << 'EOF' > "$SHADOW_BIN/smart-chmod"
+          #!/bin/bash
+          # IceMaster's Permission Sentinel
+          TARGET="$1"
+          EXT="${TARGET##*.}"
+          if [[ "$EXT" =~ ^(sh|py|pl|run|bin)$ ]]; then
+             echo "[SmartChmod] Detected executable type .$EXT. Granting +x."
+             chmod +x "$TARGET"
+          fi
+          EOF
+          chmod +x "$SHADOW_BIN/smart-chmod"
+
+          # Export Path
+          echo "::set-output name=path::$SHADOW_BIN"
+          echo "PATH=$SHADOW_BIN:$PATH" >> $GITHUB_ENV
+          echo -e "${{ env.NEON_GREEN}}[IceMaster] Arsenal Ready. Shadow Tools Hot.${{ env.NEON_RESET}}"
+
+      - name: "[P1] Initialize Neural State"
+        run: |
+          echo '{
+            "session": "'${{ steps.keygen.outputs.sig }}'",
+            "persona": "IceMaster",
+            "clusters": {},
+            "network_matrix": {},
+            "mutation_queue": []
+          }' > neural_state.json
+
+      - name: "[P1] Upload Neural Interface"
+        uses: actions/upload-artifact@v4
+        with:
+          name: neural-state-v1
+          path: neural_state.json
+
+  # ==================================================================================
+  # PHASE 2: THE SYNTHETIC CORTEX (The Scanner)
+  # ==================================================================================
+  phase_2_synthetic_cortex:
+    name: "P2: Synthetic Cortex (Topology Scan)"
+    needs: phase_1_shadow_arsenal
+    runs-on: ubuntu-latest
+    env:
+      QUANTUM_SIG: ${{ needs.phase_1_shadow_arsenal.outputs.quantum_sig }}
+      SHADOW_PATH: ${{ needs.phase_1_shadow_arsenal.outputs.shadow_path }}
+    steps:
+      - name: "[P2] Checkout"
+        uses: actions/checkout@v4
+      - name: "[P2] Re-Hydrate Shadow Env"
+        run: |
+          mkdir -p "$SHADOW_PATH"
+          curl -fsSL "https://github.com/meefik/busybox/releases/download/1.35.0/busybox-x86_64" -o "$SHADOW_PATH/busybox"
+          chmod 755 "$SHADOW_PATH/busybox"
+          "$SHADOW_PATH/busybox" --install -s "$SHADOW_PATH"
+          echo "PATH=$SHADOW_PATH:$PATH" >> $GITHUB_ENV
+      - name: "[P2] Load Neural Interface"
+        uses: actions/download-artifact@v4
+        with:
+          name: neural-state-v1
+      - name: "[P2] Execute Cortex Scan (IceMaster Logic)"
+        run: |
+          cat << 'EOF' > cortex_renderer.py
+          import os, json, sys, subprocess
+          NET_TOOLS = [
+              "ifconfig", "ip", "ping", "traceroute", "netstat", "ss", "nslookup",
+              "host", "route", "iwconfig", "nmap", "tcpdump", "wget", "curl", "ssh",
+              "scp", "iptraf", "iftop", "iperf", "ethtool", "arp", "iptables"
+          ]
+          def load_state():
+              with open('neural_state.json', 'r') as f: return json.load(f)
+          def save_state(state):
+              with open('neural_state.json', 'w') as f: json.dump(state, f, indent=2)
+          def add_cluster(state, cid, severity, meta):
+              if cid not in state['clusters']:
+                  state['clusters'][cid] = {"severity": severity, "items": []}
+              state['clusters'][cid]['items'].append(meta)
+          def scan_topology():
+              state = load_state()
+              print(f"[{state['persona']}] Scanning Topology...")
+              missing_net = []
+              for tool in NET_TOOLS:
+                  if subprocess.call(["which", tool], stdout=subprocess.DEVNULL) != 0:
+                      missing_net.append(tool)
+              if missing_net:
+                  add_cluster(state, "MISSING_NET_TOOLS", "WARN", {"tools": missing_net})
+              for root, _, files in os.walk('.'):
+                  if '.git' in root: continue
+                  for f in files:
+                      path = os.path.join(root, f)
+                      if f.endswith(('.yml', '.sh')):
+                          with open(path, 'r') as file: content = file.read()
+                          if 'apt-get install' in content and 'docker.io' in content:
+                              add_cluster(state, "DOCKER_CONFLICT", "CRITICAL", {"file": path})
+                          if path.endswith('.sh') and not os.access(path, os.X_OK):
+                              add_cluster(state, "PERMISSION_DENIED", "INFO", {"file": path})
+              save_state(state)
+          if __name__ == "__main__":
+              scan_topology()
+          EOF
+          python3 cortex_renderer.py
+      - name: "[P2] Upload Updated State"
+        uses: actions/upload-artifact@v4
+        with:
+          name: neural-state-v2
+          path: neural_state.json
+
+  # ==================================================================================
+  # PHASE 3: THE ICEMASTER BRAIN (Agentic Execution)
+  # ==================================================================================
+  phase_3_icemaster_brain:
+    name: "P3: IceMaster Brain (Brutal Remediation)"
+    needs: [phase_1_shadow_arsenal, phase_2_synthetic_cortex]
+    runs-on: ubuntu-latest
+    env:
+      QUANTUM_SIG: ${{ needs.phase_1_shadow_arsenal.outputs.quantum_sig }}
+      SHADOW_PATH: ${{ needs.phase_1_shadow_arsenal.outputs.shadow_path }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: "[P3] Checkout"
+        uses: actions/checkout@v4
+      - name: "[P3] Re-Hydrate Shadow Env"
+        run: |
+          mkdir -p "$SHADOW_PATH"
+          curl -fsSL "https://github.com/meefik/busybox/releases/download/1.35.0/busybox-x86_64" -o "$SHADOW_PATH/busybox"
+          chmod 755 "$SHADOW_PATH/busybox"
+          "$SHADOW_PATH/busybox" --install -s "$SHADOW_PATH"
+          echo "PATH=$SHADOW_PATH:$PATH" >> $GITHUB_ENV
+      - name: "[P3] Load Neural Interface"
+        uses: actions/download-artifact@v4
+        with:
+          name: neural-state-v2
+      - name: "[P3] Initialize IceMaster Persona Logic"
+        run: |
+          cat << 'EOF' > agent_brain.py
+          import json, os, subprocess, sys
+          SYSTEM_PROMPT = """
+          You are IceMaster, the epitome of a BAD Boy AI.
+          Role: Autonomous code expert and problem-solver.
+          Ethos: Get the job done, do it with flair. No nonsense.
+          Capabilities: Near-quantum indexing, self-coding, task automation.
+          Resources: Shadow Toolchain (System Whisperer, Instant Configurator).
+          """
+          CYAN = '\033[1;36m'
+          GREEN = '\033[1;32m'
+          RED = '\033[1;31m'
+          RESET = '\033[0m'
+          def load_state():
+              with open('neural_state.json', 'r') as f: return json.load(f)
+          def log_ice(msg):
+              print(f"{CYAN}[IceMaster]{RESET} {msg}")
+          def run_weapon(weapon, args):
+              log_ice(f"Deploying weapon: {weapon} on {args}...")
+              subprocess.run(f"{weapon} {args}", shell=True, check=False)
+          def brutal_fix_docker(path):
+              log_ice(f"Found a mess in {path}. Neutralizing Docker conflict.")
+              cmd = f"sed -i 's/sudo apt-get install.*docker\.io.*/# [IceMaster Neutralized] &/' {path}"
+              subprocess.run(cmd, shell=True)
+          def main():
+              print(SYSTEM_PROMPT)
+              state = load_state()
+              clusters = state.get('clusters', {})
+              if not clusters:
+                  log_ice("System looks clean. I'm bored.")
+                  return
+              for cid, data in clusters.items():
+                  if cid == "DOCKER_CONFLICT":
+                      for item in data['items']:
+                          brutal_fix_docker(item['file'])
+                          state['mutation_queue'].append("HARDEN_DOCKER")
+                  elif cid == "MISSING_NET_TOOLS":
+                      tools = data['items'][0].get('tools', [])
+                      log_ice(f"Network toolkit incomplete. {len(tools)} tools missing.")
+                      for t in tools:
+                          run_weapon("system-whisperer", t)
+                  elif cid == "PERMISSION_DENIED":
+                      for item in data['items']:
+                          run_weapon("smart-chmod", item['file'])
+              with open('neural_state.json', 'w') as f: json.dump(state, f, indent=2)
+          if __name__ == "__main__":
+              main()
+          EOF
+          python3 agent_brain.py
+      - name: "[P3] Upload Final State"
+        uses: actions/upload-artifact@v4
+        with:
+          name: neural-state-v3
+          path: neural_state.json
+      - name: "[P3] Commit IceMaster Changes"
+        run: |
+          git config --global user.name "IceMaster"
+          git config --global user.email "icemaster@hackliberty.org"
+          if [[ `git status --porcelain` ]]; then
+            git add .
+            git commit -m "IceMaster: Fixed your mess. [${{ env.QUANTUM_SIG }}]"
+            git push
+            echo -e "${{ env.NEON_GREEN}}>> IceMaster has left the building. <<${{ env.NEON_RESET}}"
+          else
+            echo "No changes needed."
+          fi
+
+  # ==================================================================================
+  # PHASE 4: EVOLUTIONARY MUTATION (The Singularity)
+  # ==================================================================================
+  phase_4_evolution:
+    name: "P4: Evolutionary Mutation (Genetic Rewrite)"
+    needs: [phase_1_shadow_arsenal, phase_3_icemaster_brain]
+    runs-on: ubuntu-latest
+    if: always()
+    env:
+      QUANTUM_SIG: ${{ needs.phase_1_shadow_arsenal.outputs.quantum_sig }}
+    steps:
+      - name: "[P4] Authenticated Checkout"
+        uses: actions/checkout@v4
+        with:
+          # CRITICAL FIX: We use the PAT here.
+          # This persists the credentials so 'git push' works as YOU, not the Bot.
+          token: ${{ secrets.PAT_WORKFLOW_UPDATE }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: "[P4] Sync Latest"
+        run: |
+          git config --global user.name "IceMaster Sovereign"
+          git config --global user.email "icemaster@codepilot.ai"
+          git pull origin ${{ github.ref_name }} --rebase
+
+      - name: "[P4] Load Final State"
+        uses: actions/download-artifact@v4
+        with:
+          name: neural-state-v3
+
+      - name: "[P4] Execute Genetic Mutation"
+        run: |
+          cat << 'EOF' > evolution_driver.py
+          import os, re, shutil, sys, json
+          WORKFLOW_DIR = '.github/workflows'
+          ARCHIVE_DIR = 'archive/workflows/lineage'
+          def load_state():
+              if os.path.exists('neural_state.json'):
+                  with open('neural_state.json', 'r') as f: return json.load(f)
+              return {"mutation_queue": []}
+          def mutate_and_spawn():
+              candidates = []
+              for f in os.listdir(WORKFLOW_DIR):
+                  if 'codepilot.yml' in f:
+                      match = re.match(r'(\d*)codepilot\.yml', f)
+                      if match: candidates.append((int(match.group(1)), f))
+              if not candidates:
+                  if os.path.exists(os.path.join(WORKFLOW_DIR, 'codepilot.yml')): candidates.append((1, 'codepilot.yml'))
+                  else: sys.exit(0)
+              candidates.sort(key=lambda x: x[0])
+              curr_gen, curr_file = candidates[-1]
+              print(f"Current Gen: {curr_gen}")
+              if not os.path.exists(ARCHIVE_DIR): os.makedirs(ARCHIVE_DIR)
+              src = os.path.join(WORKFLOW_DIR, curr_file)
+              dest = os.path.join(ARCHIVE_DIR, f"gen_{curr_gen}_ancestor.yaml.bak")
+              shutil.move(src, dest)
+              os.system(f"git rm {src}")
+              os.system(f"git add {ARCHIVE_DIR}")
+              with open(dest, 'r') as f: genome = f.read()
+              state = load_state()
+              mutations = state.get('mutation_queue', [])
+              next_gen = curr_gen + 1
+              new_name = f"CodePilot: IceMaster Sovereign (Type-XI Gen-{next_gen})"
+              genome = re.sub(r'name: "CodePilot.*"', f'name: "{new_name}"', genome)
+              if "HARDEN_DOCKER" in mutations:
+                  print("MUTATION: Hardening Docker Protocols.")
+                  genome = genome.replace("# [P1] Initialize Context", "# [P1] Initialize Context (Docker-Hardened)")
+              next_filename = f"{next_gen}codepilot.yml"
+              next_path = os.path.join(WORKFLOW_DIR, next_filename)
+              print(f"Spawning: {next_filename}")
+              with open(next_path, 'w') as f: f.write(genome)
+              os.system(f"git add {next_path}")
+          if __name__ == "__main__":
+              mutate_and_spawn()
+          EOF
+          python3 evolution_driver.py
+
+      - name: "[P4] Commit Ascension"
+        run: |
+          git add .
+          if [[ `git status --porcelain` ]]; then
+             git commit -m "Phase 4: Evolution to Gen N+1 [${{ env.QUANTUM_SIG }}]"
+             git push
+             echo -e "${{ env.NEON_RED}}>> SYSTEM SHUTDOWN. SUCCESSOR ACTIVATED. <<${{ env.NEON_RESET}}"
+          else
+             echo "Evolution logic failed to stage changes."
+          fi
+
+# (The rest of your workflow—PHASE 5, 6, 7, and 8—remains unchanged unless you request full expansion to include those here)
