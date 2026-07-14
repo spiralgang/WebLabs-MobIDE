@@ -97,7 +97,7 @@ class ARM64MobileUtils {
         const maxAge = 24 * 60 * 60 * 1000; // 24 hours
         const now = Date.now();
         
-        for (let key in localStorage) {
+        Object.keys(localStorage).forEach(key => {
             if (key.endsWith('_timestamp')) {
                 const timestamp = parseInt(localStorage.getItem(key) || '0');
                 if (now - timestamp > maxAge) {
@@ -106,7 +106,7 @@ class ARM64MobileUtils {
                     localStorage.removeItem(dataKey);
                 }
             }
-        }
+        });
     }
     
     /**

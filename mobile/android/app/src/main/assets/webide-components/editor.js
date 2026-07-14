@@ -34,13 +34,22 @@ class ARM64MobileEditor {
                     <button id="download-file-btn" class="btn mobile-btn">⬇️ Download</button>
                     <button id="format-btn" class="btn mobile-btn">🎨 Format</button>
                 </div>
-                <textarea id="editor" class="arm64-mobile-editor"></textarea>
+                <textarea id="editor" class="arm64-mobile-editor" spellcheck="false"></textarea>
                 <div class="editor-status">
                     <span id="cursor-pos">Line 1, Col 1</span>
                     <span id="arm64-status">${this.isARM64 ? 'ARM64 ⚡' : 'x86'}</span>
                 </div>
             </div>
         `;
+
+        // Performance: Cache DOM elements to avoid redundant lookups
+        this.editorEl = this.container.querySelector('#editor');
+        this.cursorPosEl = this.container.querySelector('#cursor-pos');
+        this.saveBtn = this.container.querySelector('#save-file-btn');
+        this.newBtn = this.container.querySelector('#new-file-btn');
+        this.deleteBtn = this.container.querySelector('#delete-file-btn');
+        this.downloadBtn = this.container.querySelector('#download-file-btn');
+        this.formatBtn = this.container.querySelector('#format-btn');
         
         this.setupEditorStyles();
         this.setupEventHandlers();
@@ -130,15 +139,15 @@ class ARM64MobileEditor {
     }
 
     setupEventHandlers() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorEl;
         editor.value = files[openFile()] || '';
         
-        document.getElementById('save-file-btn').onclick = () => {
+        this.saveBtn.onclick = () => {
             saveFile(editor.value);
             this.showStatus('File saved successfully!', 'success');
         };
         
-        document.getElementById('new-file-btn').onclick = () => {
+        this.newBtn.onclick = () => {
             const filename = prompt("New file name:");
             if (filename) {
                 openFile(filename);
@@ -147,23 +156,23 @@ class ARM64MobileEditor {
             }
         };
         
-        document.getElementById('delete-file-btn').onclick = () => {
+        this.deleteBtn.onclick = () => {
             if (confirm('Delete current file?')) {
                 deleteFile();
                 this.showStatus('File deleted', 'warning');
             }
         };
         
-        document.getElementById('download-file-btn').onclick = () => {
+        this.downloadBtn.onclick = () => {
             downloadFile();
             this.showStatus('File downloaded', 'success');
         };
         
-        document.getElementById('format-btn').onclick = () => {
+        this.formatBtn.onclick = () => {
             this.formatCode();
         };
         
-        // Cursor position tracking
+        // Cursor position tracking - High frequency events benefit from cached DOM elements
         editor.addEventListener('input', () => this.updateCursorPosition());
         editor.addEventListener('click', () => this.updateCursorPosition());
         editor.addEventListener('keyup', () => this.updateCursorPosition());
@@ -177,8 +186,12 @@ class ARM64MobileEditor {
         }
     }
 
+    setupMobileGestures() {
+        // Mobile gesture implementation placeholder
+    }
+
     enableARMOptimizations() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorEl;
         editor.style.willChange = 'transform';
         editor.style.transform = 'translateZ(0)';
         
@@ -188,7 +201,7 @@ class ARM64MobileEditor {
     }
 
     setupTouchControls() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorEl;
         let lastTap = 0;
         
         editor.addEventListener('touchend', (e) => {
@@ -228,7 +241,7 @@ class ARM64MobileEditor {
     }
 
     setupAutocomplete() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorEl;
         this.autocompleteWords = [
             'function', 'return', 'const', 'let', 'var', 'class', 'extends',
             'import', 'export', 'async', 'await', 'Promise', 'setTimeout',
@@ -244,17 +257,19 @@ class ARM64MobileEditor {
     }
 
     updateCursorPosition() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorEl;
         const cursor = editor.selectionStart;
+        // Optimization: Use split for line counting (fast in modern engines)
         const lines = editor.value.substr(0, cursor).split('\n');
         const line = lines.length;
         const col = lines[lines.length - 1].length + 1;
         
-        document.getElementById('cursor-pos').textContent = `Line ${line}, Col ${col}`;
+        // Performance: Use cached DOM reference for UI update
+        this.cursorPosEl.textContent = `Line ${line}, Col ${col}`;
     }
 
     formatCode() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorEl;
         let code = editor.value;
         
         // Basic JavaScript formatting for ARM64 mobile
@@ -268,7 +283,7 @@ class ARM64MobileEditor {
     }
 
     handleTab() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorEl;
         const start = editor.selectionStart;
         const end = editor.selectionEnd;
         
@@ -284,7 +299,7 @@ class ARM64MobileEditor {
     }
 
     selectWordAtTouch(touch) {
-        const editor = document.getElementById('editor');
+        const editor = this.editorEl;
         const rect = editor.getBoundingClientRect();
         const x = touch.clientX - rect.left;
         const y = touch.clientY - rect.top;
@@ -302,13 +317,13 @@ class ARM64MobileEditor {
     }
 
     increaseFontSize() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorEl;
         const currentSize = parseInt(getComputedStyle(editor).fontSize) || 14;
         editor.style.fontSize = Math.min(currentSize + 1, 24) + 'px';
     }
 
     decreaseFontSize() {
-        const editor = document.getElementById('editor');
+        const editor = this.editorEl;
         const currentSize = parseInt(getComputedStyle(editor).fontSize) || 14;
         editor.style.fontSize = Math.max(currentSize - 1, 10) + 'px';
     }
@@ -322,7 +337,7 @@ class ARM64MobileEditor {
     }
 
     showStatus(message, type = 'info') {
-        const status = document.getElementById('cursor-pos');
+        const status = this.cursorPosEl;
         const originalText = status.textContent;
         
         status.textContent = message;
