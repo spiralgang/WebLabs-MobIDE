@@ -1,0 +1,218 @@
+name: "GLM Coding Companion"
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+  issues:
+    types: [ opened ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  glm-companion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Zhipu AI SDK
+        run: |
+          python -m pip install --upgrade pip
+          pip install zhipuai openai  # openai compat mode works better
+
+      - name: GLM Pull Request Code Review
+        if: github.event_name == 'pull_request'
+        env:
+          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+        run: |
+          echo "GLM is reviewing your PR with god-tier reasoning..."
+          
+          # Get changed files
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | tr '\n' ' ')
+
+          cat > review.py << 'EOF'
+          import os
+          from zhipuai import ZhipuAI
+
+          client = ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
+
+          files = os.getenv("CHANGED_FILES", "").strip()
+          if not files:
+              files = "No specific files detected"
+
+          prompt = f"""
+          You are GLM-4, an elite senior software engineer with perfect reasoning.
+          Review these changed files: {files}
+
+          Provide a world-class code review covering:
+          • Correctness & bugs
+          • Performance & scalability
+          • Code style & readability
+          • Security issues
+          • Architecture suggestions
+          • One funny/clever remark at the end
+
+          Use markdown, be concise but thorough.
+          """
+
+          response = client.chat.completions.create(
+              model="glm-4-flash",  # fastest + cheapest
+              messages=[{"role": "user", "content": prompt}],
+              temperature=0.7,
+              max_tokens=4000
+          )
+
+          with open("glm_review.md", "w") as f:
+              f.write("# GLM-4 Code Review\n\n")
+              f.write(response.choices[0].message.content.strip())
+          EOF
+
+          python review.py
+
+      - name: Post GLM Review to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs/promises');
+            const review = await fs.readFile('glm_review.md', 'utf8');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: review
+            });
+
+      - name: GLM Issue Solution Architect
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        env:
+          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+        run: |
+          echo "GLM is architecting a flawless solution to your issue..."
+
+          TITLE="${{ github.event.issue.title }}"
+          BODY="${{ github.event.issue.body }}"
+
+          cat > solution.py << 'EOF'
+          import os
+          from zhipuai import ZhipuAI
+
+          client = ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
+
+          title = os.getenv("TITLE", "")
+          body = os.getenv("BODY", "")
+
+          prompt = f"""
+          You are GLM-4, a principal engineer at a top AI lab.
+          A developer opened this issue:
+
+          Title: {title}
+          Body: {body}
+
+          Provide:
+          1. Deep technical analysis
+          2. Step-by-step fix or implementation plan
+          3. Code examples (if applicable)
+          4. Alternative approaches
+          5. Final recommendation
+
+          End with an encouraging message and a fun fact about code.
+          Use markdown.
+          """
+
+          response = client.chat.completions.create(
+              model="glm-4-flash",
+              messages=[{"role": "user", "content": prompt}],
+              temperature=0.6,
+              max_tokens=4000
+          )
+
+          with open("glm_solution.md", "w") as f:
+              f.write("# GLM-4 Solution Design\n\n")
+              f.write(response.choices[0].message.content.strip())
+          EOF
+
+          python solution.py
+
+      - name: Post GLM Solution to Issue
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs/promises');
+            const content = await fs.readFile('glm_solution.md', 'utf8');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: content
+            });
+
+      - name: GLM Manual Code Generation (workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+        run: |
+          if [ ! -f ".glm-request" ]; then
+            echo "No .glm-request file found. Create one with your request!"
+            exit 0
+          fi
+
+          REQUEST=$(cat .glm-request)
+
+          cat > generate.py << 'EOF'
+          import os
+          from zhipuai import ZhipuAI
+
+          client = ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
+
+          request = os.getenv("REQUEST", "")
+
+          prompt = f"""
+          You are GLM-4, a master coder.
+          Generate production-ready code for this request:
+
+          {request}
+
+          Include:
+          - Full working code
+          - Comments
+          - Usage example
+          - Dependencies
+          Use markdown code blocks.
+          """
+
+          response = client.chat.completions.create(
+              model="glm-4-flash",
+              messages=[{"role": "user", "content": prompt}],
+              temperature=0.5,
+              max_tokens=4000
+          )
+
+          with open("GLM_GENERATED_CODE.md", "w") as f:
+              f.write("# GLM-4 Generated Code\n\n")
+              f.write(response.choices[0].message.content.strip())
+          EOF
+
+          python generate.py
+          echo "Code generated → GLM_GENERATED_CODE.md"
+
+      - name: Sign-off
+        run: |
+          echo ""
+          echo "GLM-4 has left the chat."
+          echo "Keep shipping. The universe is watching."
+          echo "https://bigmodel.cn"

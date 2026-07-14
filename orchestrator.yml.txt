@@ -1,0 +1,393 @@
+name: GitHub-Native Agent Orchestrator - Master Controller
+on:
+  push:
+    branches: [ "main", "copilot/fix-*" ]
+    paths:
+      - ".github/workflows/**"
+      - "configs/**"
+      - "tools/assimilation_audit.py"
+      - "frontend/**"
+      - "backend/**"
+      - "ai/**"
+  schedule:
+    # Run daily health check at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Orchestrator operation'
+        required: true
+        default: 'health_check'
+        type: choice
+        options:
+          - health_check
+          - full_assimilation_scan
+          - repository_optimization
+          - forensic_audit
+          - system_validation
+      target_scope:
+        description: 'Operation scope'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - frontend_only
+          - backend_only
+          - workflows_only
+          - configs_only
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: write
+  statuses: write
+
+concurrency:
+  group: github-native-orchestrator
+  cancel-in-progress: false
+
+jobs:
+  orchestrator_preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      operation: ${{ steps.operation.outputs.operation }}
+      scope: ${{ steps.operation.outputs.scope }}
+      changed_areas: ${{ steps.analysis.outputs.changed_areas }}
+      requires_assimilation: ${{ steps.analysis.outputs.requires_assimilation }}
+      health_score: ${{ steps.health.outputs.score }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Determine operation
+        id: operation
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "operation=${{ inputs.operation }}" >> $GITHUB_OUTPUT
+            echo "scope=${{ inputs.target_scope }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "operation=health_check" >> $GITHUB_OUTPUT
+            echo "scope=all" >> $GITHUB_OUTPUT
+          else
+            echo "operation=auto_response" >> $GITHUB_OUTPUT
+            echo "scope=changed_files" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "🎯 Operation: ${{ steps.operation.outputs.operation }}"
+          echo "📊 Scope: ${{ steps.operation.outputs.scope }}"
+      
+      - name: Analyze repository changes
+        id: analysis
+        run: |
+          echo "🔍 Analyzing repository state and changes..."
+          
+          # Determine what areas have changed (if triggered by push)
+          CHANGED_AREAS=""
+          if [ "${{ github.event_name }}" = "push" ]; then
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+            
+            if echo "$CHANGED_FILES" | grep -q "frontend/"; then
+              CHANGED_AREAS="${CHANGED_AREAS},frontend"
+            fi
+            if echo "$CHANGED_FILES" | grep -q "backend/\|ai/"; then
+              CHANGED_AREAS="${CHANGED_AREAS},backend"
+            fi
+            if echo "$CHANGED_FILES" | grep -q ".github/workflows/"; then
+              CHANGED_AREAS="${CHANGED_AREAS},workflows"
+            fi
+            if echo "$CHANGED_FILES" | grep -q "configs/"; then
+              CHANGED_AREAS="${CHANGED_AREAS},configs"
+            fi
+            
+            # Remove leading comma
+            CHANGED_AREAS=${CHANGED_AREAS#,}
+          else
+            CHANGED_AREAS="all"
+          fi
+          
+          echo "changed_areas=$CHANGED_AREAS" >> $GITHUB_OUTPUT
+          
+          # Determine if assimilation is required
+          if [[ "$CHANGED_AREAS" == *"frontend"* ]] || [[ "$CHANGED_AREAS" == *"backend"* ]]; then
+            echo "requires_assimilation=true" >> $GITHUB_OUTPUT
+            echo "🎯 Assimilation required due to frontend/backend changes"
+          else
+            echo "requires_assimilation=false" >> $GITHUB_OUTPUT
+            echo "⚪ No assimilation required"
+          fi
+          
+          echo "Changed areas: $CHANGED_AREAS"
+      
+      - name: Repository health check
+        id: health
+        run: |
+          echo "🏥 Performing repository health assessment..."
+          
+          HEALTH_SCORE=0
+          MAX_SCORE=10
+          
+          # Check critical files exist (2 points)
+          if [ -f "configs/frontend_manifest.json" ] && [ -f "configs/frontend_to_backend_map.json" ]; then
+            HEALTH_SCORE=$((HEALTH_SCORE + 2))
+            echo "✅ Critical config files present"
+          else
+            echo "❌ Missing critical config files"
+          fi
+          
+          # Check workflow files exist (2 points)
+          if [ -f ".github/workflows/agent-command-router.yml" ] && [ -f ".github/workflows/pr-assimilation-audit.yml" ]; then
+            HEALTH_SCORE=$((HEALTH_SCORE + 2))
+            echo "✅ Core workflow files present"
+          else
+            echo "❌ Missing core workflow files"
+          fi
+          
+          # Check assimilation audit script (2 points)
+          if [ -f "tools/assimilation_audit.py" ] && python3 -m py_compile tools/assimilation_audit.py; then
+            HEALTH_SCORE=$((HEALTH_SCORE + 2))
+            echo "✅ Assimilation audit script functional"
+          else
+            echo "❌ Assimilation audit script issues"
+          fi
+          
+          # Check safety policies (2 points)
+          if [ -f "configs/activation_rules.json" ] && [ -f "reference/VAULT.md" ]; then
+            HEALTH_SCORE=$((HEALTH_SCORE + 2))
+            echo "✅ Safety policies in place"
+          else
+            echo "❌ Safety policies incomplete"
+          fi
+          
+          # Check logs directory exists (1 point)
+          if [ -d "logs" ]; then
+            HEALTH_SCORE=$((HEALTH_SCORE + 1))
+            echo "✅ Logs directory present"
+          else
+            echo "⚠️ No logs directory"
+          fi
+          
+          # Check Android protection (1 point)
+          if [ -f "app/build.gradle" ] && [ -f "gradlew" ]; then
+            HEALTH_SCORE=$((HEALTH_SCORE + 1))
+            echo "✅ Android build system protected"
+          else
+            echo "⚠️ Android build system check failed"
+          fi
+          
+          echo "score=$HEALTH_SCORE" >> $GITHUB_OUTPUT
+          echo "🏥 Repository health score: $HEALTH_SCORE/$MAX_SCORE"
+      
+      - name: Forensic logging - orchestrator start
+        run: |
+          mkdir -p logs
+          cat >> logs/orchestrator.jsonl << EOF
+          {"ts": "$(date -u +%Y-%m-%dT%H:%M:%SZ)", "phase": "orchestrator_start", "operation": "${{ steps.operation.outputs.operation }}", "scope": "${{ steps.operation.outputs.scope }}", "trigger": "${{ github.event_name }}", "health_score": "${{ steps.health.outputs.score }}", "changed_areas": "${{ steps.analysis.outputs.changed_areas }}"}
+          EOF
+
+  auto_assimilation_response:
+    needs: orchestrator_preflight
+    if: ${{ needs.orchestrator_preflight.outputs.requires_assimilation == 'true' && needs.orchestrator_preflight.outputs.operation == 'auto_response' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Auto-trigger assimilation audit
+        run: |
+          echo "🤖 Auto-triggering assimilation audit due to frontend/backend changes"
+          
+          # Run quick assimilation check
+          mkdir -p logs
+          python3 tools/assimilation_audit.py \
+            --manifest configs/frontend_manifest.json \
+            --mapping configs/frontend_to_backend_map.json \
+            --base origin/main \
+            --log logs/auto_assimilation.jsonl \
+            --verbose || true
+          
+          # Extract results
+          if [ -f "logs/auto_assimilation.jsonl" ]; then
+            SUMMARY=$(tail -n 1 logs/auto_assimilation.jsonl | python3 -c "
+            import sys, json
+            try:
+                data = json.loads(sys.stdin.read())
+                if data.get('phase') == 'summary':
+                    print(f'Auto-assimilation check: {data[\"ok\"]}/{data[\"total\"]} files integrated')
+                else:
+                    print('Auto-assimilation check in progress')
+            except:
+                print('Auto-assimilation check completed')
+            ")
+            echo "📊 $SUMMARY"
+          fi
+      
+      - name: Upload auto-assimilation logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-assimilation-${{ github.run_number }}
+          path: logs/auto_assimilation.jsonl
+
+  health_check_operation:
+    needs: orchestrator_preflight
+    if: ${{ needs.orchestrator_preflight.outputs.operation == 'health_check' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Comprehensive health assessment
+        run: |
+          echo "🏥 Running comprehensive health assessment..."
+          
+          mkdir -p logs
+          
+          # Test assimilation audit functionality
+          echo "🔍 Testing assimilation audit..."
+          python3 tools/assimilation_audit.py \
+            --manifest configs/frontend_manifest.json \
+            --mapping configs/frontend_to_backend_map.json \
+            --base origin/main \
+            --log logs/health_assimilation.jsonl \
+            --verbose || echo "⚠️ Assimilation audit had issues"
+          
+          # Validate all workflows
+          echo "⚙️ Validating workflows..."
+          for workflow in .github/workflows/*.yml; do
+            if command -v actionlint >/dev/null 2>&1; then
+              actionlint "$workflow" || echo "⚠️ Issues in $workflow"
+            else
+              echo "⚠️ actionlint not available, skipping workflow validation"
+            fi
+          done
+          
+          # Check safety enforcement
+          echo "🛡️ Checking safety enforcement..."
+          if [ -f "scripts/ops-guard/safety-enforcer.sh" ]; then
+            chmod +x scripts/ops-guard/safety-enforcer.sh
+            ./scripts/ops-guard/safety-enforcer.sh --check || echo "⚠️ Safety enforcer issues"
+          fi
+          
+          # Generate health report
+          python3 -c "
+          import json, os, time
+          
+          health_data = {
+              'ts': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+              'phase': 'health_summary',
+              'repository_score': ${{ needs.orchestrator_preflight.outputs.health_score }},
+              'max_score': 10,
+              'health_percentage': (${{ needs.orchestrator_preflight.outputs.health_score }} / 10) * 100,
+              'status': 'healthy' if ${{ needs.orchestrator_preflight.outputs.health_score }} >= 8 else 'needs_attention'
+          }
+          
+          with open('logs/health_report.json', 'w') as f:
+              json.dump(health_data, f, indent=2)
+          
+          print(f'🏥 Health Assessment Complete: {health_data[\"health_percentage\"]:.0f}% ({health_data[\"status\"]})')
+          "
+      
+      - name: Upload health assessment
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-assessment-${{ github.run_number }}
+          path: |
+            logs/health_assimilation.jsonl
+            logs/health_report.json
+
+  full_assimilation_scan:
+    needs: orchestrator_preflight
+    if: ${{ needs.orchestrator_preflight.outputs.operation == 'full_assimilation_scan' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Deep assimilation analysis
+        run: |
+          echo "🔬 Running deep assimilation analysis..."
+          
+          mkdir -p logs
+          
+          # Run comprehensive assimilation audit with deep analysis
+          python3 tools/assimilation_audit.py \
+            --manifest configs/frontend_manifest.json \
+            --mapping configs/frontend_to_backend_map.json \
+            --base origin/main \
+            --log logs/full_assimilation.jsonl \
+            --verbose \
+            --deep
+          
+          # Generate detailed assimilation report
+          python3 -c "
+          import json
+          
+          results = []
+          try:
+              with open('logs/full_assimilation.jsonl', 'r') as f:
+                  for line in f:
+                      if line.strip():
+                          results.append(json.loads(line))
+          except Exception as e:
+              print(f'Error reading results: {e}')
+              exit(1)
+          
+          summary = None
+          for r in results:
+              if r.get('phase') == 'summary':
+                  summary = r
+                  break
+          
+          if summary:
+              print(f'📊 Full Assimilation Scan Results:')
+              print(f'   Total files tracked: {summary.get(\"total\", 0)}')
+              print(f'   Successfully assimilated: {summary.get(\"ok\", 0)}')
+              print(f'   Missing targets: {summary.get(\"missing\", 0)}')
+              print(f'   Incomplete bindings: {summary.get(\"unbound\", 0)}')
+              print(f'   Average integration score: {summary.get(\"avg_integration_score\", 0):.2f}')
+              print(f'   Assimilation percentage: {summary.get(\"assimilation_percentage\", 0):.1f}%')
+          else:
+              print('❌ No summary data available')
+          "
+      
+      - name: Upload full scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-assimilation-scan-${{ github.run_number }}
+          path: logs/full_assimilation.jsonl
+
+  orchestrator_summary:
+    needs: [orchestrator_preflight, auto_assimilation_response, health_check_operation, full_assimilation_scan]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Generate orchestrator summary
+        run: |
+          echo "📊 GitHub-Native Agent Orchestrator Summary"
+          echo "=========================================="
+          echo "Operation: ${{ needs.orchestrator_preflight.outputs.operation }}"
+          echo "Scope: ${{ needs.orchestrator_preflight.outputs.scope }}"
+          echo "Health Score: ${{ needs.orchestrator_preflight.outputs.health_score }}/10"
+          echo "Changed Areas: ${{ needs.orchestrator_preflight.outputs.changed_areas }}"
+          echo "Assimilation Required: ${{ needs.orchestrator_preflight.outputs.requires_assimilation }}"
+          echo "Trigger: ${{ github.event_name }}"
+          echo "Workflow Run: ${{ github.run_number }}"
+          echo "=========================================="
+          
+          # Final forensic log
+          mkdir -p logs
+          cat >> logs/orchestrator.jsonl << EOF
+          {"ts": "$(date -u +%Y-%m-%dT%H:%M:%SZ)", "phase": "orchestrator_complete", "operation": "${{ needs.orchestrator_preflight.outputs.operation }}", "scope": "${{ needs.orchestrator_preflight.outputs.scope }}", "health_score": "${{ needs.orchestrator_preflight.outputs.health_score }}", "success": true, "run_number": "${{ github.run_number }}"}
+          EOF
+      
+      - name: Upload orchestrator logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchestrator-summary-${{ github.run_number }}
+          path: logs/orchestrator.jsonl
