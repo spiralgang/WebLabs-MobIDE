@@ -174,10 +174,42 @@
     </div>
   </div>
   <script type="module">
+    // Bolt: Use correct relative path for shared components
     import MobIDEToolkit from './copilot-cookbook.js';
     
     // Make MobIDEToolkit globally available
     window.MobIDEToolkit = MobIDEToolkit;
+
+    /* ==================== DOM Cache & Optimizations ==================== */
+    // Bolt ⚡: Cache DOM elements to avoid redundant lookups and layout thrashing
+    const dom = {
+      fileList: document.getElementById('file-list'),
+      editor: document.getElementById('editor'),
+      statusIndicator: document.getElementById('status-indicator'),
+      panels: {
+        'panel-terminal': document.getElementById('panel-terminal'),
+        'panel-editor': document.getElementById('panel-editor'),
+        'panel-proxy': document.getElementById('panel-proxy'),
+        'panel-ai': document.getElementById('panel-ai'),
+        'panel-toolkit': document.getElementById('panel-toolkit'),
+        'panel-settings': document.getElementById('panel-settings')
+      },
+      navButtons: {
+        'terminal': document.getElementById('nav-terminal'),
+        'editor': document.getElementById('nav-editor'),
+        'proxy': document.getElementById('nav-proxy'),
+        'ai': document.getElementById('nav-ai'),
+        'toolkit': document.getElementById('nav-toolkit'),
+        'settings': document.getElementById('nav-settings')
+      },
+      _allMenuBtns: null
+    };
+
+    const getAllMenuBtns = () => {
+      if (!dom._allMenuBtns) dom._allMenuBtns = document.querySelectorAll('.menu-btn');
+      return dom._allMenuBtns;
+    };
+
     /* ==================== State & Filesystem ==================== */
     let files = {
       "README.md": "# Quantum WebIDE\nIndustry-standard, mobile-first, privileged proxy shell IDE.",
@@ -188,25 +220,28 @@
     let aiKey = "";
     let proxyHeaders = {};
     let theme = "dark";
+
     // File ops
+    // Bolt ⚡: Use DocumentFragment for batched DOM updates to reduce layout thrashing
     function updateFileList() {
-      const list = document.getElementById('file-list');
-      list.innerHTML = '';
+      const fragment = document.createDocumentFragment();
       Object.keys(files).forEach(fname => {
         const btn = document.createElement('button');
         btn.textContent = fname;
         btn.className = 'file-btn' + (fname === activeFile ? ' active' : '');
         btn.onclick = () => openFile(fname);
-        list.appendChild(btn);
+        fragment.appendChild(btn);
       });
+      dom.fileList.innerHTML = '';
+      dom.fileList.appendChild(fragment);
     }
     function openFile(fname) {
       activeFile = fname;
-      document.getElementById('editor').value = files[fname] || '';
+      dom.editor.value = files[fname] || '';
       updateFileList();
     }
     document.getElementById('save-file-btn').onclick = () => {
-      files[activeFile] = document.getElementById('editor').value;
+      files[activeFile] = dom.editor.value;
       updateFileList();
     };
     document.getElementById('new-file-btn').onclick = () => {
@@ -233,12 +268,23 @@
     openFile(activeFile);
 
     /* ==================== Navigation ==================== */
-    function showPanel(panel) {
-      ["panel-terminal","panel-editor","panel-proxy","panel-ai","panel-settings"].forEach(id => {
-        document.getElementById(id).style.display = (id === panel) ? "" : "none";
-      });
-      document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById('nav-' + panel.replace('panel-','')).classList.add('active');
+    // Bolt ⚡: Optimized showPanel using cached DOM references and improved logic
+    function showPanel(panelId) {
+      // Show/Hide panels using cache
+      for (const id in dom.panels) {
+        if (dom.panels[id]) {
+          dom.panels[id].style.display = (id === panelId) ? "" : "none";
+        }
+      }
+
+      // Update nav button states using cache
+      getAllMenuBtns().forEach(btn => btn.classList.remove('active'));
+
+      const navKey = panelId.replace('panel-', '');
+      const activeBtn = dom.navButtons[navKey];
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+      }
     }
     document.getElementById('nav-terminal').onclick = () => showPanel("panel-terminal");
     document.getElementById('nav-editor').onclick = () => showPanel("panel-editor");
@@ -608,13 +654,14 @@ console.log('Response:', request);</pre>
     };
 
     /* ==================== AI Chat ==================== */
+    // Bolt ⚡: Cache chatbox for faster message appending
+    const chatboxEl = document.getElementById('chatbox');
     function addChatMsg(user, text) {
-      let chatbox = document.getElementById('chatbox');
-      let div = document.createElement('div');
+      const div = document.createElement('div');
       div.className = 'chat-msg';
       div.innerHTML = `<span class="${user==='AI'?'chat-ai':'chat-user'}">${user}:</span> <span class="chat-text">${text}</span>`;
-      chatbox.appendChild(div);
-      chatbox.scrollTop = chatbox.scrollHeight;
+      chatboxEl.appendChild(div);
+      chatboxEl.scrollTop = chatboxEl.scrollHeight;
     }
     async function queryAI(messages, model="deepseek-ai/DeepSeek-R1:fireworks-ai") {
       if(!aiKey) return "AI key not set. Paste in settings.";
@@ -647,7 +694,7 @@ console.log('Response:', request);</pre>
     /* ==================== Settings ==================== */
     document.getElementById('settings-ai-key').onchange = e => {
       aiKey = e.target.value.trim();
-      document.getElementById('status-indicator').textContent = aiKey ? "AI Ready" : "";
+      dom.statusIndicator.textContent = aiKey ? "AI Ready" : "";
     };
     document.getElementById('settings-proxy-headers').onchange = e => {
       try{proxyHeaders=JSON.parse(e.target.value);}catch{}
