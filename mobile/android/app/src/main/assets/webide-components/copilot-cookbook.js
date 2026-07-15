@@ -39,7 +39,8 @@ const MobIDEToolkit = {
               }
             });
           });
-          this.observer.observe({ entryTypes: ['paint'] });
+          // Performance: Use buffered: true to capture events that occurred before initialization
+          this.observer.observe({ entryTypes: ['paint'], buffered: true });
         }
       } catch (e) {
         console.warn('PerformanceObserver initialization failed:', e);
