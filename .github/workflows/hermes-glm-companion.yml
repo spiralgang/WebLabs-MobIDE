@@ -10,7 +10,7 @@
 #   * Triage loop: if the issue is labeled agent-task, it can AUTO-HAND to the
 #     SDLC examine stage (closing the loop from chat -> autonomous build).
 #   * Manual codegen via .glm-request (workflow_dispatch).
-#   * All secrets via ${{ secrets.* }}; fails if ZHIPU_API_KEY missing.
+#   * All secrets via ${{ secrets.* }}; fails if LLM_API_KEY missing.
 # =============================================================================
 name: "Hermes ▸ GLM Coding Companion"
 on:
@@ -41,99 +41,100 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: "Fail if no Zhipu key"
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ -z "${{ secrets.ZHIPU_API_KEY }}" ]; then
-            echo "::error::ZHIPU_API_KEY missing; GLM companion requires a real key."; exit 1
-          fi
-
-      - name: "Install SDK"
-        shell: bash
-        run: |
-          python -m pip install --upgrade pip
-          pip install zhipuai
-
       - name: "GLM PR Review"
         if: github.event_name == 'pull_request'
-        env:
-          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+        id: pr_review_diff
+        shell: bash
         run: |
           CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | tr '\n' ' ')
-          cat > review.py <<'PY'
-          import os
-          from zhipuai import ZhipuAI
-          c = ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
-          files = os.getenv("CHANGED_FILES", "") or "no files"
-          r = c.chat.completions.create(model="glm-4-flash", temperature=0.5, max_tokens=3000,
-            messages=[{"role":"user","content":f"""Review these changed files: {files}
-            Give: correctness, security, performance, readability, one concrete fix, one witty remark."""}])
-          open("glm_review.md","w").write("# GLM-4 Review\n\n"+r.choices[0].message.content)
-          PY
-          CHANGED_FILES="$CHANGED" python review.py
+          echo "changed_files=$CHANGED" >> "$GITHUB_OUTPUT"
+
+      - name: "Real LLM: review the PR"
+        if: github.event_name == 'pull_request'
+        id: pr_review
+        uses: ./.github/actions/llm/action.yml
+        with:
+          system: "Review these changed files. Give: correctness, security, performance, readability, one concrete fix, one witty remark."
+          temperature: "0.5"
+          max_tokens: "3000"
+          prompt: |
+            Review these changed files:
+            ${{ steps.pr_review_diff.outputs.changed_files }}
 
       - name: "Post GLM Review"
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
-            const fs=require('fs');
-            const body=fs.readFileSync('glm_review.md','utf8');
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,
-              issue_number:context.issue.number, body});
+            const body = `# GLM-4 Review\n\n${{ steps.pr_review.outputs.completion }}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
 
-      - name: "GLM Issue Solution Architect"
+      - name: "Real LLM: Issue Solution Architect"
         if: github.event_name == 'issues' && github.event.action == 'opened'
-        env:
-          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
-        run: |
-          TITLE="${{ github.event.issue.title }}"; BODY="${{ github.event.issue.body }}"
-          cat > solution.py <<'PY'
-          import os
-          from zhipuai import ZhipuAI
-          c=ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
-          t=os.getenv("TITLE",""); b=os.getenv("BODY","")
-          r=c.chat.completions.create(model="glm-4-flash",temperature=0.4,max_tokens=3000,
-            messages=[{"role":"user","content":f"""Issue title: {t}\nBody: {b}
-            Provide: deep analysis, step-by-step fix plan, code example, final recommendation."""}])
-          open("glm_solution.md","w").write("# GLM-4 Solution\n\n"+r.choices[0].message.content)
-          PY
-          TITLE="$TITLE" BODY="$BODY" python solution.py
+        id: issue_solution
+        uses: ./.github/actions/llm/action.yml
+        with:
+          system: "Provide: deep analysis, step-by-step fix plan, code example, final recommendation."
+          temperature: "0.4"
+          max_tokens: "3000"
+          prompt: |
+            Issue title: ${{ github.event.issue.title }}
+            Body: ${{ github.event.issue.body }}
 
       - name: "Post GLM Solution + auto-hand to SDLC if agent-task"
         if: github.event_name == 'issues' && github.event.action == 'opened'
         uses: actions/github-script@v7
         with:
           script: |
-            const fs=require('fs');
-            const body=fs.readFileSync('glm_solution.md','utf8');
-            await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,
-              issue_number:context.issue.number, body});
+            const body = `# GLM-4 Solution\n\n${{ steps.issue_solution.outputs.completion }}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body
+            });
             const labels = context.payload.issue.labels.map(l=>l.name);
             if (labels.includes('agent-task')) {
               await github.rest.actions.createWorkflowDispatch({
-                owner:context.repo.owner, repo:context.repo.repo,
-                workflow_id:'sdlc-examine.yml', ref:'${{ github.ref }}',
-                inputs:{ issue_number: String(context.issue.number), cycle: '0' }
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'sdlc-examine.yml',
+                ref: '${{ github.ref }}',
+                inputs: { issue_number: String(context.issue.number), cycle: '0' }
               });
             }
 
-      - name: "GLM Manual Code Generation"
+      - name: "Prepare Manual Code Generation Request"
         if: github.event_name == 'workflow_dispatch'
-        env:
-          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+        id: prepare_gen
+        shell: bash
         run: |
           REQ="${{ inputs.request }}"
           if [ -z "$REQ" ] && [ -f .glm-request ]; then REQ=$(cat .glm-request); fi
-          if [ -z "$REQ" ]; then echo "no request provided"; exit 0; fi
-          cat > generate.py <<'PY'
-          import os
-          from zhipuai import ZhipuAI
-          c=ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
-          req=os.getenv("REQUEST","")
-          r=c.chat.completions.create(model="glm-4-flash",temperature=0.3,max_tokens=3500,
-            messages=[{"role":"user","content":f"Generate production-ready code for:\n{req}\nInclude full code, comments, usage, dependencies."}])
-          open("GLM_GENERATED_CODE.md","w").write("# GLM-4 Generated Code\n\n"+r.choices[0].message.content)
-          PY
-          REQUEST="$REQ" python generate.py
+          if [ -z "$REQ" ]; then REQ="no request provided"; fi
+          echo "request=$REQ" >> "$GITHUB_OUTPUT"
+
+      - name: "Real LLM: Manual Code Generation"
+        if: github.event_name == 'workflow_dispatch'
+        id: manual_gen
+        uses: ./.github/actions/llm/action.yml
+        with:
+          system: "Generate production-ready code. Include full code, comments, usage, dependencies."
+          temperature: "0.3"
+          max_tokens: "3500"
+          prompt: |
+            ${{ steps.prepare_gen.outputs.request }}
+
+      - name: "Post Manual Code Gen"
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = `# GLM-4 Generated Code\n\n${{ steps.manual_gen.outputs.completion }}`;
+            fs.writeFileSync('GLM_GENERATED_CODE.md', body);

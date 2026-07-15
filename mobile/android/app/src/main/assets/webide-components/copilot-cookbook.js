@@ -23,6 +23,28 @@ const MobIDEToolkit = {
         network: 300, // 300ms
         render: 16.67 // 60fps target
       };
+      this.initPerformanceObserver();
+    }
+
+    initPerformanceObserver() {
+      try {
+        if (typeof PerformanceObserver !== 'undefined') {
+          // Performance: Instantiate PerformanceObserver once in the constructor
+          // to avoid high-frequency object creation and redundant registrations.
+          this.observer = new PerformanceObserver((list) => {
+            const entries = list.getEntries();
+            entries.forEach((entry) => {
+              if (entry.entryType === 'paint') {
+                this.metrics.renderTime = entry.startTime;
+              }
+            });
+          });
+          // Performance: Use buffered: true to capture events that occurred before initialization
+          this.observer.observe({ entryTypes: ['paint'], buffered: true });
+        }
+      } catch (e) {
+        console.warn('PerformanceObserver initialization failed:', e);
+      }
     }
 
     startMonitoring() {
@@ -67,18 +89,9 @@ const MobIDEToolkit = {
     }
 
     measureRenderTime() {
-      try {
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          entries.forEach((entry) => {
-            if (entry.entryType === 'paint') {
-              this.metrics.renderTime = entry.startTime;
-            }
-          });
-        });
-        observer.observe({entryTypes: ['paint']});
-      } catch (e) {
-        // Fallback for environments without PerformanceObserver
+      // PerformanceObserver callback handles metric updates asynchronously.
+      // If observer is not supported, provide a default fallback.
+      if (!this.observer) {
         this.metrics.renderTime = 16.67;
       }
     }
