@@ -41,12 +41,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: "Fail if no Zhipu key"
+      - name: "Fail if no LLM key"
         shell: bash
         run: |
           set -euo pipefail
-          if [ -z "${{ secrets.ZHIPU_API_KEY }}" ]; then
-            echo "::error::ZHIPU_API_KEY missing; GLM companion requires a real key."; exit 1
+          if [ -z "${{ secrets.LLM_API_KEY }}" ]; then
+            echo "::error::LLM_API_KEY missing; GLM companion requires a real key."; exit 1
           fi
 
       - name: "Install SDK"
@@ -58,7 +58,7 @@ jobs:
       - name: "GLM PR Review"
         if: github.event_name == 'pull_request'
         env:
-          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+          ZHIPU_API_KEY: ${{ secrets.LLM_API_KEY }}
         run: |
           CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | tr '\n' ' ')
           cat > review.py <<'PY'
@@ -86,7 +86,7 @@ jobs:
       - name: "GLM Issue Solution Architect"
         if: github.event_name == 'issues' && github.event.action == 'opened'
         env:
-          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+          ZHIPU_API_KEY: ${{ secrets.LLM_API_KEY }}
         run: |
           TITLE="${{ github.event.issue.title }}"; BODY="${{ github.event.issue.body }}"
           cat > solution.py <<'PY'
@@ -122,7 +122,7 @@ jobs:
       - name: "GLM Manual Code Generation"
         if: github.event_name == 'workflow_dispatch'
         env:
-          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+          ZHIPU_API_KEY: ${{ secrets.LLM_API_KEY }}
         run: |
           REQ="${{ inputs.request }}"
           if [ -z "$REQ" ] && [ -f .glm-request ]; then REQ=$(cat .glm-request); fi
