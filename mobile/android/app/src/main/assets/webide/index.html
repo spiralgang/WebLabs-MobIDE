@@ -234,7 +234,7 @@
 
     /* ==================== Navigation ==================== */
     function showPanel(panel) {
-      ["panel-terminal","panel-editor","panel-proxy","panel-ai","panel-settings"].forEach(id => {
+      ["panel-terminal","panel-editor","panel-proxy","panel-ai","panel-toolkit","panel-settings"].forEach(id => {
         document.getElementById(id).style.display = (id === panel) ? "" : "none";
       });
       document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
