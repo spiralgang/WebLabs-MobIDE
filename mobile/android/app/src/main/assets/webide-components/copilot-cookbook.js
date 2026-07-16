@@ -23,6 +23,26 @@ const MobIDEToolkit = {
         network: 300, // 300ms
         render: 16.67 // 60fps target
       };
+      this.initPaintObserver();
+    }
+
+    initPaintObserver() {
+      try {
+        if (typeof PerformanceObserver !== 'undefined') {
+          const observer = new PerformanceObserver((list) => {
+            const entries = list.getEntries();
+            entries.forEach((entry) => {
+              if (entry.entryType === 'paint') {
+                this.metrics.renderTime = entry.startTime;
+              }
+            });
+          });
+          observer.observe({ entryTypes: ['paint'] });
+          this.paintObserver = observer;
+        }
+      } catch (e) {
+        console.error('Failed to initialize PerformanceObserver:', e);
+      }
     }
 
     startMonitoring() {
@@ -67,18 +87,8 @@ const MobIDEToolkit = {
     }
 
     measureRenderTime() {
-      try {
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          entries.forEach((entry) => {
-            if (entry.entryType === 'paint') {
-              this.metrics.renderTime = entry.startTime;
-            }
-          });
-        });
-        observer.observe({entryTypes: ['paint']});
-      } catch (e) {
-        // Fallback for environments without PerformanceObserver
+      // PerformanceObserver is now initialized once in constructor for better performance
+      if (!this.paintObserver) {
         this.metrics.renderTime = 16.67;
       }
     }
