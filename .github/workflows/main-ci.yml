@@ -55,7 +55,7 @@ jobs:
       - name: "Real LLM: explain failures (if any)"
         if: ${{ steps.checks.outcome == 'failure' && secrets.LLM_API_KEY != '' }}
         id: explain
-        uses: ./.github/actions/llm/action.yml
+        uses: ./.github/actions/llm
         with:
           system: "You are a CI oracle. Explain why the build failed and give the minimal fix."
           temperature: "0.2"

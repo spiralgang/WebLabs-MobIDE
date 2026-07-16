@@ -51,7 +51,7 @@ jobs:
       - name: "GLM PR Review"
         if: github.event_name == 'pull_request'
         id: review
-        uses: ./.github/actions/llm/action.yml
+        uses: ./.github/actions/llm
         with:
           system: "You are a senior code reviewer."
           temperature: "0.5"
@@ -78,7 +78,7 @@ jobs:
       - name: "GLM Issue Solution Architect"
         if: github.event_name == 'issues' && github.event.action == 'opened'
         id: solution
-        uses: ./.github/actions/llm/action.yml
+        uses: ./.github/actions/llm
         with:
           system: "You are a senior solution architect."
           temperature: "0.4"
@@ -125,7 +125,7 @@ jobs:
       - name: "GLM Manual Code Generation"
         if: github.event_name == 'workflow_dispatch' && steps.prep.outputs.request != ''
         id: gen
-        uses: ./.github/actions/llm/action.yml
+        uses: ./.github/actions/llm
         with:
           system: "You are a senior software engineer."
           temperature: "0.3"
