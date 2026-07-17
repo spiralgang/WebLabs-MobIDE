@@ -23,6 +23,8 @@ const MobIDEToolkit = {
         network: 300, // 300ms
         render: 16.67 // 60fps target
       };
+      // Performance optimization: Store reference to avoid re-creation on every tick
+      this.renderObserver = null;
     }
 
     startMonitoring() {
@@ -67,6 +69,11 @@ const MobIDEToolkit = {
     }
 
     measureRenderTime() {
+      // Performance optimization: reuse the same PerformanceObserver instance
+      // to eliminate allocation overhead, resource leaks, and multiple callbacks.
+      if (this.renderObserver) {
+        return;
+      }
       try {
         const observer = new PerformanceObserver((list) => {
           const entries = list.getEntries();
@@ -77,6 +84,9 @@ const MobIDEToolkit = {
           });
         });
         observer.observe({entryTypes: ['paint']});
+        // Save the observer to a class property only after successful .observe()
+        // to prevent invalid state if the environment throws an error.
+        this.renderObserver = observer;
       } catch (e) {
         // Fallback for environments without PerformanceObserver
         this.metrics.renderTime = 16.67;
