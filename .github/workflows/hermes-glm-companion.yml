@@ -64,12 +64,17 @@ jobs:
           cat > review.py <<'PY'
           import os
           from zhipuai import ZhipuAI
-          c = ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
-          files = os.getenv("CHANGED_FILES", "") or "no files"
-          r = c.chat.completions.create(model="glm-4-flash", temperature=0.5, max_tokens=3000,
-            messages=[{"role":"user","content":f"""Review these changed files: {files}
-            Give: correctness, security, performance, readability, one concrete fix, one witty remark."""}])
-          open("glm_review.md","w").write("# GLM-4 Review\n\n"+r.choices[0].message.content)
+          try:
+              c = ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
+              files = os.getenv("CHANGED_FILES", "") or "no files"
+              r = c.chat.completions.create(model="glm-4-flash", temperature=0.5, max_tokens=3000,
+                messages=[{"role":"user","content":f"""Review these changed files: {files}
+                Give: correctness, security, performance, readability, one concrete fix, one witty remark."""}])
+              content = r.choices[0].message.content
+          except Exception as e:
+              print(f"GLM PR Review bypassed/failed due to error: {e}")
+              content = f"GLM PR Review could not be generated. External API error or expired token:\n```\n{e}\n```"
+          open("glm_review.md","w").write("# GLM-4 Review\n\n"+content)
           PY
           CHANGED_FILES="$CHANGED" python review.py
 
@@ -92,12 +97,17 @@ jobs:
           cat > solution.py <<'PY'
           import os
           from zhipuai import ZhipuAI
-          c=ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
-          t=os.getenv("TITLE",""); b=os.getenv("BODY","")
-          r=c.chat.completions.create(model="glm-4-flash",temperature=0.4,max_tokens=3000,
-            messages=[{"role":"user","content":f"""Issue title: {t}\nBody: {b}
-            Provide: deep analysis, step-by-step fix plan, code example, final recommendation."""}])
-          open("glm_solution.md","w").write("# GLM-4 Solution\n\n"+r.choices[0].message.content)
+          try:
+              c=ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
+              t=os.getenv("TITLE",""); b=os.getenv("BODY","")
+              r=c.chat.completions.create(model="glm-4-flash",temperature=0.4,max_tokens=3000,
+                messages=[{"role":"user","content":f"""Issue title: {t}\nBody: {b}
+                Provide: deep analysis, step-by-step fix plan, code example, final recommendation."""}])
+              content = r.choices[0].message.content
+          except Exception as e:
+              print(f"GLM Issue Solution Architect bypassed/failed due to error: {e}")
+              content = f"GLM Issue Solution Architect could not be generated. External API error or expired token:\n```\n{e}\n```"
+          open("glm_solution.md","w").write("# GLM-4 Solution\n\n"+content)
           PY
           TITLE="$TITLE" BODY="$BODY" python solution.py
 
@@ -130,10 +140,15 @@ jobs:
           cat > generate.py <<'PY'
           import os
           from zhipuai import ZhipuAI
-          c=ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
-          req=os.getenv("REQUEST","")
-          r=c.chat.completions.create(model="glm-4-flash",temperature=0.3,max_tokens=3500,
-            messages=[{"role":"user","content":f"Generate production-ready code for:\n{req}\nInclude full code, comments, usage, dependencies."}])
-          open("GLM_GENERATED_CODE.md","w").write("# GLM-4 Generated Code\n\n"+r.choices[0].message.content)
+          try:
+              c=ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
+              req=os.getenv("REQUEST","")
+              r=c.chat.completions.create(model="glm-4-flash",temperature=0.3,max_tokens=3500,
+                messages=[{"role":"user","content":f"Generate production-ready code for:\n{req}\nInclude full code, comments, usage, dependencies."}])
+              content = r.choices[0].message.content
+          except Exception as e:
+              print(f"GLM Manual Code Generation bypassed/failed due to error: {e}")
+              content = f"GLM Manual Code Generation could not be completed. External API error or expired token:\n```\n{e}\n```"
+          open("GLM_GENERATED_CODE.md","w").write("# GLM-4 Generated Code\n\n"+content)
           PY
           REQUEST="$REQ" python generate.py
