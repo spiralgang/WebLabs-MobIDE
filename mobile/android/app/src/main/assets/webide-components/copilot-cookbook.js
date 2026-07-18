@@ -67,18 +67,32 @@ const MobIDEToolkit = {
     }
 
     measureRenderTime() {
+      // Performance: Avoid registering a new PerformanceObserver on every metrics poll iteration.
+      // Reuse the existing observer if already initialized.
+      if (this.paintObserver) {
+        return;
+      }
+
       try {
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          entries.forEach((entry) => {
-            if (entry.entryType === 'paint') {
-              this.metrics.renderTime = entry.startTime;
-            }
+        if (typeof PerformanceObserver !== 'undefined') {
+          const observer = new PerformanceObserver((list) => {
+            const entries = list.getEntries();
+            entries.forEach((entry) => {
+              if (entry.entryType === 'paint') {
+                this.metrics.renderTime = entry.startTime;
+              }
+            });
           });
-        });
-        observer.observe({entryTypes: ['paint']});
+
+          // Call observe first, then assign to property to prevent invalid state if it fails
+          observer.observe({entryTypes: ['paint']});
+          this.paintObserver = observer;
+        } else {
+          // Fallback for environments without PerformanceObserver
+          this.metrics.renderTime = 16.67;
+        }
       } catch (e) {
-        // Fallback for environments without PerformanceObserver
+        // Fallback for environments where observe() fails or throws an exception
         this.metrics.renderTime = 16.67;
       }
     }
