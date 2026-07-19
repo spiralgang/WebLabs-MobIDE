@@ -53,7 +53,8 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          pip install zhipuai
+          # Fix: explicitly install sniffio to resolve a transitive dependency issue of zhipuai's httpx client
+          pip install zhipuai sniffio
 
       - name: "GLM PR Review"
         if: github.event_name == 'pull_request'
