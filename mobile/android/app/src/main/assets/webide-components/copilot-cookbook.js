@@ -23,6 +23,29 @@ const MobIDEToolkit = {
         network: 300, // 300ms
         render: 16.67 // 60fps target
       };
+      this.initPerformanceObserver();
+    }
+
+    // Initialize PerformanceObserver once to avoid redundant allocation and registration overhead
+    initPerformanceObserver() {
+      try {
+        if (typeof PerformanceObserver !== 'undefined') {
+          const observer = new PerformanceObserver((list) => {
+            const entries = list.getEntries();
+            entries.forEach((entry) => {
+              if (entry.entryType === 'paint') {
+                this.metrics.renderTime = entry.startTime;
+              }
+            });
+          });
+          observer.observe({ entryTypes: ['paint'] });
+          // Ensure the observer is only assigned to class property after a successful observe() call
+          this.renderObserver = observer;
+        }
+      } catch (e) {
+        // Fallback render time for environments where PerformanceObserver registration fails
+        this.metrics.renderTime = 16.67;
+      }
     }
 
     startMonitoring() {
@@ -67,18 +90,9 @@ const MobIDEToolkit = {
     }
 
     measureRenderTime() {
-      try {
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          entries.forEach((entry) => {
-            if (entry.entryType === 'paint') {
-              this.metrics.renderTime = entry.startTime;
-            }
-          });
-        });
-        observer.observe({entryTypes: ['paint']});
-      } catch (e) {
-        // Fallback for environments without PerformanceObserver
+      // Reuses the pre-instantiated PerformanceObserver to prevent memory leaks and O(n) object allocation overhead.
+      // If the environment does not support PerformanceObserver, fall back gracefully.
+      if (!this.renderObserver) {
         this.metrics.renderTime = 16.67;
       }
     }
