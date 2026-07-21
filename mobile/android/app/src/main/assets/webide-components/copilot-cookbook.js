@@ -23,6 +23,34 @@ const MobIDEToolkit = {
         network: 300, // 300ms
         render: 16.67 // 60fps target
       };
+      // Performance Optimization: Initialize the PerformanceObserver once here rather than
+      // repeatedly creating and registering it on every 1-second interval tick.
+      this.setupRenderTimeObserver();
+    }
+
+    /**
+     * Performance Optimization: Sets up a single, reusable PerformanceObserver instance.
+     * This avoids continuous O(n) object allocation overhead, memory leaks, and redundant
+     * registration overhead during high-frequency monitoring intervals.
+     */
+    setupRenderTimeObserver() {
+      try {
+        const observer = new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          entries.forEach((entry) => {
+            if (entry.entryType === 'paint') {
+              this.metrics.renderTime = entry.startTime;
+            }
+          });
+        });
+        observer.observe({entryTypes: ['paint']});
+        // Performance Optimization: Only assign to the class property AFTER a successful
+        // observe call. This prevents invalid state if the observer setup throws an error.
+        this.renderObserver = observer;
+      } catch (e) {
+        // Fallback for environments without PerformanceObserver (e.g. Node or older browsers)
+        this.metrics.renderTime = 16.67;
+      }
     }
 
     startMonitoring() {
@@ -67,18 +95,10 @@ const MobIDEToolkit = {
     }
 
     measureRenderTime() {
-      try {
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          entries.forEach((entry) => {
-            if (entry.entryType === 'paint') {
-              this.metrics.renderTime = entry.startTime;
-            }
-          });
-        });
-        observer.observe({entryTypes: ['paint']});
-      } catch (e) {
-        // Fallback for environments without PerformanceObserver
+      // Performance Optimization: With the PerformanceObserver pre-instantiated and observing,
+      // we only need to handle the fallback logic if the observer could not be established.
+      // This completely eliminates registration and instantiation overhead.
+      if (!this.renderObserver) {
         this.metrics.renderTime = 16.67;
       }
     }
