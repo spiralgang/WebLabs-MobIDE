@@ -67,6 +67,11 @@ const MobIDEToolkit = {
     }
 
     measureRenderTime() {
+      // Performance: Store and reuse the PerformanceObserver instance to prevent O(n) object
+      // allocation overhead and redundant observation registrations in high-frequency loops.
+      if (this.observer) {
+        return;
+      }
       try {
         const observer = new PerformanceObserver((list) => {
           const entries = list.getEntries();
@@ -77,6 +82,9 @@ const MobIDEToolkit = {
           });
         });
         observer.observe({entryTypes: ['paint']});
+
+        // Only store the observer after successful observe() registration to avoid invalid state.
+        this.observer = observer;
       } catch (e) {
         // Fallback for environments without PerformanceObserver
         this.metrics.renderTime = 16.67;
