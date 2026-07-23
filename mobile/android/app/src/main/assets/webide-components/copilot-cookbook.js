@@ -33,6 +33,10 @@ const MobIDEToolkit = {
       }, 1000);
     }
 
+    analyzePerformance() {
+      // Analyze collected metrics for performance anomalies
+    }
+
     collectMetrics() {
       // Real memory monitoring
       if ('memory' in performance) {
@@ -67,6 +71,9 @@ const MobIDEToolkit = {
     }
 
     measureRenderTime() {
+      if (this.paintObserver) {
+        return;
+      }
       try {
         const observer = new PerformanceObserver((list) => {
           const entries = list.getEntries();
@@ -77,6 +84,8 @@ const MobIDEToolkit = {
           });
         });
         observer.observe({entryTypes: ['paint']});
+        // Performance: Assign to class property only after successful initialization and observe() call
+        this.paintObserver = observer;
       } catch (e) {
         // Fallback for environments without PerformanceObserver
         this.metrics.renderTime = 16.67;
