@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           python -m pip install --upgrade pip
-          pip install zhipuai
+          pip install zhipuai sniffio
 
       - name: "GLM PR Review"
         if: github.event_name == 'pull_request'
@@ -63,13 +63,17 @@ jobs:
           CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | tr '\n' ' ')
           cat > review.py <<'PY'
           import os
-          from zhipuai import ZhipuAI
-          c = ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
-          files = os.getenv("CHANGED_FILES", "") or "no files"
-          r = c.chat.completions.create(model="glm-4-flash", temperature=0.5, max_tokens=3000,
-            messages=[{"role":"user","content":f"""Review these changed files: {files}
-            Give: correctness, security, performance, readability, one concrete fix, one witty remark."""}])
-          open("glm_review.md","w").write("# GLM-4 Review\n\n"+r.choices[0].message.content)
+          try:
+              from zhipuai import ZhipuAI
+              c = ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
+              files = os.getenv("CHANGED_FILES", "") or "no files"
+              r = c.chat.completions.create(model="glm-4-flash", temperature=0.5, max_tokens=3000,
+                messages=[{"role":"user","content":f"""Review these changed files: {files}
+                Give: correctness, security, performance, readability, one concrete fix, one witty remark."""}])
+              content = r.choices[0].message.content
+          except Exception as e:
+              content = f"GLM Review failed due to an error: {e}"
+          open("glm_review.md","w").write("# GLM-4 Review\n\n"+content)
           PY
           CHANGED_FILES="$CHANGED" python review.py
 
@@ -91,13 +95,17 @@ jobs:
           TITLE="${{ github.event.issue.title }}"; BODY="${{ github.event.issue.body }}"
           cat > solution.py <<'PY'
           import os
-          from zhipuai import ZhipuAI
-          c=ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
-          t=os.getenv("TITLE",""); b=os.getenv("BODY","")
-          r=c.chat.completions.create(model="glm-4-flash",temperature=0.4,max_tokens=3000,
-            messages=[{"role":"user","content":f"""Issue title: {t}\nBody: {b}
-            Provide: deep analysis, step-by-step fix plan, code example, final recommendation."""}])
-          open("glm_solution.md","w").write("# GLM-4 Solution\n\n"+r.choices[0].message.content)
+          try:
+              from zhipuai import ZhipuAI
+              c=ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
+              t=os.getenv("TITLE",""); b=os.getenv("BODY","")
+              r=c.chat.completions.create(model="glm-4-flash",temperature=0.4,max_tokens=3000,
+                messages=[{"role":"user","content":f"""Issue title: {t}\nBody: {b}
+                Provide: deep analysis, step-by-step fix plan, code example, final recommendation."""}])
+              content = r.choices[0].message.content
+          except Exception as e:
+              content = f"GLM Solution Generation failed due to an error: {e}"
+          open("glm_solution.md","w").write("# GLM-4 Solution\n\n"+content)
           PY
           TITLE="$TITLE" BODY="$BODY" python solution.py
 
@@ -129,11 +137,15 @@ jobs:
           if [ -z "$REQ" ]; then echo "no request provided"; exit 0; fi
           cat > generate.py <<'PY'
           import os
-          from zhipuai import ZhipuAI
-          c=ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
-          req=os.getenv("REQUEST","")
-          r=c.chat.completions.create(model="glm-4-flash",temperature=0.3,max_tokens=3500,
-            messages=[{"role":"user","content":f"Generate production-ready code for:\n{req}\nInclude full code, comments, usage, dependencies."}])
-          open("GLM_GENERATED_CODE.md","w").write("# GLM-4 Generated Code\n\n"+r.choices[0].message.content)
+          try:
+              from zhipuai import ZhipuAI
+              c=ZhipuAI(api_key=os.getenv("ZHIPU_API_KEY"))
+              req=os.getenv("REQUEST","")
+              r=c.chat.completions.create(model="glm-4-flash",temperature=0.3,max_tokens=3500,
+                messages=[{"role":"user","content":f"Generate production-ready code for:\n{req}\nInclude full code, comments, usage, dependencies."}])
+              content = r.choices[0].message.content
+          except Exception as e:
+              content = f"GLM Code Generation failed due to an error: {e}"
+          open("GLM_GENERATED_CODE.md","w").write("# GLM-4 Generated Code\n\n"+content)
           PY
           REQUEST="$REQ" python generate.py
