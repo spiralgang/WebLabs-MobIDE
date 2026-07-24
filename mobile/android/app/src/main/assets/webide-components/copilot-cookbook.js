@@ -23,6 +23,32 @@ const MobIDEToolkit = {
         network: 300, // 300ms
         render: 16.67 // 60fps target
       };
+
+      // Performance: Pre-instantiate PerformanceObserver to avoid repeated O(n) allocations in loop
+      this.initPerformanceObserver();
+    }
+
+    initPerformanceObserver() {
+      try {
+        if (typeof PerformanceObserver !== 'undefined') {
+          const observer = new PerformanceObserver((list) => {
+            const entries = list.getEntries();
+            entries.forEach((entry) => {
+              if (entry.entryType === 'paint') {
+                this.metrics.renderTime = entry.startTime;
+              }
+            });
+          });
+          observer.observe({ entryTypes: ['paint'] });
+          // Performance: Store reference only after successful observe call to guarantee robust error isolation
+          this.observer = observer;
+        } else {
+          this.metrics.renderTime = 16.67;
+        }
+      } catch (e) {
+        // Fallback for environments without PerformanceObserver
+        this.metrics.renderTime = 16.67;
+      }
     }
 
     startMonitoring() {
@@ -67,19 +93,23 @@ const MobIDEToolkit = {
     }
 
     measureRenderTime() {
-      try {
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          entries.forEach((entry) => {
-            if (entry.entryType === 'paint') {
-              this.metrics.renderTime = entry.startTime;
-            }
-          });
-        });
-        observer.observe({entryTypes: ['paint']});
-      } catch (e) {
-        // Fallback for environments without PerformanceObserver
+      // Performance: Metric is automatically updated in background via pre-instantiated PerformanceObserver.
+      // If observer is not supported or failed to initialize, fallback to standard frame budget.
+      if (!this.observer) {
         this.metrics.renderTime = 16.67;
+      }
+    }
+
+    analyzePerformance() {
+      // Prevent runtime crash and analyze metrics against thresholds
+      if (!this.metrics.arm64Optimizations) {
+        this.metrics.arm64Optimizations = {};
+      }
+      if (this.metrics.cpuUsage > this.thresholds.cpu) {
+        this.metrics.arm64Optimizations.cpuThrottlingNeeded = true;
+      }
+      if (this.metrics.memoryUsage > this.thresholds.memory) {
+        this.metrics.arm64Optimizations.memoryCompression = true;
       }
     }
 
