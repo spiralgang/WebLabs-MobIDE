@@ -13,7 +13,7 @@ const MobIDEToolkit = {
         cpuUsage: 0,
         batteryDrain: 0,
         networkLatency: 0,
-        renderTime: 0,
+        renderTime: 16.67, // Initialize to sensible default (60fps target) to avoid starting at 0
         arm64Optimizations: {}
       };
       this.thresholds = {
@@ -32,6 +32,9 @@ const MobIDEToolkit = {
      * Performance Optimization: Sets up a single, reusable PerformanceObserver instance.
      * This avoids continuous O(n) object allocation overhead, memory leaks, and redundant
      * registration overhead during high-frequency monitoring intervals.
+     *
+     * Uses modern 'buffered: true' to retrieve historical paint entries, falling back
+     * to standard entryTypes if modern API is not supported.
      */
     setupRenderTimeObserver() {
       try {
@@ -43,7 +46,15 @@ const MobIDEToolkit = {
             }
           });
         });
-        observer.observe({entryTypes: ['paint']});
+
+        // Attempt to observe with modern single-type + buffered option
+        try {
+          observer.observe({ type: 'paint', buffered: true });
+        } catch (e) {
+          // Fallback to standard entryTypes configuration
+          observer.observe({ entryTypes: ['paint'] });
+        }
+
         // Performance Optimization: Only assign to the class property AFTER a successful
         // observe call. This prevents invalid state if the observer setup throws an error.
         this.renderObserver = observer;
