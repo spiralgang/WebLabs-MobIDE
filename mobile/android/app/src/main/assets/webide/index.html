@@ -188,17 +188,24 @@
     let aiKey = "";
     let proxyHeaders = {};
     let theme = "dark";
+    // Performance: Cache DOM element to avoid redundant lookups
+    const fileListEl = document.getElementById('file-list');
+
     // File ops
     function updateFileList() {
-      const list = document.getElementById('file-list');
-      list.innerHTML = '';
+      if (!fileListEl) return;
+      fileListEl.innerHTML = '';
+
+      // Performance: Use DocumentFragment to batch DOM insertions, minimizing layouts & reflows on mobile
+      const fragment = document.createDocumentFragment();
       Object.keys(files).forEach(fname => {
         const btn = document.createElement('button');
         btn.textContent = fname;
         btn.className = 'file-btn' + (fname === activeFile ? ' active' : '');
         btn.onclick = () => openFile(fname);
-        list.appendChild(btn);
+        fragment.appendChild(btn);
       });
+      fileListEl.appendChild(fragment);
     }
     function openFile(fname) {
       activeFile = fname;
@@ -234,7 +241,8 @@
 
     /* ==================== Navigation ==================== */
     function showPanel(panel) {
-      ["panel-terminal","panel-editor","panel-proxy","panel-ai","panel-settings"].forEach(id => {
+      // Fix pre-existing UI bug: include 'panel-toolkit' so it correctly toggles visibility
+      ["panel-terminal","panel-editor","panel-proxy","panel-ai","panel-toolkit","panel-settings"].forEach(id => {
         document.getElementById(id).style.display = (id === panel) ? "" : "none";
       });
       document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
