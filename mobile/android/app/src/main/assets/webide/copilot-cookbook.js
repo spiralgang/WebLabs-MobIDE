@@ -1,0 +1,1 @@
+../webide-components/copilot-cookbook.js
