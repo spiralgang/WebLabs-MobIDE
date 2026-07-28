@@ -252,7 +252,7 @@ class ProjectManager:
     
     async def auto_setup_project(self) -> ExecutionResult:
         """Automatically set up project with AI assistance."""
-        analysis = self.analyze_project()
+        analysis = await asyncio.to_thread(self.analyze_project)
         
         # Get AI recommendations
         context = f"Project analysis: {json.dumps(analysis, default=str, indent=2)}"
@@ -267,7 +267,7 @@ class ProjectManager:
         results = []
         for cmd in setup_commands:
             logger.info(f"Executing: {cmd}")
-            result = self.executor.execute(cmd, cwd=str(self.project_root))
+            result = await asyncio.to_thread(self.executor.execute, cmd, cwd=str(self.project_root))
             results.append(result)
             
             if not result.success:
@@ -280,7 +280,7 @@ class ProjectManager:
                 # Try fixes
                 for fix_cmd in fix_commands[:3]:  # Limit to 3 fixes per command
                     logger.info(f"Trying fix: {fix_cmd}")
-                    fix_result = self.executor.execute(fix_cmd, cwd=str(self.project_root))
+                    fix_result = await asyncio.to_thread(self.executor.execute, fix_cmd, cwd=str(self.project_root))
                     if fix_result.success:
                         logger.info("Fix successful!")
                         break
@@ -350,9 +350,11 @@ Make it fully functional with proper error handling and best practices.
         
         # Write file
         try:
-            Path(file_path).parent.mkdir(parents=True, exist_ok=True)
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(content)
+            await asyncio.to_thread(Path(file_path).parent.mkdir, parents=True, exist_ok=True)
+            def _write_file():
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    f.write(content)
+            await asyncio.to_thread(_write_file)
             logger.info(f"Generated file: {file_path}")
             return True
         except Exception as e:
@@ -362,8 +364,10 @@ Make it fully functional with proper error handling and best practices.
     async def refactor_file(self, file_path: str, instructions: str) -> bool:
         """Refactor existing file with AI assistance."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                original_content = f.read()
+            def _read_file():
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    return f.read()
+            original_content = await asyncio.to_thread(_read_file)
         except Exception as e:
             logger.error(f"Could not read file {file_path}: {e}")
             return False
@@ -389,11 +393,14 @@ Provide the complete refactored code. No explanations, just the final code.
         # Backup original
         backup_path = f"{file_path}.backup"
         try:
-            with open(backup_path, 'w', encoding='utf-8') as f:
-                f.write(original_content)
+            def _backup_and_write():
+                with open(backup_path, 'w', encoding='utf-8') as f:
+                    f.write(original_content)
+
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    f.write(content)
             
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(content)
+            await asyncio.to_thread(_backup_and_write)
             
             logger.info(f"Refactored file: {file_path} (backup: {backup_path})")
             return True
