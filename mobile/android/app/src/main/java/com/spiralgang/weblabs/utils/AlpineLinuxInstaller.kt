@@ -45,8 +45,7 @@ class AlpineLinuxInstaller(private val context: Context) {
             setupBasicEnvironment()
             
             // Copy AI model installer script to Alpine environment
-            // TODO: Implement copyAIInstallerToAlpine(alpineRoot)
-            // copyAIInstallerToAlpine(alpineRoot)
+            copyAIInstallerToAlpine(alpineRoot)
             
             Log.i(TAG, "Alpine Linux installation completed successfully")
             
@@ -250,6 +249,29 @@ class AlpineLinuxInstaller(private val context: Context) {
         }
     }
     
+    private suspend fun copyAIInstallerToAlpine(destDir: File) = withContext(Dispatchers.IO) {
+        Log.i(TAG, "Copying AI model installer script to Alpine environment...")
+
+        val installerName = "alpine_ai_model_installer.sh"
+        val destFile = File(destDir, "home/developer/$installerName")
+
+        try {
+            // Ensure destination directory exists
+            destFile.parentFile?.mkdirs()
+
+            context.assets.open(installerName).use { input ->
+                FileOutputStream(destFile).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            destFile.setExecutable(true)
+            Log.i(TAG, "AI model installer script copied to ${destFile.absolutePath}")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to copy AI model installer script", e)
+            throw e
+        }
+    }
+
     suspend fun setupDevelopmentEnvironment() = withContext(Dispatchers.IO) {
         Log.i(TAG, "Setting up development environment...")
         
