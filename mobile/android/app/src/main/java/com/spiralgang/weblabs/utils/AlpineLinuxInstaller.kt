@@ -21,6 +21,7 @@ class AlpineLinuxInstaller(private val context: Context) {
         const val ALPINE_ARCH = "aarch64"
         const val ALPINE_DOWNLOAD_URL = "https://dl-cdn.alpinelinux.org/alpine/v$ALPINE_VERSION/releases/$ALPINE_ARCH/alpine-minirootfs-$ALPINE_VERSION.0-$ALPINE_ARCH.tar.gz"
         const val ALPINE_DIR_NAME = "alpine"
+        const val AI_INSTALLER_SCRIPT = "alpine_ai_model_installer.sh"
     }
     
     private val alpineRoot: File by lazy {
@@ -45,8 +46,7 @@ class AlpineLinuxInstaller(private val context: Context) {
             setupBasicEnvironment()
             
             // Copy AI model installer script to Alpine environment
-            // TODO: Implement copyAIInstallerToAlpine(alpineRoot)
-            // copyAIInstallerToAlpine(alpineRoot)
+            copyAIInstallerToAlpine(alpineRoot)
             
             Log.i(TAG, "Alpine Linux installation completed successfully")
             
@@ -311,6 +311,38 @@ class AlpineLinuxInstaller(private val context: Context) {
             }
         } catch (e: Exception) {
             Log.w(TAG, "Failed to cleanup temporary files", e)
+        }
+    }
+
+    /**
+     * Copy AI model installer script from assets to Alpine environment
+     */
+    private suspend fun copyAIInstallerToAlpine(alpineRoot: File) = withContext(Dispatchers.IO) {
+        Log.i(TAG, "Copying AI model installer script to Alpine...")
+
+        try {
+            val destinationDir = File(alpineRoot, "home/developer")
+            if (!destinationDir.exists()) {
+                destinationDir.mkdirs()
+            }
+
+            val installerScript = File(destinationDir, AI_INSTALLER_SCRIPT)
+
+            context.assets.open(AI_INSTALLER_SCRIPT).use { input ->
+                FileOutputStream(installerScript).use { output ->
+                    input.copyTo(output)
+                }
+            }
+
+            // Set as executable
+            installerScript.setExecutable(true)
+
+            Log.i(TAG, "AI model installer script copied to: ${installerScript.absolutePath}")
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to copy AI installer script", e)
+            // We don't want to fail the whole installation if this fails,
+            // but we should log it
         }
     }
 }
