@@ -60,18 +60,25 @@ def find_evolution_tasks():
         if os.path.isfile(file_path) and not any(d in file_path for d in ['.git/', '.github/']):
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
-                    for i, line in enumerate(f):
-                        match = task_pattern.match(line)
-                        if match:
-                            task_desc = match.group(2).strip()
-                            task_id = f"{os.path.basename(file_path)}-L{i+1}"
-                            print(f"  Found task '{task_desc}' in {file_path}")
-                            tasks.append({
-                                'task_id': task_id,
-                                'file_path': file_path,
-                                'line_number': i + 1,
-                                'task_description': task_desc
-                            })
+                    # Bolt ⚡ Performance Optimization:
+                    # Reading the whole file to perform a fast-path keyword check avoids
+                    # the high overhead of sequential line-by-line reading and regex evaluation
+                    # for the vast majority of files that do not contain these comments.
+                    content = f.read()
+                    if 'TODO-AI' in content or 'FIXME-AI' in content:
+                        lines = content.splitlines()
+                        for i, line in enumerate(lines):
+                            match = task_pattern.match(line)
+                            if match:
+                                task_desc = match.group(2).strip()
+                                task_id = f"{os.path.basename(file_path)}-L{i+1}"
+                                print(f"  Found task '{task_desc}' in {file_path}")
+                                tasks.append({
+                                    'task_id': task_id,
+                                    'file_path': file_path,
+                                    'line_number': i + 1,
+                                    'task_description': task_desc
+                                })
             except Exception:
                 continue # Ignore binary files or read errors
     return tasks
