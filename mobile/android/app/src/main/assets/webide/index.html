@@ -189,16 +189,30 @@
     let proxyHeaders = {};
     let theme = "dark";
     // File ops
+    // Performance: Cache the DOM element reference to avoid repeated document lookups in high-frequency/rendering paths
+    let fileListEl = null;
     function updateFileList() {
-      const list = document.getElementById('file-list');
-      list.innerHTML = '';
-      Object.keys(files).forEach(fname => {
+      if (!fileListEl) {
+        fileListEl = document.getElementById('file-list');
+      }
+      const list = fileListEl;
+      if (!list) return;
+
+      // Performance: Use DocumentFragment to batch DOM insertions off-screen, preventing layout thrashing and minimizing browser reflows
+      const fragment = document.createDocumentFragment();
+      const fileNames = Object.keys(files);
+
+      for (let i = 0; i < fileNames.length; i++) {
+        const fname = fileNames[i];
         const btn = document.createElement('button');
         btn.textContent = fname;
         btn.className = 'file-btn' + (fname === activeFile ? ' active' : '');
         btn.onclick = () => openFile(fname);
-        list.appendChild(btn);
-      });
+        fragment.appendChild(btn);
+      }
+
+      list.innerHTML = '';
+      list.appendChild(fragment);
     }
     function openFile(fname) {
       activeFile = fname;
