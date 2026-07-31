@@ -3,7 +3,6 @@
 # It outputs a JSON matrix for use in subsequent GitHub Actions jobs.
 #
 import os
-import glob
 import json
 import re
 
@@ -26,10 +25,11 @@ def find_modules():
         'pom.xml', 'build.gradle'              # Java/Kotlin
     ]
     
-    for root, _, files in os.walk('.'):
-        # Ignore dot-folders like .github, .git
-        if any(part.startswith('.') for part in root.split(os.path.sep)):
-            continue
+    # Performance: Prune dot-folders in-place so os.walk avoids visiting hidden directories
+    # like .git, .github, .jules, etc., saving massive disk I/O operations and traversal overhead.
+    # This also fixes a pre-existing bug where root directory '.' was skipped because of parts check.
+    for root, dirs, files in os.walk('.'):
+        dirs[:] = [d for d in dirs if not d.startswith('.')]
 
         for dep_file in dependency_files:
             if dep_file in files:
@@ -54,13 +54,26 @@ def find_evolution_tasks():
     tasks = []
     task_pattern = re.compile(r'.*(TODO-AI|FIXME-AI):\s*(.*)')
     
-    source_files = glob.glob('**/*', recursive=True)
+    source_files = []
+    # Performance: Avoid glob.glob('**/*', recursive=True) as it lists all nested git/github objects.
+    # Instead, we traverse with os.walk and prune hidden and standard ignored folders in-place.
+    for root, dirs, files in os.walk('.'):
+        dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ('node_modules', 'dist', 'build')]
+        for f in files:
+            source_files.append(os.path.join(root, f))
     
     for file_path in source_files:
-        if os.path.isfile(file_path) and not any(d in file_path for d in ['.git/', '.github/']):
+        if os.path.isfile(file_path):
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
-                    for i, line in enumerate(f):
+                    # Performance: Use a fast substring check before performing line-by-line regex.
+                    # This avoids O(n) line-by-line regex iteration on files lacking these annotations.
+                    content = f.read()
+                    if 'TODO-AI' not in content and 'FIXME-AI' not in content:
+                        continue
+
+                    # Performance: Iterate over in-memory lines to keep operations purely in-memory
+                    for i, line in enumerate(content.splitlines()):
                         match = task_pattern.match(line)
                         if match:
                             task_desc = match.group(2).strip()
