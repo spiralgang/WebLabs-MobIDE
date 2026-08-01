@@ -188,17 +188,31 @@
     let aiKey = "";
     let proxyHeaders = {};
     let theme = "dark";
+
+    // Performance: Cache the file list parent element reference at module scope to avoid repeated query lookups
+    const fileListEl = document.getElementById('file-list');
+
     // File ops
     function updateFileList() {
-      const list = document.getElementById('file-list');
-      list.innerHTML = '';
-      Object.keys(files).forEach(fname => {
+      if (!fileListEl) return;
+
+      // Performance: Use DocumentFragment to batch DOM insertions off-screen, eliminating layout thrashing and reflows
+      const fragment = document.createDocumentFragment();
+      const fileNames = Object.keys(files);
+      const len = fileNames.length;
+
+      // Performance: Replace forEach with a fast, linear for loop to avoid function context allocation overhead
+      for (let i = 0; i < len; i++) {
+        const fname = fileNames[i];
         const btn = document.createElement('button');
         btn.textContent = fname;
         btn.className = 'file-btn' + (fname === activeFile ? ' active' : '');
         btn.onclick = () => openFile(fname);
-        list.appendChild(btn);
-      });
+        fragment.appendChild(btn);
+      }
+
+      fileListEl.innerHTML = '';
+      fileListEl.appendChild(fragment);
     }
     function openFile(fname) {
       activeFile = fname;
@@ -234,7 +248,7 @@
 
     /* ==================== Navigation ==================== */
     function showPanel(panel) {
-      ["panel-terminal","panel-editor","panel-proxy","panel-ai","panel-settings"].forEach(id => {
+      ["panel-terminal","panel-editor","panel-proxy","panel-ai","panel-toolkit","panel-settings"].forEach(id => {
         document.getElementById(id).style.display = (id === panel) ? "" : "none";
       });
       document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
