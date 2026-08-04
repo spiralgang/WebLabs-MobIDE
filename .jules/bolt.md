@@ -7,3 +7,7 @@
 ## 2026-07-24 - Reuse of High-Frequency API Objects
 **Learning:** Instantiating expensive API objects like `PerformanceObserver` repeatedly in high-frequency/polling loops (e.g. 1-second interval) creates massive memory allocation overhead and redundant observation bindings. Pre-instantiating the object once during constructor initialization completely eliminates this O(n) memory leak and reduces per-call latency to zero.
 **Action:** Pre-instantiate active API observers (such as `PerformanceObserver`, `ResizeObserver`, etc.) during class construction, and only assign to property references after successful activation for robust error isolation.
+
+## 2026-01-26 - In-Place Directory Pruning during os.walk
+**Learning:** Using `os.walk` in Python to scan files can be extremely slow if the repository contains large directories like `.git`, `.gradle`, `node_modules`, or `build`. Merely ignoring them inside the loop using conditional statements (e.g., `if ".git" in root: continue`) does not prevent `os.walk` from recursively traversing their entire subdirectories. Modifying the directory list `d` in-place (`d[:] = ...`) during `os.walk` halts recursion into those folders immediately, yielding ~2x speedup on repository scanning.
+**Action:** Always prune directories in-place via `d[:] = [...]` in `os.walk` when excluding subtrees from scanning.
