@@ -96,17 +96,23 @@ class ARM64MobileUtils {
     clearOldCacheEntries() {
         const maxAge = 24 * 60 * 60 * 1000; // 24 hours
         const now = Date.now();
+        const keys = Object.keys(localStorage);
+        const len = keys.length;
         
-        Object.keys(localStorage).forEach(key => {
+        // Performance Optimization: Use a fast linear for-loop instead of forEach
+        // and a high-performance string slice (key.slice(0, -10)) instead of replace
+        // to avoid intermediate string parsing overhead.
+        for (let i = 0; i < len; i++) {
+            const key = keys[i];
             if (key.endsWith('_timestamp')) {
                 const timestamp = parseInt(localStorage.getItem(key) || '0');
                 if (now - timestamp > maxAge) {
-                    const dataKey = key.replace('_timestamp', '');
+                    const dataKey = key.slice(0, -10);
                     localStorage.removeItem(key);
                     localStorage.removeItem(dataKey);
                 }
             }
-        });
+        }
     }
     
     /**
