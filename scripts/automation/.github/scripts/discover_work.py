@@ -3,14 +3,15 @@
 # It outputs a JSON matrix for use in subsequent GitHub Actions jobs.
 #
 import os
-import glob
 import json
 import re
 
 def set_github_output(name, value):
     """Sets an output variable for GitHub Actions."""
-    with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-        f.write(f"{name}={value}\n")
+    github_output = os.environ.get('GITHUB_OUTPUT')
+    if github_output:
+        with open(github_output, 'a') as f:
+            f.write(f"{name}={value}\n")
 
 def find_modules():
     """
@@ -19,27 +20,26 @@ def find_modules():
     """
     print("Discovering modules...")
     modules = []
-    dependency_files = [
-        'requirements.txt', 'pyproject.toml',  # Python
-        'package.json',                        # Node.js
-        'go.mod',                              # Go
-        'pom.xml', 'build.gradle'              # Java/Kotlin
-    ]
+    dependency_files = {
+        'requirements.txt': 'python',
+        'pyproject.toml': 'python',
+        'package.json': 'nodejs',
+        'go.mod': 'unknown',
+        'pom.xml': 'unknown',
+        'build.gradle': 'unknown'
+    }
     
-    for root, _, files in os.walk('.'):
-        # Ignore dot-folders like .github, .git
-        if any(part.startswith('.') for part in root.split(os.path.sep)):
-            continue
+    # Performance Optimization: Prune ignored directories in-place during os.walk
+    # to avoid O(N) traversal of hidden dirs (.git, .github), node_modules, build caches, etc.
+    for root, dirs, files in os.walk('.'):
+        dirs[:] = [d for d in dirs if not (
+            d.startswith('.') or
+            d in ('build', 'node_modules', 'archive', 'legacy_archive', 'bin', 'obj', 'out')
+        )]
 
-        for dep_file in dependency_files:
+        for dep_file, module_type in dependency_files.items():
             if dep_file in files:
                 module_path = root if root != '.' else './'
-                module_type = 'unknown'
-                if dep_file in ['requirements.txt', 'pyproject.toml']:
-                    module_type = 'python'
-                elif dep_file == 'package.json':
-                    module_type = 'nodejs'
-                
                 print(f"  Found '{module_type}' module at '{module_path}'")
                 modules.append({'module': module_path, 'module_type': module_type})
                 break # Move to the next directory
@@ -54,13 +54,29 @@ def find_evolution_tasks():
     tasks = []
     task_pattern = re.compile(r'.*(TODO-AI|FIXME-AI):\s*(.*)')
     
-    source_files = glob.glob('**/*', recursive=True)
-    
-    for file_path in source_files:
-        if os.path.isfile(file_path) and not any(d in file_path for d in ['.git/', '.github/']):
+    # Performance Optimization: Use os.walk with directory pruning instead of recursive glob,
+    # read the first 1024 bytes to skip binary files, and use a fast substring check before regex matching.
+    for root, dirs, files in os.walk('.'):
+        dirs[:] = [d for d in dirs if not (
+            d.startswith('.') or
+            d in ('build', 'node_modules', 'archive', 'legacy_archive', 'bin', 'obj', 'out')
+        )]
+
+        for file in files:
+            file_path = os.path.join(root, file)
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    for i, line in enumerate(f):
+                # Fast check for binary file by scanning first 1024 bytes
+                with open(file_path, 'rb') as f_bin:
+                    if b'\0' in f_bin.read(1024):
+                        continue
+
+                with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                    content = f.read()
+                    # Fast-path check: skip line-by-line regex scanning if keywords are not present
+                    if 'TODO-AI' not in content and 'FIXME-AI' not in content:
+                        continue
+
+                    for i, line in enumerate(content.splitlines()):
                         match = task_pattern.match(line)
                         if match:
                             task_desc = match.group(2).strip()
@@ -73,7 +89,7 @@ def find_evolution_tasks():
                                 'task_description': task_desc
                             })
             except Exception:
-                continue # Ignore binary files or read errors
+                continue # Ignore unreadable files or read errors
     return tasks
 
 def main():
