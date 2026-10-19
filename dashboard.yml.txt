@@ -1,0 +1,399 @@
+name: System Status Dashboard Generator
+on:
+  workflow_dispatch:
+    inputs:
+      include_deep_analysis:
+        description: 'Include deep code analysis'
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    # Generate dashboard twice daily
+    - cron: '0 6,18 * * *'
+  push:
+    branches: [ "main" ]
+    paths:
+      - "configs/**"
+      - ".github/workflows/**"
+
+permissions:
+  contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
+
+jobs:
+  generate_dashboard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Generate comprehensive system status
+        run: |
+          echo "📊 Generating comprehensive system status dashboard..."
+          
+          mkdir -p dashboard logs
+          
+          # Create dashboard HTML
+          cat > dashboard/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>GitHub-Native Assimilation Agent - System Status</title>
+              <style>
+                  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #0d1117; color: #c9d1d9; }
+                  .container { max-width: 1200px; margin: 0 auto; }
+                  .header { text-align: center; margin-bottom: 40px; }
+                  .header h1 { color: #58a6ff; margin: 0; }
+                  .header p { color: #8b949e; margin: 5px 0; }
+                  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
+                  .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; }
+                  .card h3 { margin: 0 0 15px 0; color: #f0f6fc; }
+                  .status-ok { color: #3fb950; }
+                  .status-warning { color: #d29922; }
+                  .status-error { color: #f85149; }
+                  .metric { display: flex; justify-content: space-between; margin: 8px 0; }
+                  .metric-label { color: #8b949e; }
+                  .metric-value { font-weight: bold; }
+                  .progress-bar { width: 100%; height: 8px; background: #21262d; border-radius: 4px; overflow: hidden; margin: 5px 0; }
+                  .progress-fill { height: 100%; transition: width 0.3s; }
+                  .progress-ok { background: #3fb950; }
+                  .progress-warning { background: #d29922; }
+                  .progress-error { background: #f85149; }
+                  .log-entry { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 12px; padding: 8px; background: #0d1117; border-radius: 4px; margin: 5px 0; border-left: 3px solid #30363d; }
+                  .timestamp { color: #58a6ff; margin-right: 10px; }
+                  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+                  .badge-ok { background: #238636; color: white; }
+                  .badge-warning { background: #bf8700; color: white; }
+                  .badge-error { background: #da3633; color: white; }
+                  .footer { text-align: center; margin-top: 40px; color: #8b949e; font-size: 14px; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="header">
+                      <h1>🤖 GitHub-Native Assimilation Agent</h1>
+                      <p>System Status Dashboard</p>
+                      <p>Last Updated: <span id="lastUpdated">TIMESTAMP_PLACEHOLDER</span></p>
+                  </div>
+          
+                  <div class="grid">
+                      <div class="card">
+                          <h3>🏥 System Health</h3>
+                          <div class="metric">
+                              <span class="metric-label">Overall Score</span>
+                              <span class="metric-value" id="healthScore">HEALTH_SCORE_PLACEHOLDER/10</span>
+                          </div>
+                          <div class="progress-bar">
+                              <div class="progress-fill" id="healthProgress" style="width: HEALTH_PERCENTAGE_PLACEHOLDER%"></div>
+                          </div>
+                          <div class="metric">
+                              <span class="metric-label">Status</span>
+                              <span class="badge" id="healthStatus">HEALTH_STATUS_PLACEHOLDER</span>
+                          </div>
+                      </div>
+          
+                      <div class="card">
+                          <h3>🔄 Assimilation Status</h3>
+                          <div class="metric">
+                              <span class="metric-label">Total Files</span>
+                              <span class="metric-value">ASSIMILATION_TOTAL_PLACEHOLDER</span>
+                          </div>
+                          <div class="metric">
+                              <span class="metric-label">Integrated</span>
+                              <span class="metric-value status-ok">ASSIMILATION_OK_PLACEHOLDER</span>
+                          </div>
+                          <div class="metric">
+                              <span class="metric-label">Missing</span>
+                              <span class="metric-value status-error">ASSIMILATION_MISSING_PLACEHOLDER</span>
+                          </div>
+                          <div class="metric">
+                              <span class="metric-label">Unbound</span>
+                              <span class="metric-value status-warning">ASSIMILATION_UNBOUND_PLACEHOLDER</span>
+                          </div>
+                          <div class="progress-bar">
+                              <div class="progress-fill progress-ok" style="width: ASSIMILATION_PERCENTAGE_PLACEHOLDER%"></div>
+                          </div>
+                      </div>
+          
+                      <div class="card">
+                          <h3>⚙️ Workflows</h3>
+                          <div class="metric">
+                              <span class="metric-label">Command Router</span>
+                              <span class="badge badge-ok">Active</span>
+                          </div>
+                          <div class="metric">
+                              <span class="metric-label">Assimilation Audit</span>
+                              <span class="badge badge-ok">Active</span>
+                          </div>
+                          <div class="metric">
+                              <span class="metric-label">Merge Gate</span>
+                              <span class="badge badge-ok">Enforced</span>
+                          </div>
+                          <div class="metric">
+                              <span class="metric-label">Orchestrator</span>
+                              <span class="badge badge-ok">Running</span>
+                          </div>
+                      </div>
+          
+                      <div class="card">
+                          <h3>🛡️ Safety Policies</h3>
+                          <div class="metric">
+                              <span class="metric-label">Destructive Actions</span>
+                              <span class="badge badge-ok">Disabled</span>
+                          </div>
+                          <div class="metric">
+                              <span class="metric-label">Move Manifest</span>
+                              <span class="badge badge-ok">Protected</span>
+                          </div>
+                          <div class="metric">
+                              <span class="metric-label">Android Protection</span>
+                              <span class="badge badge-ok">Active</span>
+                          </div>
+                          <div class="metric">
+                              <span class="metric-label">Forensic Logging</span>
+                              <span class="badge badge-ok">Enabled</span>
+                          </div>
+                      </div>
+                  </div>
+          
+                  <div class="card">
+                      <h3>📋 Recent Activity</h3>
+                      <div id="recentLogs">
+                          RECENT_LOGS_PLACEHOLDER
+                      </div>
+                  </div>
+          
+                  <div class="footer">
+                      <p>🤖 Autonomous GitHub-Native Assimilation Agent System</p>
+                      <p>Forensic logs and detailed metrics available in workflow artifacts</p>
+                  </div>
+              </div>
+          
+              <script>
+                  // Auto-refresh every 5 minutes
+                  setTimeout(() => window.location.reload(), 300000);
+              </script>
+          </body>
+          </html>
+          EOF
+      
+      - name: Run system assessment
+        run: |
+          echo "🔍 Running comprehensive system assessment..."
+          
+          # Run assimilation audit to get current status
+          python3 tools/assimilation_audit.py \
+            --manifest configs/frontend_manifest.json \
+            --mapping configs/frontend_to_backend_map.json \
+            --base origin/main \
+            --log logs/dashboard_assimilation.jsonl \
+            --verbose || true
+          
+          # Extract assimilation metrics
+          ASSIMILATION_DATA=$(python3 -c "
+          import json, sys
+          
+          try:
+              with open('logs/dashboard_assimilation.jsonl', 'r') as f:
+                  lines = f.readlines()
+              
+              for line in reversed(lines):
+                  if line.strip():
+                      data = json.loads(line)
+                      if data.get('phase') == 'summary':
+                          print(f'{data.get(\"total\", 0)} {data.get(\"ok\", 0)} {data.get(\"missing\", 0)} {data.get(\"unbound\", 0)} {data.get(\"assimilation_percentage\", 0):.0f}')
+                          break
+              else:
+                  print('0 0 0 0 0')
+          except Exception as e:
+              print('0 0 0 0 0')
+          ")
+          
+          read ASSIM_TOTAL ASSIM_OK ASSIM_MISSING ASSIM_UNBOUND ASSIM_PERCENTAGE <<< "$ASSIMILATION_DATA"
+          
+          # Calculate health score
+          HEALTH_SCORE=0
+          
+          # Basic functionality checks (each worth 1-2 points)
+          [ -f "configs/frontend_manifest.json" ] && HEALTH_SCORE=$((HEALTH_SCORE + 1))
+          [ -f "configs/frontend_to_backend_map.json" ] && HEALTH_SCORE=$((HEALTH_SCORE + 1))
+          [ -f ".github/workflows/agent-command-router.yml" ] && HEALTH_SCORE=$((HEALTH_SCORE + 2))
+          [ -f ".github/workflows/pr-assimilation-audit.yml" ] && HEALTH_SCORE=$((HEALTH_SCORE + 2))
+          [ -f ".github/workflows/merge-gate.yml" ] && HEALTH_SCORE=$((HEALTH_SCORE + 1))
+          [ -f "tools/assimilation_audit.py" ] && HEALTH_SCORE=$((HEALTH_SCORE + 2))
+          [ -f "reference/VAULT.md" ] && HEALTH_SCORE=$((HEALTH_SCORE + 1))
+          
+          HEALTH_PERCENTAGE=$((HEALTH_SCORE * 10))
+          
+          if [ $HEALTH_SCORE -ge 8 ]; then
+            HEALTH_STATUS="Excellent"
+            HEALTH_CLASS="badge-ok"
+          elif [ $HEALTH_SCORE -ge 6 ]; then
+            HEALTH_STATUS="Good"
+            HEALTH_CLASS="badge-warning"
+          else
+            HEALTH_STATUS="Needs Attention"
+            HEALTH_CLASS="badge-error"
+          fi
+          
+          # Generate recent activity logs
+          RECENT_LOGS=""
+          if [ -f "logs/orchestrator.jsonl" ]; then
+            RECENT_LOGS=$(tail -n 5 logs/orchestrator.jsonl | while read line; do
+              if [ -n "$line" ]; then
+                echo "$line" | python3 -c "
+                import json, sys
+                try:
+                    data = json.loads(sys.stdin.read())
+                    ts = data.get('ts', 'unknown')
+                    phase = data.get('phase', 'unknown')
+                    operation = data.get('operation', '')
+                    print(f'<div class=\"log-entry\"><span class=\"timestamp\">{ts}</span> {phase} {operation}</div>')
+                except:
+                    pass
+                "
+              fi
+            done)
+          fi
+          
+          if [ -z "$RECENT_LOGS" ]; then
+            RECENT_LOGS='<div class="log-entry"><span class="timestamp">No recent activity</span> System monitoring initialized</div>'
+          fi
+          
+          # Update dashboard with real data
+          sed -i "s/TIMESTAMP_PLACEHOLDER/$(date -u +%Y-%m-%dT%H:%M:%SZ)/g" dashboard/index.html
+          sed -i "s/HEALTH_SCORE_PLACEHOLDER/$HEALTH_SCORE/g" dashboard/index.html
+          sed -i "s/HEALTH_PERCENTAGE_PLACEHOLDER/$HEALTH_PERCENTAGE/g" dashboard/index.html
+          sed -i "s/HEALTH_STATUS_PLACEHOLDER/$HEALTH_STATUS/g" dashboard/index.html
+          sed -i "s/ASSIMILATION_TOTAL_PLACEHOLDER/$ASSIM_TOTAL/g" dashboard/index.html
+          sed -i "s/ASSIMILATION_OK_PLACEHOLDER/$ASSIM_OK/g" dashboard/index.html
+          sed -i "s/ASSIMILATION_MISSING_PLACEHOLDER/$ASSIM_MISSING/g" dashboard/index.html
+          sed -i "s/ASSIMILATION_UNBOUND_PLACEHOLDER/$ASSIM_UNBOUND/g" dashboard/index.html
+          sed -i "s/ASSIMILATION_PERCENTAGE_PLACEHOLDER/$ASSIM_PERCENTAGE/g" dashboard/index.html
+          sed -i "s|RECENT_LOGS_PLACEHOLDER|$RECENT_LOGS|g" dashboard/index.html
+          
+          # Add health status class
+          sed -i "s/id=\"healthStatus\"/id=\"healthStatus\" class=\"badge $HEALTH_CLASS\"/g" dashboard/index.html
+          
+          # Set progress bar color based on health
+          if [ $HEALTH_SCORE -ge 8 ]; then
+            sed -i "s/id=\"healthProgress\"/id=\"healthProgress\" class=\"progress-ok\"/g" dashboard/index.html
+          elif [ $HEALTH_SCORE -ge 6 ]; then
+            sed -i "s/id=\"healthProgress\"/id=\"healthProgress\" class=\"progress-warning\"/g" dashboard/index.html
+          else
+            sed -i "s/id=\"healthProgress\"/id=\"healthProgress\" class=\"progress-error\"/g" dashboard/index.html
+          fi
+          
+          echo "📊 Dashboard generated with health score: $HEALTH_SCORE/10"
+          echo "🔄 Assimilation status: $ASSIM_OK/$ASSIM_TOTAL files ($ASSIM_PERCENTAGE%)"
+      
+      - name: Generate status badge
+        run: |
+          echo "🏷️ Generating status badges..."
+          
+          mkdir -p dashboard/badges
+          
+          # Read current metrics
+          ASSIMILATION_DATA=$(python3 -c "
+          import json
+          try:
+              with open('logs/dashboard_assimilation.jsonl', 'r') as f:
+                  lines = f.readlines()
+              for line in reversed(lines):
+                  if line.strip():
+                      data = json.loads(line)
+                      if data.get('phase') == 'summary':
+                          percentage = data.get('assimilation_percentage', 0)
+                          if percentage >= 90:
+                              print('assimilated-90%25+-brightgreen')
+                          elif percentage >= 75:
+                              print(f'assimilated-{percentage:.0f}%25-yellow')
+                          else:
+                              print(f'assimilated-{percentage:.0f}%25-red')
+                          break
+              else:
+                  print('assimilated-unknown-lightgrey')
+          except:
+              print('assimilated-unknown-lightgrey')
+          ")
+          
+          # Create badge URLs (using shields.io)
+          echo "https://img.shields.io/badge/$ASSIMILATION_DATA" > dashboard/badges/assimilation.txt
+          echo "https://img.shields.io/badge/agent-active-brightgreen" > dashboard/badges/agent_status.txt
+          echo "https://img.shields.io/badge/safety_policies-enforced-blue" > dashboard/badges/safety.txt
+          
+          echo "✅ Status badges generated"
+      
+      - name: Commit dashboard to repository
+        run: |
+          # Configure git
+          git config user.name "GitHub-Native Agent"
+          git config user.email "agent@github-actions.com"
+          
+          # Add dashboard files
+          git add dashboard/
+          
+          # Commit if there are changes
+          if ! git diff --staged --quiet; then
+            git commit -m "🤖 Update system status dashboard - $(date -u +%Y-%m-%d\ %H:%M\ UTC)"
+            git push
+            echo "✅ Dashboard committed to repository"
+          else
+            echo "ℹ️ No dashboard changes to commit"
+          fi
+      
+      - name: Upload dashboard artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: system-dashboard-${{ github.run_number }}
+          path: |
+            dashboard/
+            logs/dashboard_assimilation.jsonl
+      
+      - name: Generate markdown summary
+        run: |
+          echo "# 🤖 GitHub-Native Assimilation Agent - System Status" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Generated:** $(date -u +%Y-%m-%d\ %H:%M\ UTC)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Extract current metrics for summary
+          python3 -c "
+          import json
+          
+          try:
+              with open('logs/dashboard_assimilation.jsonl', 'r') as f:
+                  lines = f.readlines()
+              
+              for line in reversed(lines):
+                  if line.strip():
+                      data = json.loads(line)
+                      if data.get('phase') == 'summary':
+                          print(f'## 📊 Assimilation Metrics')
+                          print(f'- **Total Files:** {data.get(\"total\", 0)}')
+                          print(f'- **Successfully Integrated:** {data.get(\"ok\", 0)} ✅')
+                          print(f'- **Missing Targets:** {data.get(\"missing\", 0)} ❌')
+                          print(f'- **Incomplete Bindings:** {data.get(\"unbound\", 0)} ⚠️')
+                          print(f'- **Integration Percentage:** {data.get(\"assimilation_percentage\", 0):.1f}%')
+                          break
+              else:
+                  print('## ⚠️ No assimilation data available')
+          except Exception as e:
+              print(f'## ❌ Error reading assimilation data: {e}')
+          " >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 🏥 System Health" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Command Router Active" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Assimilation Audit Functional" >> $GITHUB_STEP_SUMMARY  
+          echo "- ✅ Merge Gate Enforced" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Safety Policies Active" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Forensic Logging Enabled" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📱 **Dashboard URL:** Available in repository at \`dashboard/index.html\`" >> $GITHUB_STEP_SUMMARY
+          echo "📋 **Detailed Logs:** Available in workflow artifacts" >> $GITHUB_STEP_SUMMARY

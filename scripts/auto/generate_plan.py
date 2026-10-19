@@ -170,23 +170,42 @@ class AuditGenerator:
 
     def scan_secrets_config(self):
         """Verify no API keys, model weights, or keystore in repo."""
-        patterns = [
-            (r'api[_-]?key\s*=', "API key pattern found"),
-            (r'secret\s*=', "Secret assignment found"),
-            (r'password\s*=', "Password assignment found"),
-        ]
-        
-        forbidden_files = ["*.jks", "*.keystore", "*.p12", "*.pfx"]
+        forbidden_extensions = ('.jks', '.keystore', '.p12', '.pfx')
+        source_extensions = ('.py', '.js')
+        ignored_dirs = {'.git', 'node_modules', '.gradle', 'build'}
         
         found_secrets = False
+        hf_check = False
+
+        ai_path = self.repo_path / "ai"
+        has_ai_dir = ai_path.exists()
+
         for root, dirs, files in os.walk(self.repo_path):
             # Skip common non-source directories
-            dirs[:] = [d for d in dirs if d not in ['.git', 'node_modules', '.gradle', 'build']]
+            dirs[:] = [d for d in dirs if d not in ignored_dirs]
             
+            root_path = Path(root)
+            is_in_ai_scope = True
+            if has_ai_dir:
+                try:
+                    root_path.relative_to(ai_path)
+                except ValueError:
+                    is_in_ai_scope = False
+
             for file in files:
-                if file.endswith(('.jks', '.keystore', '.p12', '.pfx')):
+                # Check for keystore files
+                if file.endswith(forbidden_extensions):
                     self.findings["secrets"].append(f"Keystore file detected: {file}")
                     found_secrets = True
+
+                # Check for HF_API_KEY handling (only in 'ai' dir if it exists, otherwise everywhere)
+                if is_in_ai_scope and file.endswith(source_extensions):
+                    try:
+                        content = (root_path / file).read_text()
+                        if "HF_API_KEY" in content or "huggingface" in content.lower():
+                            hf_check = True
+                    except:
+                        pass
         
         if found_secrets:
             self.checklist.append({
@@ -203,18 +222,6 @@ class AuditGenerator:
                 "task": "No hardcoded secrets in repository",
                 "priority": "critical"
             })
-        
-        # Check for HF_API_KEY handling
-        hf_check = False
-        for root, dirs, files in os.walk(self.repo_path / "ai" if (self.repo_path / "ai").exists() else self.repo_path):
-            for file in files:
-                if file.endswith(('.py', '.js')):
-                    try:
-                        content = Path(root, file).read_text()
-                        if "HF_API_KEY" in content or "huggingface" in content.lower():
-                            hf_check = True
-                    except:
-                        pass
         
         if hf_check:
             self.checklist.append({

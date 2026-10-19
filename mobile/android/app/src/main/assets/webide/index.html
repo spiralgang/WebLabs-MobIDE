@@ -188,17 +188,40 @@
     let aiKey = "";
     let proxyHeaders = {};
     let theme = "dark";
+    // Performance Optimization: Cache the parent element reference in module scope lazily
+    // to avoid redundant, expensive DOM lookups (document.getElementById) on subsequent updates
+    // and protect against variations in script/DOM parsing order.
+    let fileListEl = null;
+
     // File ops
     function updateFileList() {
-      const list = document.getElementById('file-list');
-      list.innerHTML = '';
-      Object.keys(files).forEach(fname => {
+      if (!fileListEl) {
+        fileListEl = document.getElementById('file-list');
+      }
+      if (!fileListEl) return;
+
+      // Performance Optimization: Clear the list using textContent = '' which is much faster than innerHTML = ''
+      // as it does not invoke the browser's heavy HTML parser.
+      fileListEl.textContent = '';
+
+      // Performance Optimization: Use a DocumentFragment to batch DOM insertions off-screen,
+      // preventing layout thrashing and intermediate repaints during repeated appends.
+      const fragment = document.createDocumentFragment();
+      const fileNames = Object.keys(files);
+      const len = fileNames.length;
+
+      // Performance Optimization: Replace Object.keys(files).forEach with a fast, linear for-loop
+      // to eliminate function context creation and call stack overhead in hot paths.
+      for (let i = 0; i < len; i++) {
+        const fname = fileNames[i];
         const btn = document.createElement('button');
         btn.textContent = fname;
         btn.className = 'file-btn' + (fname === activeFile ? ' active' : '');
         btn.onclick = () => openFile(fname);
-        list.appendChild(btn);
-      });
+        fragment.appendChild(btn);
+      }
+
+      fileListEl.appendChild(fragment);
     }
     function openFile(fname) {
       activeFile = fname;
