@@ -43,8 +43,8 @@ class ARM64MobileEditor {
         `;
 
         // Cache frequently accessed DOM elements for performance
-        this.editor = document.getElementById('editor');
-        this.cursorPos = document.getElementById('cursor-pos');
+        this.editor = this.container.querySelector('#editor');
+        this.cursorPos = this.container.querySelector('#cursor-pos');
         
         this.setupEditorStyles();
         this.setupEventHandlers();
